@@ -4,11 +4,11 @@
 
     public static class Disposable
     {
-        public static IDisposable Create<TState>(TState state, Action<TState> disposeAction)
+        public static IDisposable Create(Action disposeAction)
         {
             if (disposeAction == null) throw new ArgumentNullException(nameof(disposeAction));
 
-            return new DisposableCreate<TState>(state, disposeAction);
+            return new DisposableCreate(disposeAction);
         }
 
         public static IDisposable Empty()
@@ -16,22 +16,20 @@
             return DisposableEmpty.Shared;
         }
 
-        private class DisposableCreate<TState>: IDisposable
+        private class DisposableCreate: IDisposable
         {
-            private readonly TState _state;
-            private readonly Action<TState> _disposeAction;
+            private readonly Action _disposeAction;
 
-            public DisposableCreate(TState state, Action<TState> disposeAction)
+            public DisposableCreate(Action disposeAction)
             {
                 if (disposeAction == null) throw new ArgumentNullException(nameof(disposeAction));
-
-                _state = state;
+                
                 _disposeAction = disposeAction;                
             }
 
             public void Dispose()
             {
-                _disposeAction(_state);
+                _disposeAction();
             }
         }
 

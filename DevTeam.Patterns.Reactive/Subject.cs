@@ -13,7 +13,7 @@
             if (observer == null) throw new ArgumentNullException(nameof(observer));
 
             _observers.Add(observer);
-            return Disposable.Create<ISubject<T>>(this, subject => { _observers.Remove(observer); });
+            return Disposable.Create(() => { _observers.Remove(observer); });
         }
 
         public void OnNext(T value)
