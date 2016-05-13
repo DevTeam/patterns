@@ -1,0 +1,4 @@
+C:\Projects\GitHub\patterns\DevTeam.Patterns.Dispose\bin\Debug\DevTeam.Patterns.Dispose.dll
+C:\Projects\GitHub\patterns\DevTeam.Patterns.Dispose\bin\Debug\DevTeam.Patterns.Dispose.pdb
+C:\Projects\GitHub\patterns\DevTeam.Patterns.Dispose\obj\Debug\DevTeam.Patterns.Dispose.dll
+C:\Projects\GitHub\patterns\DevTeam.Patterns.Dispose\obj\Debug\DevTeam.Patterns.Dispose.pdb
