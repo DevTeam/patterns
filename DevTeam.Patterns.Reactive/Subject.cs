@@ -11,6 +11,7 @@
         public IDisposable Subscribe(IObserver<T> observer)
         {
             if (observer == null) throw new ArgumentNullException(nameof(observer));
+
             _observers.Add(observer);
             return Disposable.Create<ISubject<T>>(this, subject => { _observers.Remove(observer); });
         }

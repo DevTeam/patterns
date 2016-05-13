@@ -7,6 +7,7 @@
         public static IObservable<TSource> Create<TSource>(Func<IObserver<TSource>, IDisposable> observable)
         {
             if (observable == null) throw new ArgumentNullException(nameof(observable));
+
             return new ObservableCreate<TSource>(observable);
         }
 
@@ -14,6 +15,7 @@
         {
             if (observable == null) throw new ArgumentNullException(nameof(observable));
             if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
+
             return Create<TSource>(observer => observable.Subscribe(new ObserverOn<TSource>(observer, scheduler)));
         }
 
@@ -24,12 +26,15 @@
             public ObservableCreate(Func<IObserver<TSource>, IDisposable> observable)
             {
                 if (observable == null) throw new ArgumentNullException(nameof(observable));
+
                 _observable = observable;
             }
 
             public IDisposable Subscribe(IObserver<TSource> observer)
             {
-                return _observable(observer);                
+                if (observer == null) throw new ArgumentNullException(nameof(observer));
+
+                return _observable(observer);
             }
         }
 
@@ -42,6 +47,7 @@
             {
                 if (observable == null) throw new ArgumentNullException(nameof(observable));
                 if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
+
                 _observable = observable;
                 _scheduler = scheduler;
             }

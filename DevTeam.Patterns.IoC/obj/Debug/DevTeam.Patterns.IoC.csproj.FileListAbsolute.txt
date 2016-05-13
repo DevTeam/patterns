@@ -1,4 +1,0 @@
-C:\Projects\GitHub\patterns\DevTeam.Patterns.IoC\bin\Debug\DevTeam.Patterns.IoC.dll
-C:\Projects\GitHub\patterns\DevTeam.Patterns.IoC\bin\Debug\DevTeam.Patterns.IoC.pdb
-C:\Projects\GitHub\patterns\DevTeam.Patterns.IoC\obj\Debug\DevTeam.Patterns.IoC.dll
-C:\Projects\GitHub\patterns\DevTeam.Patterns.IoC\obj\Debug\DevTeam.Patterns.IoC.pdb

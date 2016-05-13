@@ -1,7 +1,0 @@
-C:\Projects\GitHub\patterns\DevTeam.Patterns.Reactive\obj\Debug\DevTeam.Patterns.Reactive.csprojResolveAssemblyReference.cache
-C:\Projects\GitHub\patterns\DevTeam.Patterns.Reactive\bin\Debug\DevTeam.Patterns.Reactive.dll
-C:\Projects\GitHub\patterns\DevTeam.Patterns.Reactive\bin\Debug\DevTeam.Patterns.Reactive.pdb
-C:\Projects\GitHub\patterns\DevTeam.Patterns.Reactive\bin\Debug\DevTeam.Patterns.Dispose.dll
-C:\Projects\GitHub\patterns\DevTeam.Patterns.Reactive\bin\Debug\DevTeam.Patterns.Dispose.pdb
-C:\Projects\GitHub\patterns\DevTeam.Patterns.Reactive\obj\Debug\DevTeam.Patterns.Reactive.dll
-C:\Projects\GitHub\patterns\DevTeam.Patterns.Reactive\obj\Debug\DevTeam.Patterns.Reactive.pdb

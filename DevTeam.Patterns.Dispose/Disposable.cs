@@ -7,6 +7,7 @@
         public static IDisposable Create<TState>(TState state, Action<TState> disposeAction)
         {
             if (disposeAction == null) throw new ArgumentNullException(nameof(disposeAction));
+
             return new DisposableCreate<TState>(state, disposeAction);
         }
 
@@ -23,6 +24,7 @@
             public DisposableCreate(TState state, Action<TState> disposeAction)
             {
                 if (disposeAction == null) throw new ArgumentNullException(nameof(disposeAction));
+
                 _state = state;
                 _disposeAction = disposeAction;                
             }
@@ -36,6 +38,10 @@
         private class DisposableEmpty : IDisposable
         {
             public static readonly IDisposable Shared = new DisposableEmpty();
+
+            private DisposableEmpty()
+            {
+            }
 
             public void Dispose()
             {

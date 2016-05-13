@@ -14,6 +14,7 @@
 
         public Scheduler(TaskFactory taskFactory, int parallelism)
         {
+            if (taskFactory == null) throw new ArgumentNullException(nameof(taskFactory));
             if (parallelism < 1) throw new ArgumentOutOfRangeException(nameof(parallelism));
 
             _tasks = new Task[parallelism];
@@ -26,10 +27,8 @@
 
         public void Schedule<TState>(Action action)
         {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (_disposed) throw new ObjectDisposedException(GetType().Name);
 
             lock (_lockObject)
             {
