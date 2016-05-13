@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    internal class Container : IContainer
+    public class Container : IContainer
 	{
 		private readonly Dictionary<string, object> _factories = new Dictionary<string, object>();
 		private readonly Container _parentContainer;

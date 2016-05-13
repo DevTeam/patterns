@@ -1,6 +1,6 @@
 namespace DevTeam.Patterns.IoC
 {
-	internal interface IResolver
+    public interface IResolver
 	{
 		T Resolve<T>(string name = "");
 

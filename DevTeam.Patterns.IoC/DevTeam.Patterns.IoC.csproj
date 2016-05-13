@@ -37,6 +37,7 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Async.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="IContainer.cs" />

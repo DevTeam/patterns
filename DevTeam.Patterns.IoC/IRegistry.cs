@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal interface IRegistry
+    public interface IRegistry
 	{
 		IRegistry Register<T>(Func<T> factory, string name = "");
 
