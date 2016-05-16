@@ -50,15 +50,15 @@
 	</Target>	
 
 	<PropertyGroup>
-		<PackageDirectory>\bin\Release\</PackageDirectory>	
+		<PackagesDirectory>packages</PackagesDirectory>	
 	</PropertyGroup>
 
 	<Target Name="CreatePackages" DependsOnTargets="Build">
-		<Exec Command="nuget.exe pack %(Package.Identity)\package.nuspec -Version $(Version) -OutputDirectory packages"/>
+		<Exec Command="nuget.exe pack %(Package.Identity)\package.nuspec -Version $(Version) -OutputDirectory $(PackagesDirectory)"/>
 	</Target>
 
 	<Target Name="PushPackages" DependsOnTargets="CreatePackages">
-		<Exec Command="nuget.exe push packages\%(Package.Identity).$(Version).nupkg"/>
+		<Exec Command="nuget.exe push $(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg -ApiKey $(ApiKey) -Source https://nuget.org/api/v2/"/>
 	</Target>
 
 </Project>
