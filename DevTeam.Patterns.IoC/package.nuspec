@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>DevTeam.Patterns.IoC</id>
+		<version>$version$</version>
+		<authors>NikolayP</authors>
+		<owners>NikolayP</owners>
+		<!--licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl-->
+		<projectUrl>https://github.com/DevTeam/patterns</projectUrl>
+		<!--iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl-->
+		<!--requireLicenseAcceptance>false</requireLicenseAcceptance-->
+		<description>Implements "IoC" patterns.</description>
+		<tags>DevTeam Pattern IoC Container</tags>
+		<!--dependencies>
+    		<dependency id="SampleDependency" version="1.0" />
+		</dependencies-->
+	</metadata>
+	<files>
+  		<file src="bin\Release\DevTeam.Patterns.IoC.*" target="lib\portable-net45+netcore1+win8+wp8+wpa81/" />
+	</files>
+</package>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="PushPackages" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="packages.proj" />
+	<UsingTask TaskName="DownloadFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+		<ParameterGroup>
+			<Url ParameterType="System.String" Required="true" />
+			<LocalFilePath ParameterType="System.String" Required="true"/>
+		</ParameterGroup>
+		<Task>
+		<Using Namespace="System"/>
+		<Using Namespace="System.IO"/>
+		<Using Namespace="System.Net"/>
+      	<Code Type="Fragment" Language="cs">
+			<![CDATA[		
+				try
+				{				
+					var dirName = Path.GetDirectoryName(LocalFilePath);
+					if (dirName != null && Directory.Exists(dirName))	
+					{
+						Directory.CreateDirectory(dirName);
+					}
+
+					using (WebClient client = new WebClient())
+					{
+						client.DownloadFile(Url, LocalFilePath);
+					}
+				}
+				catch(Exception ex)
+				{
+					Log.LogMessage(MessageImportance.High, string.Format("##teamcity[buildProblem description='{0}' identity='{0}']", ex.Message));
+					throw;
+				}
+			]]>
+      	</Code>
+    	</Task>
+	</UsingTask>
+
+	<Target Name="GetNuGet">
+		<DownloadFile
+	    	Url="https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+	    	LocalFilePath="nuget.exe"/>
+	</Target>
+
+	<Target Name="RestorePackages" DependsOnTargets="GetNuGet">
+		<Exec Command="nuget.exe restore patterns.sln"/>
+	</Target>
+
+	<Target Name="Build" DependsOnTargets="RestorePackages">
+		<MSBuild Projects="patterns.sln" BuildInParallel="true" Properties="Configuration=Release"/>
+	</Target>	
+
+	<PropertyGroup>
+		<PackageDirectory>\bin\Release\</PackageDirectory>	
+	</PropertyGroup>
+
+	<Target Name="CreatePackages" DependsOnTargets="Build">
+		<Exec Command="nuget.exe pack %(Package.Identity)\package.nuspec -Version $(Version) -OutputDirectory packages"/>
+	</Target>
+
+	<Target Name="PushPackages" DependsOnTargets="CreatePackages">
+		<Exec Command="nuget.exe push packages\%(Package.Identity).$(Version).nupkg"/>
+	</Target>
+
+</Project>
