@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
-		<id>DevTeam.Patterns.Dispose</id>
+		<id>$id$</id>
+		<title>DevTeam "Dispose" patterns.</title>
+		<language>en-us</language>
 		<version>$version$</version>
-		<authors>NikolayP</authors>
-		<owners>NikolayP</owners>
-		<!--licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl-->
+		<authors>$author$</authors>
+		<owners>$author$</owners>
+		<licenseUrl>https://github.com/DevTeam/patterns/blob/master/LICENSE</licenseUrl>
 		<projectUrl>https://github.com/DevTeam/patterns</projectUrl>
 		<!--iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl-->
 		<!--requireLicenseAcceptance>false</requireLicenseAcceptance-->
-		<description>Implements "Dispose" patterns.</description>
+		<description>$description$</description>
 		<tags>DevTeam Pattern Dispose</tags>
 		<!--dependencies>
     		<dependency id="SampleDependency" version="1.0" />

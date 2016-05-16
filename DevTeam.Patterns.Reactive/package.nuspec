@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
-		<id>DevTeam.Patterns.Reactive</id>
+		<id>$id$</id>
+		<title>DevTeam "Reactive" patterns.</title>
+		<language>en-us</language>
 		<version>$version$</version>
-		<authors>NikolayP</authors>
-		<owners>NikolayP</owners>
-		<!--licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl-->
+		<authors>$author$</authors>
+		<owners>$author$</owners>
+		<licenseUrl>https://github.com/DevTeam/patterns/blob/master/LICENSE</licenseUrl>
 		<projectUrl>https://github.com/DevTeam/patterns</projectUrl>
 		<!--iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl-->
 		<!--requireLicenseAcceptance>false</requireLicenseAcceptance-->
-		<description>Implements "Reactive" patterns.</description>
+		<description>$description$</description>
 		<tags>DevTeam Pattern Reactive Observable Observer</tags>
 		<dependencies>
     		<dependency id="DevTeam.Patterns.Dispose" version="$version$" />
