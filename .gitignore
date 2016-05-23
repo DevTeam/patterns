@@ -4,3 +4,7 @@ DevTeam.Patterns.IoC/obj/
 DevTeam.Patterns.IoC/bin/
 DevTeam.Patterns.Reactive/obj/
 DevTeam.Patterns.Reactive/bin/
+TestTool/DevTeam.TestTool.Contracts/obj/
+TestTool/DevTeam.TestTool.Engine.Contracts/obj/
+TestTool/DevTeam.TestTool.Engine/obj/
+TestTool/DevTeam.TestTool.dotNet/obj/

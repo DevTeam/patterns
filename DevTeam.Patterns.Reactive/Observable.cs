@@ -11,6 +11,31 @@
             return new ObservableCreate<TSource>(observable);
         }
 
+        public static IDisposable Subscribe<TSource>(this IObservable<TSource> observable, Action<TSource> onNext, Action<Exception> onError, Action onComplete)
+        {
+            if (observable == null) throw new ArgumentNullException(nameof(observable));
+            if (onNext == null) throw new ArgumentNullException(nameof(onNext));
+            if (onError == null) throw new ArgumentNullException(nameof(onError));
+            if (onComplete == null) throw new ArgumentNullException(nameof(onComplete));
+
+            return new Subscription<TSource>(observable, onNext, onError, onComplete);                
+        }
+
+        public static IObservable<TDestination> Select<TSource, TDestination>(this IObservable<TSource> observable, Func<TSource, TDestination> selector)
+        {
+            if (observable == null) throw new ArgumentNullException(nameof(observable));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
+
+            return Create<TDestination>(
+                observer =>
+                    {
+                        return observable.Subscribe(
+                            i => observer.OnNext(selector(i)),
+                            observer.OnError,
+                            observer.OnCompleted);
+                    });
+        }
+
         public static IObservable<TSource> ObserveOn<TSource>(this IObservable<TSource> observable, IScheduler scheduler)
         {
             if (observable == null) throw new ArgumentNullException(nameof(observable));
@@ -65,6 +90,49 @@
             public void OnCompleted()
             {
                 _scheduler.Schedule<IObserver<T>>(() => { _observable.OnCompleted(); });
+            }
+        }
+
+        private class Subscription<T> : IObserver<T>, IDisposable
+        {
+            private readonly IObservable<T> _observable;
+            private readonly Action<T> _onNext;
+            private readonly Action<Exception> _onError;
+            private readonly Action _onComplete;
+            private readonly IDisposable _subscription;
+
+            public Subscription(IObservable<T> observable, Action<T> onNext, Action<Exception> onError, Action onComplete)
+            {
+                if (observable == null) throw new ArgumentNullException(nameof(observable));
+                if (onNext == null) throw new ArgumentNullException(nameof(onNext));
+                if (onError == null) throw new ArgumentNullException(nameof(onError));
+                if (onComplete == null) throw new ArgumentNullException(nameof(onComplete));
+
+                _observable = observable;
+                _onNext = onNext;
+                _onError = onError;
+                _onComplete = onComplete;
+                _subscription = observable.Subscribe(this);
+            }
+
+            public void OnNext(T value)
+            {
+                _onNext(value);
+            }
+
+            public void OnError(Exception error)
+            {
+                _onError(error);
+            }
+
+            public void OnCompleted()
+            {
+                _onComplete();
+            }
+
+            public void Dispose()
+            {
+                _subscription.Dispose();
             }
         }
     }    

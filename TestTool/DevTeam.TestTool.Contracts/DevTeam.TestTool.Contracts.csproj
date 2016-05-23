@@ -5,11 +5,11 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{79F43401-CED2-46C1-A3C9-A8E9F94A1DEA}</ProjectGuid>
+    <ProjectGuid>{8591A4C5-3368-4D2D-98E5-E42FB2C8A3C3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DevTeam.Patterns.Reactive</RootNamespace>
-    <AssemblyName>DevTeam.Patterns.Reactive</AssemblyName>
+    <RootNamespace>DevTeam.TestTool.Contracts</RootNamespace>
+    <AssemblyName>DevTeam.TestTool.Contracts</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,18 +34,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="IScheduler.cs" />
-    <Compile Include="ISubject.cs" />
-    <Compile Include="Observable.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Subject.cs" />
-    <Compile Include="Scheduler.cs" />
+    <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
-      <Project>{fe61929a-6f78-40b6-8929-62cfb62e3be6}</Project>
-      <Name>DevTeam.Patterns.Dispose</Name>
-    </ProjectReference>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestAttribute.cs" />
+    <Compile Include="TestFixtureAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
