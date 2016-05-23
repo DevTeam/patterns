@@ -5,6 +5,6 @@
 
     public interface ITypeLoader
     {
-        Type Load(Assembly testAssembly, TestFixture testFixture);
+        Type Load(Assembly assembly, string typeName);
     }
 }

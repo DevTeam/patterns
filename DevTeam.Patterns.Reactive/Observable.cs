@@ -1,6 +1,9 @@
 ﻿namespace DevTeam.Patterns.Reactive
 {
     using System;
+    using System.Collections.Generic;
+
+    using DevTeam.Patterns.Dispose;
 
     public static class Observable
     {
@@ -42,6 +45,20 @@
             if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
 
             return Create<TSource>(observer => observable.Subscribe(new ObserverOn<TSource>(observer, scheduler)));
+        }
+
+        public static IObservable<TSource> ToObservable<TSource>(this IEnumerable<TSource> source)
+        {
+            return Create<TSource>(observer =>
+                {
+                    foreach (var value in source)
+                    {
+                        observer.OnNext(value);
+                    }
+
+                    observer.OnCompleted();
+                    return Disposable.Empty();                        
+                });
         }
 
         private class ObservableCreate<TSource> : IObservable<TSource>

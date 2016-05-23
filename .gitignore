@@ -8,3 +8,5 @@ TestTool/DevTeam.TestTool.Contracts/obj/
 TestTool/DevTeam.TestTool.Engine.Contracts/obj/
 TestTool/DevTeam.TestTool.Engine/obj/
 TestTool/DevTeam.TestTool.dotNet/obj/
+TestTool/DevTeam.TestTool.Test.Mocks/obj/
+DevTeam.Patterns.EventAggregator/obj/

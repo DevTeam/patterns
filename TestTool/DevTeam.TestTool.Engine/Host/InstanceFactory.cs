@@ -1,4 +1,4 @@
-﻿namespace DevTeam.TestTool.Engine.Runner
+﻿namespace DevTeam.TestTool.Engine.Host
 {
     using System;
 

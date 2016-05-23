@@ -4,6 +4,6 @@
 
     public interface ITestsSource
     {
-        IObservable<Test> Create();
+        IObservable<Test> Create(ISession session);
     }
 }

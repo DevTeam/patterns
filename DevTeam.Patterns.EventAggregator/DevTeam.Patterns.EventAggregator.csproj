@@ -2,18 +2,21 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3ECF9C7F-7DD2-49DD-84CD-51473A56F688}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{E4897226-0FFD-46C5-A44F-C7EE91572856}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DevTeam.TestTool.dotNet</RootNamespace>
-    <AssemblyName>tt</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>DevTeam.Patterns.EventAggregator</RootNamespace>
+    <AssemblyName>DevTeam.Patterns.EventAggregator</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +26,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,35 +34,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <ProjectReference Include="..\DevTeam.Patterns.Reactive\DevTeam.Patterns.Reactive.csproj">
+      <Project>{79F43401-CED2-46C1-A3C9-A8E9F94A1DEA}</Project>
+      <Name>DevTeam.Patterns.Reactive</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Aggregator.cs" />
+    <Compile Include="IEventAggregator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
-      <Project>{35055D77-822C-4D69-8DF2-722B42CC405A}</Project>
-      <Name>DevTeam.Patterns.IoC</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DevTeam.TestTool.Engine.Contracts\DevTeam.TestTool.Engine.Contracts.csproj">
-      <Project>{E1FBA15F-0E8E-4AB1-97CD-E6F2A8EA2279}</Project>
-      <Name>DevTeam.TestTool.Engine.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DevTeam.TestTool.Engine\DevTeam.TestTool.Engine.csproj">
-      <Project>{35529d33-dc72-4bd3-8e39-f964ae39ba6d}</Project>
-      <Name>DevTeam.TestTool.Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DevTeam.TestTool.Test.Mocks\DevTeam.TestTool.Test.Mocks.csproj">
-      <Project>{d85f55c6-3976-4633-8dd4-e6bad79e4570}</Project>
-      <Name>DevTeam.TestTool.Test.Mocks</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

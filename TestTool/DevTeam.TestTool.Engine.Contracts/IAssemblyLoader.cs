@@ -4,6 +4,6 @@
 
     public interface IAssemblyLoader
     {
-        Assembly Load(TestAssembly testAssembly);
+        Assembly Load(string assemblyName);
     }
 }

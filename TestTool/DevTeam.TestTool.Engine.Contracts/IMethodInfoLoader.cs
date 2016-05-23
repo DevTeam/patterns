@@ -5,6 +5,6 @@
 
     public interface IMethodInfoLoader
     {
-        MethodInfo Load(Type testFixtureType, TestMethod testMethod);
+        MethodInfo Load(Type type, string methodName);
     }
 }
