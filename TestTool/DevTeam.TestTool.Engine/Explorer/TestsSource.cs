@@ -11,14 +11,13 @@
 
     internal class TestsSource : ITestsSource
     {
-        private readonly IAssemblyLoader _assemblyLoader;
+        private readonly IReflection _reflection;
 
-        public TestsSource(
-            IAssemblyLoader assemblyLoader)
+        public TestsSource(IReflection reflection)
         {
-            if (assemblyLoader == null) throw new ArgumentNullException(nameof(assemblyLoader));
+            if (reflection == null) throw new ArgumentNullException(nameof(reflection));
 
-            _assemblyLoader = assemblyLoader;
+            _reflection = reflection;
         }
 
         public IObservable<Test> Create(ISession session)
@@ -26,16 +25,16 @@
             if (session == null) throw new ArgumentNullException(nameof(session));
 
             return (
-                from assemblyName in
+                from assemblyFileName in
                 session.Properties.Where(p => Equals(p.Property, AssemblyProperty.Shared)).Select(p => p.Value)
-                let assembly = _assemblyLoader.Load(assemblyName)
-                let testAssembly = new TestAssembly(assembly.FullName)
-                from type in assembly.DefinedTypes
-                let testFixtureAttribute = type.GetCustomAttribute<TestFixtureAttribute>()
+                let assembly = _reflection.LoadAssembly(assemblyFileName)
+                let testAssembly = new TestAssembly(assemblyFileName)
+                from type in _reflection.GetTypes(assembly)
+                let testFixtureAttribute = _reflection.GetCustomAttribute<TestFixtureAttribute>(type)
                 where testFixtureAttribute != null
                 let testFixture = new TestFixture(testAssembly, type.FullName)
-                from method in type.DeclaredMethods
-                let testAttribute = method.GetCustomAttribute<TestAttribute>()
+                from method in _reflection.GetMethods(type)
+                let testAttribute = _reflection.GetCustomAttribute<TestAttribute>(method)
                 where testAttribute != null
                 let testMethod = new TestMethod(testFixture, method.Name)
                 select new Test(testMethod)

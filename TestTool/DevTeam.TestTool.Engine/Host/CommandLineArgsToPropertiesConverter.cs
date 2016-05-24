@@ -11,7 +11,11 @@
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            return new[] { new PropertyValue(ToolProperty.Shared, "explorer"), new PropertyValue(AssemblyProperty.Shared, @"C:\Projects\GitHub\patterns\TestTool\DevTeam.TestTool.dotNet\bin\Debug\DevTeam.TestTool.Test.Mocks.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null") };
+            return new[]
+                {
+                    new PropertyValue(ToolProperty.Shared, "explorer"),
+                    new PropertyValue(AssemblyProperty.Shared, @"C:\Projects\GitHub\patterns\TestTool\DevTeam.TestTool.dotNet\bin\Debug\DevTeam.TestTool.Test.Mocks.dll")
+                };
         }
     }
 }

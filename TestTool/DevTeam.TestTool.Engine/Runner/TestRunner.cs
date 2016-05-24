@@ -4,40 +4,52 @@
 
     using Contracts;
 
+    using Patterns.Reactive;
+
     internal class TestRunner : ITestRunner
     {
-        private readonly IAssemblyLoader _assemblyLoader;
-        private readonly ITypeLoader _typeLoader;
-        private readonly IMethodInfoLoader _methodInfoLoader;
-        private readonly IInstanceFactory _instanceFactory;
+        private readonly Subject<TestResult> _results = new Subject<TestResult>();
+        private readonly IReflection _reflection;
 
-        public TestRunner(
-            IAssemblyLoader assemblyLoader,
-            ITypeLoader typeLoader,
-            IMethodInfoLoader methodInfoLoader,
-            IInstanceFactory instanceFactory)
+        public TestRunner(IReflection reflection)
         {
-            if (assemblyLoader == null) throw new ArgumentNullException(nameof(assemblyLoader));
-            if (typeLoader == null) throw new ArgumentNullException(nameof(typeLoader));
-            if (methodInfoLoader == null) throw new ArgumentNullException(nameof(methodInfoLoader));
-            if (instanceFactory == null) throw new ArgumentNullException(nameof(instanceFactory));
+            if (reflection == null) throw new ArgumentNullException(nameof(reflection));
 
-            _assemblyLoader = assemblyLoader;
-            _typeLoader = typeLoader;
-            _methodInfoLoader = methodInfoLoader;
-            _instanceFactory = instanceFactory;
+            _reflection = reflection;
         }
-
-        public TestResult Run(Test test)
+        
+        public void OnNext(Test test)
         {
             if (test == null) throw new ArgumentNullException(nameof(test));
 
-            var testAssembly = _assemblyLoader.Load(test.Method.Fixture.Assembly.Name);
-            var testFixtureType = _typeLoader.Load(testAssembly, test.Method.Fixture.Name);
-            var methodInfo = _methodInfoLoader.Load(testFixtureType, test.Method.Name);
-            var testInstance = _instanceFactory.Create(testFixtureType);
-            var result = methodInfo.Invoke(testInstance, null);
-            return new TestResult(test, result);
+            try
+            {
+                var testAssembly = _reflection.LoadAssembly(test.Method.Fixture.Assembly.Name);
+                var testFixtureType = _reflection.LoadType(testAssembly, test.Method.Fixture.Name);
+                var methodInfo = _reflection.LoadMethod(testFixtureType, test.Method.Name);
+                var testInstance = _reflection.CreateInstance(testFixtureType);
+                var result = methodInfo.Invoke(testInstance, null);
+                _results.OnNext(new TestResult(test, result));
+            }
+            catch (Exception ex)
+            {
+                _results.OnError(ex);
+            }
+        }
+
+        public void OnError(Exception error)
+        {         
+            _results.OnError(error);
+        }
+
+        public void OnCompleted()
+        {
+            _results.OnCompleted();
+        }
+
+        public IDisposable Subscribe(IObserver<TestResult> observer)
+        {
+            return _results.Subscribe(observer);
         }
     }
 }

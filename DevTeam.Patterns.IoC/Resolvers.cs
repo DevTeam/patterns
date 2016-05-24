@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
 
     public static class Resolvers
-    {
+    {        
         public static async Task<T> Resolve<T>(this IResolver resolver, string name = "")
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));

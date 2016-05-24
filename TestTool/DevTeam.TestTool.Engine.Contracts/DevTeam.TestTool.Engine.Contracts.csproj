@@ -38,15 +38,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Event.cs" />
-    <Compile Include="IAssemblyLoader.cs" />
     <Compile Include="IConverter.cs" />
+    <Compile Include="IReflection.cs" />
     <Compile Include="ITool.cs" />
-    <Compile Include="IInstanceFactory.cs" />
-    <Compile Include="IMethodInfoLoader.cs" />
     <Compile Include="ISession.cs" />
-    <Compile Include="ITestsRunner.cs" />
     <Compile Include="IToolFactory.cs" />
-    <Compile Include="ITypeLoader.cs" />
     <Compile Include="ITestRunner.cs" />
     <Compile Include="ITestsSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

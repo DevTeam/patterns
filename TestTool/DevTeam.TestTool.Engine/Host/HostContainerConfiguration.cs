@@ -6,32 +6,29 @@
     using Patterns.IoC;
     using Contracts;
 
+    using DevTeam.Patterns.Reactive;
+
     using Patterns.EventAggregator;
 
-    public class ContainerConfiguration: IConfiguration
+    public class HostContainerConfiguration: IConfiguration
     {
         public IContainer Apply(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
+            container = new ReactiveContainerConfiguration().Apply(container);
+            container = container.Resolve<IContainer>(typeof(HostContainerConfiguration).Name);
+
             var eventAggregator = new Lazy<IEventAggregator>(() => new Aggregator());
             var commandLineArgsToPropertiesConverter = new Lazy<IConverter<string[], IEnumerable<PropertyValue>>>(() => new CommandLineArgsToPropertiesConverter());
-            var explorerContainerConfiguration = new Lazy<IConfiguration>(() => new Explorer.ContainerConfiguration());
-            var runnerContainerConfiguration = new Lazy<IConfiguration>(() => new Runner.ContainerConfiguration());
-            var assemblyLoader = new Lazy<IAssemblyLoader>(() => new AssemblyLoader());
-            var typeLoader = new Lazy<ITypeLoader>(() => new TypeLoader());
-            var methodInfoLoader = new Lazy<IMethodInfoLoader>(() => new MethodInfoLoader());
-            var instanceFactory = new Lazy<IInstanceFactory>(() => new InstanceFactory());
-
+            var explorerContainerConfiguration = new Lazy<IConfiguration>(() => new Explorer.ExplorerContainerConfiguration());
+            var runnerContainerConfiguration = new Lazy<IConfiguration>(() => new Runner.RunnerContainerConfiguration());            
+            
             container
                 .Register(() => explorerContainerConfiguration.Value, "explorer")
                 .Register(() => runnerContainerConfiguration.Value, "runner")
-                .Register(() => eventAggregator.Value)
+                .Register(() => eventAggregator.Value)                
                 .Register(() => commandLineArgsToPropertiesConverter.Value)
-                .Register(() => assemblyLoader.Value)
-                .Register(() => typeLoader.Value)
-                .Register(() => methodInfoLoader.Value)
-                .Register(() => instanceFactory.Value)
                 .Register<IEnumerable<PropertyValue>, ISession>(p => new Session(p))
                 .Register<IContainer, IToolFactory>(p => new ToolFactory(p));
 

@@ -4,6 +4,6 @@
 
     public interface IScheduler
     {        
-        void Schedule<TState>(Action action);
+        void Schedule(Action action);
     }
 }

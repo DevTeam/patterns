@@ -20,12 +20,11 @@
             _tasks = new Task[parallelism];
             for (var i = 0; i < _tasks.Length; i++)
             {
-                _tasks[i] = taskFactory.StartNew(ThreadEntry);
-                _tasks[i].Start();
+                _tasks[i] = taskFactory.StartNew(ThreadEntry);                
             }
         }
 
-        public void Schedule<TState>(Action action)
+        public void Schedule(Action action)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
             if (_disposed) throw new ObjectDisposedException(GetType().Name);

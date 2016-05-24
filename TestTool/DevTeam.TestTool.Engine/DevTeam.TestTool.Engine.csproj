@@ -66,18 +66,14 @@
     <Compile Include="Host\ToolProperty.cs" />
     <Compile Include="AssemblyProperty.cs" />
     <Compile Include="BaseProperty.cs" />
-    <Compile Include="Host\ContainerConfiguration.cs" />
-    <Compile Include="Host\AssemblyLoader.cs" />
+    <Compile Include="Host\HostContainerConfiguration.cs" />
     <Compile Include="Explorer\ExplorerTool.cs" />
-    <Compile Include="Explorer\ContainerConfiguration.cs" />
-    <Compile Include="Runner\ContainerConfiguration.cs" />
-    <Compile Include="Host\MethodInfoLoader.cs" />
+    <Compile Include="Explorer\ExplorerContainerConfiguration.cs" />
+    <Compile Include="Runner\RunnerTool.cs" />
+    <Compile Include="Runner\RunnerContainerConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Runner\TestsRunner.cs" />
     <Compile Include="Explorer\TestsSource.cs" />
-    <Compile Include="Host\InstanceFactory.cs" />
     <Compile Include="Runner\TestRunner.cs" />
-    <Compile Include="Host\TypeLoader.cs" />
     <Compile Include="Host\Session.cs" />
   </ItemGroup>
   <ItemGroup />

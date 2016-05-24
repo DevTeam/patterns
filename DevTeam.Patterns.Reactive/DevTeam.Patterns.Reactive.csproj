@@ -34,17 +34,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CompositeDisposable.cs" />
     <Compile Include="IScheduler.cs" />
     <Compile Include="ISubject.cs" />
     <Compile Include="Observable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReactiveContainerConfiguration.cs" />
     <Compile Include="Subject.cs" />
     <Compile Include="Scheduler.cs" />
+    <Compile Include="WellknownSchedulers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
       <Project>{fe61929a-6f78-40b6-8929-62cfb62e3be6}</Project>
       <Name>DevTeam.Patterns.Dispose</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
+      <Project>{35055D77-822C-4D69-8DF2-722B42CC405A}</Project>
+      <Name>DevTeam.Patterns.IoC</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

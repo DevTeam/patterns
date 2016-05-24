@@ -1,7 +1,9 @@
 ﻿namespace DevTeam.TestTool.Engine.Contracts
 {
+    using System;
+
     public interface ITool
     {
-        void Run();
+        IDisposable Run();
     }
 }

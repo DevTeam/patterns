@@ -2,6 +2,6 @@
 {
     public interface IToolFactory
     {
-        ITool Create(ISession session);
+        ITool Create(ISession session, string toolName = "");
     }
 }

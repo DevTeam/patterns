@@ -1,7 +1,7 @@
 ﻿namespace DevTeam.TestTool.Engine.Contracts
 {
-    public interface ITestRunner
-    {
-        TestResult Run(Test test);
+    using System;
+    public interface ITestRunner: IObserver<Test>, IObservable<TestResult>
+    {        
     }
 }

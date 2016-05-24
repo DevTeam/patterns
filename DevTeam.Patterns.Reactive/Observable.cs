@@ -2,8 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
 
-    using DevTeam.Patterns.Dispose;
+    using Dispose;
 
     public static class Observable
     {
@@ -47,6 +48,27 @@
             return Create<TSource>(observer => observable.Subscribe(new ObserverOn<TSource>(observer, scheduler)));
         }
 
+        public static IObserver<TSource> ObserveOn<TSource>(this IObserver<TSource> observer, IScheduler scheduler)
+        {
+            if (observer == null) throw new ArgumentNullException(nameof(observer));
+            if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
+
+            return new ObserverOn<TSource>(observer, scheduler);            
+        }
+
+        public static IObservable<TSource> SubscribeOn<TSource>(this IObservable<TSource> observable, IScheduler scheduler)
+        {
+            if (observable == null) throw new ArgumentNullException(nameof(observable));
+            if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
+
+            return Create<TSource>(observer =>
+                {
+                    var disposable = new CompositeDisposable();
+                    scheduler.Schedule(() => disposable.Add(observable.Subscribe(observer)));
+                    return disposable;
+                });
+        }
+
         public static IObservable<TSource> ToObservable<TSource>(this IEnumerable<TSource> source)
         {
             return Create<TSource>(observer =>
@@ -59,6 +81,31 @@
                     observer.OnCompleted();
                     return Disposable.Empty();                        
                 });
+        }
+
+        public static void WaitForCompletion<TSource>(this IObservable<TSource> observable)
+        {
+            var lockObject = new object();
+            var isCompleted = false;
+            observable.Subscribe(
+                i => { }, 
+                e => { },
+                () =>
+                    {
+                        lock (lockObject)
+                        {
+                            isCompleted = true;
+                            Monitor.Pulse(lockObject);
+                        }
+                    });
+
+            lock (lockObject)
+            {
+                while (!isCompleted)
+                {
+                    Monitor.Wait(lockObject);
+                }
+            }
         }
 
         private class ObservableCreate<TSource> : IObservable<TSource>
@@ -82,37 +129,36 @@
 
         private class ObserverOn<T> : IObserver<T>
         {
-            private readonly IObserver<T> _observable;
+            private readonly IObserver<T> _observer;
             private readonly IScheduler _scheduler;
 
-            public ObserverOn(IObserver<T> observable, IScheduler scheduler)
+            public ObserverOn(IObserver<T> observer, IScheduler scheduler)
             {
-                if (observable == null) throw new ArgumentNullException(nameof(observable));
+                if (observer == null) throw new ArgumentNullException(nameof(observer));
                 if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
 
-                _observable = observable;
+                _observer = observer;
                 _scheduler = scheduler;
             }
 
             public void OnNext(T value)
             {
-                _scheduler.Schedule<IObserver<T>>(() => { _observable.OnNext(value); });
+                _scheduler.Schedule(() => { _observer.OnNext(value); });
             }
 
             public void OnError(Exception error)
             {
-                _scheduler.Schedule<IObserver<T>>(() => { _observable.OnError(error); });
+                _scheduler.Schedule(() => { _observer.OnError(error); });
             }
 
             public void OnCompleted()
             {
-                _scheduler.Schedule<IObserver<T>>(() => { _observable.OnCompleted(); });
+                _scheduler.Schedule(() => { _observer.OnCompleted(); });
             }
         }
 
         private class Subscription<T> : IObserver<T>, IDisposable
         {
-            private readonly IObservable<T> _observable;
             private readonly Action<T> _onNext;
             private readonly Action<Exception> _onError;
             private readonly Action _onComplete;
@@ -124,8 +170,7 @@
                 if (onNext == null) throw new ArgumentNullException(nameof(onNext));
                 if (onError == null) throw new ArgumentNullException(nameof(onError));
                 if (onComplete == null) throw new ArgumentNullException(nameof(onComplete));
-
-                _observable = observable;
+                
                 _onNext = onNext;
                 _onError = onError;
                 _onComplete = onComplete;
