@@ -5,11 +5,13 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dispose;
+
     internal class Scheduler: IScheduler, IDisposable
     {
         private readonly object _lockObject = new object();
         private readonly Task[] _tasks;
-        private readonly Queue<Action> _actions = new Queue<Action>();
+        private readonly LinkedList<Action> _actions = new LinkedList<Action>();
         private bool _disposed;
 
         public Scheduler(TaskFactory taskFactory, int parallelism)
@@ -24,16 +26,24 @@
             }
         }
 
-        public void Schedule(Action action)
+        public IDisposable Schedule(Action action)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
             if (_disposed) throw new ObjectDisposedException(GetType().Name);
 
             lock (_lockObject)
             {
-                _actions.Enqueue(action);
+                _actions.AddFirst(action);
                 Monitor.Pulse(_lockObject);
-            }            
+            }
+
+            return Disposable.Create(() =>
+                {
+                    lock (_lockObject)
+                    {
+                        _actions.Remove(action);                        
+                    }
+                });
         }
 
         public void Dispose()
@@ -48,7 +58,7 @@
             {
                 lock (_lockObject)
                 {
-                    _actions.Enqueue(null);
+                    _actions.AddFirst((Action)null);
                     Monitor.Pulse(_lockObject);
                 }
             }
@@ -78,7 +88,9 @@
                         Monitor.Wait(_lockObject);
                     }
 
-                    action = _actions.Dequeue();
+                    var last = _actions.Last;
+                    _actions.RemoveLast();
+                    action = last.Value;
                 }
                 
                 try

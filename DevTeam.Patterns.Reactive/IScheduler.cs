@@ -4,6 +4,6 @@
 
     public interface IScheduler
     {        
-        void Schedule(Action action);
+        IDisposable Schedule(Action action);
     }
 }
