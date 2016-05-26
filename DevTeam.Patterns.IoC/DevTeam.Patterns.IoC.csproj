@@ -37,6 +37,8 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmptyState.cs" />
+    <Compile Include="Registries.cs" />
     <Compile Include="Resolvers.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="IConfiguration.cs" />
