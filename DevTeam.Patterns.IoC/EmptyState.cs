@@ -1,6 +1,6 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    internal class EmptyState
+    public class EmptyState
     {
         public static readonly EmptyState Shared = new EmptyState();
 
