@@ -7,7 +7,7 @@
 
     using Dispose;
 
-    internal class Scheduler: IScheduler, IDisposable
+    internal class Scheduler: IScheduler
     {
         private readonly object _lockObject = new object();
         private readonly Task[] _tasks;

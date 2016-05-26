@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface IScheduler
+    public interface IScheduler: IDisposable
     {        
         IDisposable Schedule(Action action);
     }
