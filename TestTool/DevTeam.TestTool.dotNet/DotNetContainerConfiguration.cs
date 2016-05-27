@@ -2,8 +2,9 @@
 {
     using System;
 
+    using DevTeam.TestTool.Engine.Contracts;
+
     using Patterns.IoC;
-    using Engine.Contracts;
 
     public class DotNetContainerConfiguration: IConfiguration
     {
@@ -11,12 +12,12 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            container = container.Resolve<IContainer>(typeof(DotNetContainerConfiguration).Name);
-
-            var reflection = new Lazy<IReflection>(() => new Reflection());
+            container = container.Resolve<IContainer>(nameof(DotNetContainerConfiguration));
+            container = new IoCContainerConfiguration().Apply(container);
 
             container
-                .Register(() => reflection.Value);
+                .Using<ILifetime>(WellknownLifetime.Singletone)
+                .Register<IReflection>(() => new Reflection());
 
             return container;
         }

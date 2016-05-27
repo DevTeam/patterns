@@ -75,6 +75,7 @@
     <Compile Include="Explorer\TestsSource.cs" />
     <Compile Include="Runner\TestRunner.cs" />
     <Compile Include="Host\Session.cs" />
+    <Compile Include="WellknownTool.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

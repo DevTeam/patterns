@@ -15,17 +15,18 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            container = container.Resolve<IContainer>(typeof(RunnerContainerConfiguration).Name);
+            container = container.Resolve<IContainer>(nameof(RunnerContainerConfiguration));            
 
-            var testRunner = new Lazy<ITestRunner>(() => new TestRunner(container.Resolve<IReflection>()));
-           
             container
                 .Register<ISession, ITool>(session => new RunnerTool(
-                    container.Resolve<IScheduler>(WellknownSchedulers.PrivateSingleThread),
+                    container.Resolve<IScheduler>(WellknownScheduler.PrivateSingleThread),
                     session, 
                     container.Resolve<ITestRunner>(),
-                    container.Resolve<IEventAggregator>()))
-                .Register(() => testRunner.Value);
+                    container.Resolve<IEventAggregator>()));
+
+            container
+                .Using<ILifetime>(WellknownLifetime.Singletone)
+                .Register<ITestRunner>(() => new TestRunner(container.Resolve<IReflection>()));
 
             return container;
         }

@@ -16,21 +16,28 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
+            container = new IoCContainerConfiguration().Apply(container);
             container = new ReactiveContainerConfiguration().Apply(container);
-            container = container.Resolve<IContainer>(typeof(HostContainerConfiguration).Name);
+            container = container.Resolve<IContainer>(nameof(HostContainerConfiguration));
 
-            var eventAggregator = new Lazy<IEventAggregator>(() => new Aggregator());
-            var commandLineArgsToPropertiesConverter = new Lazy<IConverter<string[], IEnumerable<PropertyValue>>>(() => new CommandLineArgsToPropertiesConverter());
-            var explorerContainerConfiguration = new Lazy<IConfiguration>(() => new Explorer.ExplorerContainerConfiguration());
-            var runnerContainerConfiguration = new Lazy<IConfiguration>(() => new Runner.RunnerContainerConfiguration());            
+            container.Register<IEnumerable<PropertyValue>, ISession>(p => new Session(p));
+            container.Register<IContainer, IToolFactory>(p => new ToolFactory(p));
+
+            container
+                .Using<ILifetime>(WellknownLifetime.Singletone)
+                .Register<IConfiguration>(() => new Explorer.ExplorerContainerConfiguration(), WellknownTool.Explorer);
             
             container
-                .Register(() => explorerContainerConfiguration.Value, "explorer")
-                .Register(() => runnerContainerConfiguration.Value, "runner")
-                .Register(() => eventAggregator.Value)                
-                .Register(() => commandLineArgsToPropertiesConverter.Value)
-                .Register<IEnumerable<PropertyValue>, ISession>(p => new Session(p))
-                .Register<IContainer, IToolFactory>(p => new ToolFactory(p));
+                .Using<ILifetime>(WellknownLifetime.Singletone)
+                .Register<IConfiguration>(() => new Runner.RunnerContainerConfiguration(), WellknownTool.Runnner);
+
+            container
+                .Using<ILifetime>(WellknownLifetime.Singletone)
+                .Register<IEventAggregator>(() => new Aggregator());
+
+            container
+                .Using<ILifetime>(WellknownLifetime.Singletone)
+                .Register<IConverter<string[], IEnumerable<PropertyValue>>>(() => new CommandLineArgsToPropertiesConverter());
 
             return container;
         }

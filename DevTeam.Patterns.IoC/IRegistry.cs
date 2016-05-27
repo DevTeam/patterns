@@ -4,6 +4,6 @@
 
     public interface IRegistry
 	{        
-        IRegistry Register(Type stateType, Type instanceType, Func<object, object> factory, string name = "");
+        IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "");
     }
 }

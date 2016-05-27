@@ -42,7 +42,7 @@
     <Compile Include="ReactiveContainerConfiguration.cs" />
     <Compile Include="Subject.cs" />
     <Compile Include="Scheduler.cs" />
-    <Compile Include="WellknownSchedulers.cs" />
+    <Compile Include="WellknownScheduler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">

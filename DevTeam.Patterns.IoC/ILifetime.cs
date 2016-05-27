@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface IFactory
+    public interface ILifetime
     {
         object Create(Func<object, object> factory, object state);
     }

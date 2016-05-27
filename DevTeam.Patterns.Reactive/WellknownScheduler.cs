@@ -1,6 +1,6 @@
 ﻿namespace DevTeam.Patterns.Reactive
 {
-    public static class WellknownSchedulers
+    public static class WellknownScheduler
     {
         public static readonly string SharedSingleThread = "SharedSingleThread";
         public static readonly string PrivateSingleThread = "PrivateSingleThread";

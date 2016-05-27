@@ -1,6 +1,8 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    public interface IContainer : IResolver, IRegistry
+    using System;
+
+    public interface IContainer : IResolver, IRegistry, IDisposable
     {
         string Name { get; }
     }

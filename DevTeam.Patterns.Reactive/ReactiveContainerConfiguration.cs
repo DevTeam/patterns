@@ -11,17 +11,24 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            container = container.Resolve<IContainer>(typeof(ReactiveContainerConfiguration).Name);
+            container = container.Resolve<IContainer>(nameof(ReactiveContainerConfiguration));
+            container = new IoCContainerConfiguration().Apply(container);
 
             var taskFactory = new TaskFactory();
-            var sharedSingleThreadScheduler = new Lazy<IScheduler>(() => CreateSingleThreadScheduler(taskFactory));
-            var sharedMultiThreadScheduler = new Lazy<IScheduler>(() => CreateMultiThreadScheduler(taskFactory));
 
             container
-                .Register(() => sharedSingleThreadScheduler.Value, WellknownSchedulers.SharedSingleThread)
-                .Register(() => CreateSingleThreadScheduler(taskFactory), WellknownSchedulers.PrivateSingleThread)
-                .Register(() => sharedMultiThreadScheduler.Value, WellknownSchedulers.SharedMultiThread)
-                .Register(() => CreateMultiThreadScheduler(taskFactory), WellknownSchedulers.PrivateMultiThread);
+                .Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.PrivateSingleThread);
+
+            container
+                .Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.PrivateMultiThread);
+
+            container
+                .Using<ILifetime>(WellknownLifetime.Singletone)
+                .Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.SharedSingleThread);
+
+            container
+                .Using<ILifetime>(WellknownLifetime.Singletone)
+                .Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.SharedMultiThread);
 
             return container;
         }

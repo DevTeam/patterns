@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Dispose;
+
     public class Container : IContainer
 	{
 	    private readonly Dictionary<Key, Func<object, object>> _factories = new Dictionary<Key, Func<object, object>>();
@@ -13,10 +15,13 @@
 		{
 		    if (name == null) throw new ArgumentNullException(nameof(name));
 
-		    Name = name;            
-		}
+		    Name = name;
+		    UseContext = true;
+		}       
 
-	    public string Name { get; }
+        public string Name { get; }
+
+	    internal bool UseContext { get; set; }
 
 	    private Container(Container parentContainer, string name)
 			:this(name)
@@ -26,24 +31,31 @@
 		    _parentContainer = parentContainer;
 		}        			
 		
-		public IRegistry Register(Type stateType, Type instanceType, Func<object, object> factory, string name = "")
+		public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
 		{
 		    if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
-		    if (factory == null) throw new ArgumentNullException(nameof(factory));
+		    if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 		    if (name == null) throw new ArgumentNullException(nameof(name));
 
 		    var key = new Key(stateType, instanceType, name);            
 		    try
 		    {
-		        _factories.Add(key, factory);
+		        var factoryMethodToRegister = factoryMethod;
+
+                if (UseContext)
+		        {
+		            var factory = Context.Instance.Resolve<ILifetime>();
+                    factoryMethodToRegister = state => factory.Create(factoryMethod, state);
+		        }
+
+                _factories.Add(key, factoryMethodToRegister);
+		        return Disposable.Create(() => _factories.Remove(key));
 		    }
 		    catch (Exception ex)
 		    {
                 throw new InvalidOperationException($"The entry {key} was alredy registered. Registered entries:\n{GetRegisteredInfo()}", ex);
-            }
-
-		    return this;
+            }		    
 		}		
 
 		public object Resolve(Type stateType, Type instanceType, object state, string name = "")
@@ -54,13 +66,13 @@
 
             if (instanceType == typeof(IContainer))
 		    {
-		        return new Container(this, name);
+		        return new Container(this, name) { UseContext = UseContext };
 		    }
 
             var key = new Key(stateType, instanceType, name);
             Func<object, object> factory;
 			if (_factories.TryGetValue(key, out factory))
-			{
+			{                
 				return factory(state);				
 			}
 
@@ -79,6 +91,10 @@
 
             throw new InvalidOperationException($"The entry {key} was not registered. {GetRegisteredInfo()}", innerException);
         }
+
+	    public void Dispose()
+	    {	        
+	    }
 
 	    public override string ToString()
 	    {

@@ -1,6 +1,7 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-	public interface IConfiguration
+    using System;
+    public interface IConfiguration
 	{
 		IContainer Apply(IContainer container);
 	}
