@@ -6,7 +6,7 @@
 
     public class Container : IContainer
 	{
-	    private readonly Dictionary<Key, object> _factories = new Dictionary<Key, object>();
+	    private readonly Dictionary<Key, Func<object, object>> _factories = new Dictionary<Key, Func<object, object>>();
 		private readonly Container _parentContainer;
 
 		public Container(string name = "")
@@ -26,12 +26,14 @@
 		    _parentContainer = parentContainer;
 		}        			
 		
-		public IRegistry Register<TState, T>(Func<TState, T> factory, string name = "")
+		public IRegistry Register(Type stateType, Type instanceType, Func<object, object> factory, string name = "")
 		{
+		    if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 		    if (factory == null) throw new ArgumentNullException(nameof(factory));
 		    if (name == null) throw new ArgumentNullException(nameof(name));
 
-		    var key = new Key(typeof(TState), typeof(T), name);            
+		    var key = new Key(stateType, instanceType, name);            
 		    try
 		    {
 		        _factories.Add(key, factory);
@@ -44,21 +46,22 @@
 		    return this;
 		}		
 
-		public T Resolve<TState, T>(TState state, string name = "")
-		{
-		    if (state == null) throw new ArgumentNullException(nameof(state));
-		    if (name == null) throw new ArgumentNullException(nameof(name));
+		public object Resolve(Type stateType, Type instanceType, object state, string name = "")
+        {
+            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+            if (name == null) throw new ArgumentNullException(nameof(name));
 
-		    if (typeof(T) == typeof(IContainer) || typeof(T) == typeof(Container))
+            if (instanceType == typeof(IContainer))
 		    {
-		        return (T)(object)new Container(this, name);
+		        return new Container(this, name);
 		    }
 
-            var key = new Key(typeof(TState), typeof(T), name);
-            object factory;
+            var key = new Key(stateType, instanceType, name);
+            Func<object, object> factory;
 			if (_factories.TryGetValue(key, out factory))
 			{
-				return ((Func<TState, T>)factory)(state);				
+				return factory(state);				
 			}
 
 		    Exception innerException = null;
@@ -66,7 +69,7 @@
 		    {
 		        if (_parentContainer != null)
 		        {
-		            return _parentContainer.Resolve<TState, T>(state, name);
+		            return _parentContainer.Resolve(stateType, instanceType, state, name);
 		        }
 		    }
 		    catch (InvalidOperationException ex)

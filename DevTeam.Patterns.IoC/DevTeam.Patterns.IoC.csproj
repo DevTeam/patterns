@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EmptyState.cs" />
+    <Compile Include="IFactory.cs" />
     <Compile Include="Registries.cs" />
     <Compile Include="Resolvers.cs" />
     <Compile Include="Container.cs" />
@@ -46,6 +47,8 @@
     <Compile Include="IRegistry.cs" />
     <Compile Include="IResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Singletone.cs" />
+    <Compile Include="Transient.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

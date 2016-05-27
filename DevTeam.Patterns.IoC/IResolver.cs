@@ -1,7 +1,9 @@
 namespace DevTeam.Patterns.IoC
 {
+    using System;
+
     public interface IResolver
-	{
-		T Resolve<TState, T>(TState state, string name = "");
-	}
+	{        
+        object Resolve(Type stateType, Type instanceType, object state, string name = "");
+    }
 }

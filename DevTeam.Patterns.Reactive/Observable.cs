@@ -87,7 +87,7 @@
         {
             var lockObject = new object();
             var isCompleted = false;
-            observable.Subscribe(
+            var subscription = observable.Subscribe(
                 i => { }, 
                 e => { },
                 () =>
@@ -105,6 +105,8 @@
                 {
                     Monitor.Wait(lockObject);
                 }
+
+                subscription.Dispose();
             }
         }
 

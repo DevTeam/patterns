@@ -3,7 +3,7 @@
     using System;
 
     public interface IRegistry
-	{
-		IRegistry Register<TState, T>(Func<TState, T> factory, string name = "");
-	}
+	{        
+        IRegistry Register(Type stateType, Type instanceType, Func<object, object> factory, string name = "");
+    }
 }
