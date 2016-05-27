@@ -13,7 +13,7 @@
             {
                 if (_container == null)
                 {
-                    _container = new DefaultContextContainerConfiguration().Apply(new Container(nameof(Context)) { UseContext = false });
+                    _container = new DefaultContextContainerConfiguration().Apply(new Container(nameof(Context), false));
                 }
 
                 return _container;

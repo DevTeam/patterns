@@ -1,4 +1,4 @@
-﻿namespace DevTeam.Patterns.Reactive
+﻿namespace DevTeam.Patterns.Dispose
 {
     using System;
     using System.Collections.Generic;

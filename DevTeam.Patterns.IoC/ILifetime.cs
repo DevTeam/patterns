@@ -4,6 +4,8 @@
 
     public interface ILifetime
     {
-        object Create(Func<object, object> factory, object state);
+        object Create(IRegistryKey registryKey, Func<object, object> factory, object state);
+
+        void Release(IRegistryKey registryKey);
     }
 }

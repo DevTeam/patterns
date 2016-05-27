@@ -8,57 +8,63 @@
 
     public class Container : IContainer
 	{
-	    private readonly Dictionary<Key, Func<object, object>> _factories = new Dictionary<Key, Func<object, object>>();
+	    private readonly bool _useContext;
+	    private readonly Dictionary<IRegistryKey, Func<object, object>> _factories = new Dictionary<IRegistryKey, Func<object, object>>();
 		private readonly Container _parentContainer;
 
-		public Container(string name = "")
-		{
-		    if (name == null) throw new ArgumentNullException(nameof(name));
+	    public Container(string name = "")
+	        : this(name, true)
+	    {
+	    }
 
-		    Name = name;
-		    UseContext = true;
-		}       
+	    internal Container(string name, bool useContext)
+        {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            _useContext = useContext;
+            Name = name;
+        }
 
-        public string Name { get; }
-
-	    internal bool UseContext { get; set; }
-
-	    private Container(Container parentContainer, string name)
-			:this(name)
+        private Container(Container parentContainer, string name, bool useContext)
+			:this(name, useContext)
 		{
 		    if (parentContainer == null) throw new ArgumentNullException(nameof(parentContainer));
 
 		    _parentContainer = parentContainer;
-		}        			
-		
-		public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
+		}
+
+        public string Name { get; }
+
+        public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
 		{
 		    if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 		    if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 		    if (name == null) throw new ArgumentNullException(nameof(name));
 
-		    var key = new Key(stateType, instanceType, name);            
+		    var resources = new CompositeDisposable();
+            var key = new RegistryKey(stateType, instanceType, name, resources);            
 		    try
 		    {
 		        var factoryMethodToRegister = factoryMethod;
 
-                if (UseContext)
+                ILifetime factory = null;
+                if (_useContext)
 		        {
-		            var factory = Context.Instance.Resolve<ILifetime>();
-                    factoryMethodToRegister = state => factory.Create(factoryMethod, state);
+                    factory = Context.Instance.Resolve<ILifetime>();
+                    factoryMethodToRegister = state => factory.Create(key, factoryMethod, state);
 		        }
 
                 _factories.Add(key, factoryMethodToRegister);
-		        return Disposable.Create(() => _factories.Remove(key));
+                resources.Add(Disposable.Create(() => Unregister(key, factory)));
+                return resources;
 		    }
 		    catch (Exception ex)
 		    {
                 throw new InvalidOperationException($"The entry {key} was alredy registered. Registered entries:\n{GetRegisteredInfo()}", ex);
             }		    
-		}		
+		}
 
-		public object Resolve(Type stateType, Type instanceType, object state, string name = "")
+	    public object Resolve(Type stateType, Type instanceType, object state, string name = "")
         {
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
@@ -66,10 +72,10 @@
 
             if (instanceType == typeof(IContainer))
 		    {
-		        return new Container(this, name) { UseContext = UseContext };
+		        return new Container(this, name, _useContext);
 		    }
 
-            var key = new Key(stateType, instanceType, name);
+            var key = new RegistryKey(stateType, instanceType, name, Disposable.Empty());
             Func<object, object> factory;
 			if (_factories.TryGetValue(key, out factory))
 			{                
@@ -93,7 +99,12 @@
         }
 
 	    public void Dispose()
-	    {	        
+	    {
+	        var disposableKeys = new List<IDisposable>(_factories.Keys.OfType<IDisposable>());
+            foreach (var disposableKey in disposableKeys)
+	        {
+                disposableKey.Dispose();           
+            }
 	    }
 
 	    public override string ToString()
@@ -101,57 +112,18 @@
 	        return Name;
 	    }
 
-	    private string GetRegisteredInfo()
+        private void Unregister(IRegistryKey key, ILifetime factory)
+        {
+            if (_factories.Remove(key) && _useContext)
+            {
+                factory?.Release(key);
+            }
+        }
+
+        private string GetRegisteredInfo()
 	    {
 	        var details = _factories.Count == 0 ? "no entries" : string.Join(", ", _factories.Keys.Select(k => k.ToString()));
             return $"Container \"{Name}\". Registered entries: {details}";
-	    }        
-
-        private class Key
-        {
-            private readonly Type _instanceType;
-            private readonly Type _stateType;            
-            private readonly string _name;
-
-            public Key(Type stateType, Type instanceType, string name)
-            {
-                if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-                if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
-                if (name == null) throw new ArgumentNullException(nameof(name));
-
-                _instanceType = instanceType;
-                _stateType = stateType;                
-                _name = name;                
-            }
-
-            public override string ToString()
-            {
-                return $"{_instanceType.FullName}({_stateType.FullName}, \"{_name}\")";
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != GetType()) return false;
-                return Equals((Key)obj);
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    var hashCode = _instanceType.GetHashCode();
-                    hashCode = (hashCode * 397) ^ _stateType.GetHashCode();
-                    hashCode = (hashCode * 397) ^ _name.GetHashCode();
-                    return hashCode;
-                }
-            }
-
-            private bool Equals(Key other)
-            {
-                return _instanceType == other._instanceType && _stateType == other._stateType && string.Equals(_name, other._name);
-            }
-        }
+	    }
 	}
 }

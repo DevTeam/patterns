@@ -5,10 +5,13 @@
     public class Transient : ILifetime
     {
     
-        public object Create(Func<object, object> factory, object state)
+        public object Create(IRegistryKey registryKey, Func<object, object> factory, object state)
         {
-            var instance = factory(state);
-            return instance;
+            return factory(state);
+        }
+
+        public void Release(IRegistryKey registryKey)
+        {
         }
     }
 }
