@@ -2,13 +2,12 @@ namespace DevTeam.Patterns.IoC
 {
     using System;
 
-    internal class RegistryKey: IRegistryKey
+    internal class RegistryKey: IRegistryKey, IDisposable
     {
         private readonly IDisposable _resources;
 
         public RegistryKey(Type stateType, Type instanceType, string name, IDisposable resources)
-        {
-            _resources = resources;
+        {            
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
             if (name == null) throw new ArgumentNullException(nameof(name));
@@ -17,6 +16,7 @@ namespace DevTeam.Patterns.IoC
             StateType = stateType;
             InstanceType = instanceType;
             Name = name;
+            _resources = resources;
         }
 
         public Type StateType { get; private set; }
@@ -24,6 +24,11 @@ namespace DevTeam.Patterns.IoC
         public Type InstanceType { get; private set; }
 
         public string Name { get; private set; }
+
+        public void Dispose()
+        {
+            _resources.Dispose();
+        }
 
         public override string ToString()
         {

@@ -12,8 +12,7 @@
             if (container == null) throw new ArgumentNullException(nameof(container));
 
             container = container.Resolve<IContainer>(nameof(ReactiveContainerConfiguration));
-            container = new IoCContainerConfiguration().Apply(container);
-
+            
             var taskFactory = new TaskFactory();
 
             container

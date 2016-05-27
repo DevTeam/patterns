@@ -13,8 +13,7 @@
             if (container == null) throw new ArgumentNullException(nameof(container));
 
             container = container.Resolve<IContainer>(nameof(DotNetContainerConfiguration));
-            container = new IoCContainerConfiguration().Apply(container);
-
+            
             container
                 .Using<ILifetime>(WellknownLifetime.Singletone)
                 .Register<IReflection>(() => new Reflection());

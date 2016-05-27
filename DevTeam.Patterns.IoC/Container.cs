@@ -7,30 +7,25 @@
     using Dispose;
 
     public class Container : IContainer
-	{
-	    private readonly bool _useContext;
-	    private readonly Dictionary<IRegistryKey, Func<object, object>> _factories = new Dictionary<IRegistryKey, Func<object, object>>();
-		private readonly Container _parentContainer;
-
-	    public Container(string name = "")
-	        : this(name, true)
-	    {
-	    }
-
-	    internal Container(string name, bool useContext)
+    {
+        private static readonly IConfiguration Configuration = new IoCContainerConfiguration();
+        private readonly Dictionary<IRegistryKey, Func<object, object>> _factories = new Dictionary<IRegistryKey, Func<object, object>>();
+		private readonly IContainer _parentContainer;
+        
+	    public Container(string name)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
-            _useContext = useContext;
             Name = name;
+            Configuration.Apply(this);            
         }
 
-        private Container(Container parentContainer, string name, bool useContext)
-			:this(name, useContext)
-		{
-		    if (parentContainer == null) throw new ArgumentNullException(nameof(parentContainer));
+        internal Container(ContainerInfo containerInfo)
+			:this(containerInfo.Name)
+        {
+            if (containerInfo == null) throw new ArgumentNullException(nameof(containerInfo));
 
-		    _parentContainer = parentContainer;
-		}
+            _parentContainer = containerInfo.ParentContainer;
+        }
 
         public string Name { get; }
 
@@ -45,18 +40,20 @@
             var key = new RegistryKey(stateType, instanceType, name, resources);            
 		    try
 		    {
-		        var factoryMethodToRegister = factoryMethod;
-
-                ILifetime factory = null;
-                if (_useContext)
-		        {
-                    factory = Context.Instance.Resolve<ILifetime>();
-                    factoryMethodToRegister = state => factory.Create(key, factoryMethod, state);
-		        }
+		        Func<object, object> factoryMethodToRegister = factoryMethod;
+                if (instanceType != typeof(ILifetime))
+                { 
+		            var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared, WellknownLifetime.Singletone);
+                    factoryMethodToRegister = state => lifetime.Create(this, key, factoryMethod, state);
+                    resources.Add(Disposable.Create(() => Unregister(key, lifetime)));
+                }
+                else
+                {
+                    resources.Add(Disposable.Create(() => Unregister(key)));
+                }
 
                 _factories.Add(key, factoryMethodToRegister);
-                resources.Add(Disposable.Create(() => Unregister(key, factory)));
-                return resources;
+                return key;
 		    }
 		    catch (Exception ex)
 		    {
@@ -70,10 +67,10 @@
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
             if (name == null) throw new ArgumentNullException(nameof(name));
 
-            if (instanceType == typeof(IContainer))
-		    {
-		        return new Container(this, name, _useContext);
-		    }
+            if (instanceType == typeof(IContainer) && stateType == typeof(EmptyState))
+            {
+                return (IContainer)Resolve(typeof(ContainerInfo), typeof(IContainer), new ContainerInfo(this, name));
+            }
 
             var key = new RegistryKey(stateType, instanceType, name, Disposable.Empty());
             Func<object, object> factory;
@@ -112,12 +109,20 @@
 	        return Name;
 	    }
 
-        private void Unregister(IRegistryKey key, ILifetime factory)
+        private bool Unregister(IRegistryKey key)
         {
-            if (_factories.Remove(key) && _useContext)
+            return _factories.Remove(key);
+        }
+
+        private bool Unregister(IRegistryKey key, ILifetime factory)
+        {
+            if (_factories.Remove(key))
             {
-                factory?.Release(key);
+                factory?.Release(this, key);
+                return true;
             }
+
+            return false;
         }
 
         private string GetRegisteredInfo()

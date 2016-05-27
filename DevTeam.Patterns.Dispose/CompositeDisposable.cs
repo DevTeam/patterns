@@ -6,25 +6,25 @@
 
     public class CompositeDisposable: Collection<IDisposable>, IDisposable
     {
-        private readonly List<IDisposable> _disposables = new List<IDisposable>();
         private bool _disposed = false;
 
-        public CompositeDisposable(params IDisposable[] disposables)
+        public CompositeDisposable()
         {
-            _disposables.AddRange(disposables);
+        }
+
+        public CompositeDisposable(IList<IDisposable> list)
+            : base(list)
+        {
         }
 
         public void Dispose()
         {
-            foreach (var disposable in _disposables)
-            {
-                disposable.Dispose();
-            }
+           Clear();
         }
 
         protected override void ClearItems()
         {
-            foreach (var disposable in _disposables)
+            foreach (var disposable in Items)
             {
                 disposable.Dispose();
             }

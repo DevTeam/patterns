@@ -16,7 +16,6 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            container = new IoCContainerConfiguration().Apply(container);
             container = new ReactiveContainerConfiguration().Apply(container);
             container = container.Resolve<IContainer>(nameof(HostContainerConfiguration));
 

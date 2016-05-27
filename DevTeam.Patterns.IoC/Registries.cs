@@ -22,41 +22,54 @@
             return registry.Register(new Func<EmptyState, T>(ignoredArg => factoryMethod()), name);
         }
 
-        public static IRegistry Using<TContext>(this IRegistry registry, Func<TContext> context)
-        {
-            if (registry == null) throw new ArgumentNullException(nameof(registry));
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            return new ContextRegistry<TContext>(registry, context);
-        }
-
-        public static IRegistry Using<TContext>(this IContainer container, string name)
+        public static IContainer Using<TContext>(this IContainer container, string contextName)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
-            return new ContextRegistry<TContext>(container, () => container.Resolve<TContext>(name));
+            if (contextName == null) throw new ArgumentNullException(nameof(contextName));
+
+            return container.Using(() => container.Resolve<TContext>(contextName));
         }
 
-        private class ContextRegistry<TContext> : IRegistry
+        public static IContainer Using<TContext>(this IContainer container, Func<TContext> factoryMethod)
         {
-            private readonly IRegistry _registry;
-            private readonly Func<TContext> _context;            
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
-            public ContextRegistry(IRegistry registry, Func<TContext> context)
+                return new RegisterContainer<TContext>(container, factoryMethod);           
+        }
+
+        private class RegisterContainer<TContext> : IContainer
+        {
+            private readonly IContainer _container;
+            private readonly Func<TContext> _factoryMethod;
+
+            public RegisterContainer(IContainer container, Func<TContext> factoryMethod)
             {
-                if (registry == null) throw new ArgumentNullException(nameof(registry));
-                if (context == null) throw new ArgumentNullException(nameof(context));                
+                if (container == null) throw new ArgumentNullException(nameof(container));
+                if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
-                _registry = registry;
-                _context = context;                
+                _container = container;
+                _factoryMethod = factoryMethod;
             }
+
+            public string Name => _container.Name;
 
             public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
             {
-                using (new Context())
-                using (Context.Instance.Register(_context))
+                using (_container.Register(_factoryMethod))
                 {
-                    return _registry.Register(stateType, instanceType, factoryMethod, name);
-                }                
+                    return _container.Register(stateType, instanceType, factoryMethod, name);
+                }
+            }
+
+            public object Resolve(Type stateType, Type instanceType, object state, string name = "")
+            {
+                return _container.Resolve(stateType, instanceType, state, name);
+            }
+
+            public void Dispose()
+            {
+                _container.Dispose();
             }
         }
     }    

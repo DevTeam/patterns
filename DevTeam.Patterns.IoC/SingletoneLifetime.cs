@@ -3,59 +3,43 @@
     using System;
     using System.Collections.Generic;
   
-    public class Singletone : ILifetime
+    internal class SingletoneLifetime : ILifetime
     {
+        private readonly ILifetime _baseLifetime;
         private readonly Dictionary<Key, Lazy<object>> _factories = new Dictionary<Key, Lazy<object>>();
-        private readonly Dictionary<IRegistryKey, HashSet<IDisposable>> _instances = new Dictionary<IRegistryKey, HashSet<IDisposable>>();
-      
-        public object Create(IRegistryKey registryKey, Func<object, object> factory, object state)
+
+        public SingletoneLifetime(ILifetime baseLifetime)
         {
+            if (baseLifetime == null) throw new ArgumentNullException(nameof(baseLifetime));
+
+            _baseLifetime = baseLifetime;
+        }
+
+        public object Create(IContainer container, IRegistryKey registryKey, Func<object, object> factory, object state)
+        {
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
+            if (factory == null) throw new ArgumentNullException(nameof(factory));
+
             var key = new Key(factory, state);
             Lazy<object> currentFactory;
             if (!_factories.TryGetValue(key, out currentFactory))
             {
-                currentFactory = new Lazy<object>(() => CreateInstance(registryKey, factory, state));
+                currentFactory = new Lazy<object>(() => _baseLifetime.Create(container, registryKey, factory, state));
                 _factories.Add(key, currentFactory);
             }
 
             return currentFactory.Value;
         }
 
-        public void Release(IRegistryKey registryKey)
+        public void Release(IContainer container, IRegistryKey registryKey)
         {
-            HashSet<IDisposable> instances;            
-            if (!_instances.TryGetValue(registryKey, out instances))
-            {
-                return;
-            }
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
 
-            _instances.Remove(registryKey);
-            foreach (var instance in instances)
-            {
-                instance.Dispose();
-            }
+            _baseLifetime.Release(container, registryKey);
         }
-
-        private object CreateInstance(IRegistryKey registryKey, Func<object, object> factory, object state)
-        {
-            var instance = factory(state);
-            var disposable = instance as IDisposable;
-            if (disposable == null)
-            {
-                return instance;
-            }
-
-            HashSet<IDisposable> instances;
-            if (!_instances.TryGetValue(registryKey, out instances))
-            {
-                instances = new HashSet<IDisposable>();
-                _instances.Add(registryKey, instances);
-            }
-
-            instances.Add(disposable);
-            return instance;
-        }
-
+        
         private class Key
         {
             private readonly object _factory;
