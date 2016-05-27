@@ -12,18 +12,23 @@
         private readonly Dictionary<IRegistryKey, Func<object, object>> _factories = new Dictionary<IRegistryKey, Func<object, object>>();
 		private readonly IContainer _parentContainer;
         
+        /// <summary>
+        /// Creates root container.
+        /// </summary>
+        /// <param name="name"></param>
 	    public Container(string name)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
+
             Name = name;
             Configuration.Apply(this);            
         }
 
         internal Container(ContainerInfo containerInfo)
-			:this(containerInfo.Name)
         {
             if (containerInfo == null) throw new ArgumentNullException(nameof(containerInfo));
 
+            Name = containerInfo.Name;
             _parentContainer = containerInfo.ParentContainer;
         }
 
@@ -40,19 +45,18 @@
             var key = new RegistryKey(stateType, instanceType, name, resources);            
 		    try
 		    {
-		        Func<object, object> factoryMethodToRegister = factoryMethod;
-                if (instanceType != typeof(ILifetime))
-                { 
-		            var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared, WellknownLifetime.Singletone);
-                    factoryMethodToRegister = state => lifetime.Create(this, key, factoryMethod, state);
+		        if (instanceType != typeof(ILifetime))
+                {
+		            var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
+                    _factories.Add(key, state => lifetime.Create(this, key, factoryMethod, state));
                     resources.Add(Disposable.Create(() => Unregister(key, lifetime)));
                 }
                 else
                 {
+                    _factories.Add(key, factoryMethod);
                     resources.Add(Disposable.Create(() => Unregister(key)));
                 }
-
-                _factories.Add(key, factoryMethodToRegister);
+                                
                 return key;
 		    }
 		    catch (Exception ex)

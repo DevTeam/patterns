@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ContainerInfo.cs" />
     <Compile Include="ControlledLifetime.cs" />
+    <Compile Include="IContext.cs" />
     <Compile Include="IoCContainerConfiguration.cs" />
     <Compile Include="EmptyState.cs" />
     <Compile Include="ILifetime.cs" />

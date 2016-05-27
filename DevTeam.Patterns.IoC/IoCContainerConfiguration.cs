@@ -10,8 +10,8 @@
 
         public IContainer Apply(IContainer container)
         {
-            container.Register(() => SingletoneLifetime.Value, WellknownLifetime.Singletone);
             container.Register(() => TransientLifetime.Value, WellknownLifetime.Transient);
+            container.Register(() => SingletoneLifetime.Value, WellknownLifetime.Singletone);
             container.Register(() => ControlledLifetime.Value, WellknownLifetime.Controlled);
 
             container.Using<ILifetime>(WellknownLifetime.Controlled).Register<ContainerInfo, IContainer>(childContainerInfo => new Container(childContainerInfo));
