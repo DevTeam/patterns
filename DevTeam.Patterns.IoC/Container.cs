@@ -44,7 +44,7 @@
 		    var resources = new CompositeDisposable();
             var key = new RegistryKey(stateType, instanceType, name, resources);            
 		    try
-		    {
+		    {                
 		        if (instanceType != typeof(ILifetime))
                 {
 		            var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
@@ -61,7 +61,7 @@
 		    }
 		    catch (Exception ex)
 		    {
-                throw new InvalidOperationException($"The entry {key} was alredy registered. Registered entries:\n{GetRegisteredInfo()}", ex);
+                throw new InvalidOperationException($"The entry {key} registration failed. Registered entries:\n{GetRegisteredInfo()}", ex);
             }		    
 		}
 
@@ -89,6 +89,12 @@
 		        if (_parentContainer != null)
 		        {
 		            return _parentContainer.Resolve(stateType, instanceType, state, name);
+		        }
+		        
+                // Defaults		      
+		        if (instanceType == typeof(ILifetime) && stateType == typeof(EmptyState) && name == string.Empty)
+		        {
+                    return new TransientLifetime();
 		        }
 		    }
 		    catch (InvalidOperationException ex)
@@ -120,7 +126,7 @@
 
         private bool Unregister(IRegistryKey key, ILifetime factory)
         {
-            if (_factories.Remove(key))
+            if (Unregister(key))
             {
                 factory?.Release(this, key);
                 return true;

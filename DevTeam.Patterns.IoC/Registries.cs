@@ -23,7 +23,7 @@
         }
 
         public static IContainer Using<TContext>(this IContainer container, string contextName)
-            where TContext : IContext
+            where TContext: IContext
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (contextName == null) throw new ArgumentNullException(nameof(contextName));
