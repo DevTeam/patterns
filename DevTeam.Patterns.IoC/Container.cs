@@ -94,7 +94,7 @@
                 // Defaults		      
 		        if (instanceType == typeof(ILifetime) && stateType == typeof(EmptyState) && name == string.Empty)
 		        {
-                    return new TransientLifetime();
+                    return IoCContainerConfiguration.TransientLifetime.Value;
 		        }
 		    }
 		    catch (InvalidOperationException ex)
