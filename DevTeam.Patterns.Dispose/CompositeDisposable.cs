@@ -2,56 +2,62 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
 
-    public class CompositeDisposable: Collection<IDisposable>, IDisposable
+	public class CompositeDisposable: IDisposable
     {
-        private bool _disposed = false;
+		private readonly HashSet<IDisposable> _disposables = new HashSet<IDisposable>();
+        private bool _disposed;
 
         public CompositeDisposable()
         {
         }
 
-        public CompositeDisposable(IList<IDisposable> list)
-            : base(list)
+        public CompositeDisposable(IEnumerable<IDisposable> items)
         {
-        }
+	        foreach (var disposable in items)
+	        {
+		        _disposables.Add(disposable);
+	        }
+		}
+
+	    internal int Count => _disposables.Count;
 
         public void Dispose()
-        {
-           Clear();
+        {            
+            Clear();
+            _disposed = true;
         }
 
-        protected override void ClearItems()
-        {
-            foreach (var disposable in Items)
-            {
-                disposable.Dispose();
-            }
+	    public void Add(IDisposable disposable)
+	    {
+		    if (_disposed)
+		    {
+				disposable.Dispose();
+				return;			    
+		    }
 
-            base.ClearItems();
-        }
+		    _disposables.Add(disposable);
+	    }
 
-        protected override void InsertItem(int index, IDisposable item)
-        {
-            if (_disposed)
-            {
-                item.Dispose();
-            }
-            else
-            {
-                base.InsertItem(index, item);
-            }            
-        }
+	    public bool Remove(IDisposable disposable)
+	    {
+		    if (!_disposables.Remove(disposable))
+		    {
+			    return false;
+		    }
 
-        protected override void RemoveItem(int index)
-        {
-            throw new NotImplementedException();
-        }
+		    disposable.Dispose();
+		    return true;
+	    }
 
-        protected override void SetItem(int index, IDisposable item)
-        {
-            throw new NotImplementedException();
-        }
+	    public void Clear()
+	    {
+		    foreach (var disposable in _disposables)
+		    {
+				disposable.Dispose();
+		    }
+
+			_disposables.Clear();		    
+	    }
     }
 }

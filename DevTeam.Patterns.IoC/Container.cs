@@ -16,7 +16,7 @@
         /// Creates root container.
         /// </summary>
         /// <param name="name"></param>
-	    public Container(string name)
+	    public Container(string name = "")
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
 
@@ -119,7 +119,9 @@
 	        return Name;
 	    }
 
-        private bool Unregister(IRegistryKey key)
+	    internal IEnumerable<IRegistryKey> Registrations => _factories.Keys;
+
+	    private bool Unregister(IRegistryKey key)
         {
             return _factories.Remove(key);
         }
