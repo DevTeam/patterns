@@ -1,5 +1,6 @@
 ﻿namespace DevTeam.Patterns.IoC.Tests
 {
+	using System.Linq;
 	using Moq;
 
 	using NUnit.Framework;
@@ -84,6 +85,106 @@
 
 			// Then
 			childContainer.Name.ShouldBe("child123");
+		}
+
+		[Test]
+		public void ShouldResolve()
+		{
+			// Given
+			var target = CreateTarget();
+			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+
+			// When
+			var instance = target.Resolve(typeof(Service1State), typeof(IService1), new Service1State(), "myService1");
+
+			// Then
+			instance.ShouldBe(_service1.Object);
+		}
+
+		[Test]
+		public void ShouldResolveFromChildContainer()
+		{
+			// Given
+			var target = CreateTarget();
+			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+
+			// When
+			var childContainer = target.Resolve<IContainer>("new");
+			var instance = childContainer.Resolve(typeof(Service1State), typeof(IService1), new Service1State(), "myService1");
+
+			// Then
+			instance.ShouldBe(_service1.Object);
+		}
+
+		[Test]
+		public void ShouldResolveFromMultChildContainer()
+		{
+			// Given
+			var target = CreateTarget();
+			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+
+			// When
+			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
+			var instance = childContainer.Resolve(typeof(Service1State), typeof(IService1), new Service1State(), "myService1");
+
+			// Then
+			instance.ShouldBe(_service1.Object);
+		}
+
+		[Test]
+		public void ShouldResolveMult()
+		{
+			// Given
+			var target = CreateTarget();
+			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+
+			// When
+			var instances = target.Resolve(key => true, key => new Service1State()).ToList();
+
+			// Then
+			instances.Count.ShouldBe(1);
+			instances[0].Item1.StateType.ShouldBe(typeof(Service1State));
+			instances[0].Item1.InstanceType.ShouldBe(typeof(IService1));
+			instances[0].Item1.Name.ShouldBe("myService1");
+			instances[0].Item2.ShouldBe(_service1.Object);
+		}
+
+		[Test]
+		public void ShouldResolveMultFromChildContainer()
+		{
+			// Given
+			var target = CreateTarget();
+			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+
+			// When
+			var childContainer = target.Resolve<IContainer>("new");
+			var instances = childContainer.Resolve(key => true, key => new Service1State()).ToList();
+
+			// Then
+			instances.Count.ShouldBe(1);
+			instances[0].Item1.StateType.ShouldBe(typeof(Service1State));
+			instances[0].Item1.InstanceType.ShouldBe(typeof(IService1));
+			instances[0].Item1.Name.ShouldBe("myService1");
+			instances[0].Item2.ShouldBe(_service1.Object);
+		}
+
+		[Test]
+		public void ShouldResolveMultFromMultChildContainer()
+		{
+			// Given
+			var target = CreateTarget();
+			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+
+			// When
+			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
+			var instances = childContainer.Resolve(key => true, key => new Service1State()).ToList();
+
+			// Then
+			instances.Count.ShouldBe(1);
+			instances[0].Item1.StateType.ShouldBe(typeof(Service1State));
+			instances[0].Item1.InstanceType.ShouldBe(typeof(IService1));
+			instances[0].Item1.Name.ShouldBe("myService1");
+			instances[0].Item2.ShouldBe(_service1.Object);
 		}
 
 		private static Container CreateTarget(string name = "")
