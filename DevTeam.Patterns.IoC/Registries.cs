@@ -32,7 +32,7 @@
             return container.Using(() => container.Resolve<TContext>(contextName));
         }
 
-        public static IContainer Using<TContext>(this IContainer container, Func<TContext> factoryMethod)
+        private static IContainer Using<TContext>(this IContainer container, Func<TContext> factoryMethod)
             where TContext : IContext
         {
             if (container == null) throw new ArgumentNullException(nameof(container));

@@ -109,6 +109,7 @@
 		{
 			var result = 
 				from factory in _factories
+				where factory.Key.InstanceType != typeof(ILifetime) && factory.Key.InstanceType != typeof(IContainer)
 				where filter(factory.Key)
 				select Tuple.Create(factory.Key, factory.Value(stateSelector(factory.Key)));
 
