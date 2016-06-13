@@ -1,5 +1,4 @@
-﻿
-namespace DevTeam.Patterns.IoC
+﻿namespace DevTeam.Patterns.IoC
 {
     public interface IContext
     {

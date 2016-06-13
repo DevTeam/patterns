@@ -6,8 +6,8 @@
 
     using Dispose;
 
-    public class Container : IContainer
-    {
+    public class Container: IContainer
+	{
         private static readonly IConfiguration Configuration = new IoCContainerConfiguration();
         private readonly Dictionary<IRegistryKey, Func<object, object>> _factories = new Dictionary<IRegistryKey, Func<object, object>>();
 		private readonly IContainer _parentContainer;
@@ -105,7 +105,22 @@
             throw new InvalidOperationException($"The entry {key} was not registered. {GetRegisteredInfo()}", innerException);
         }
 
-	    public void Dispose()
+		public IEnumerable<Tuple<IRegistryKey, object>> Resolve(Func<IRegistryKey, bool> filter, Func<IRegistryKey, object> stateSelector)
+		{
+			var result = 
+				from factory in _factories
+				where filter(factory.Key)
+				select Tuple.Create(factory.Key, factory.Value(stateSelector(factory.Key)));
+
+			if (_parentContainer != null)
+			{
+				result = _parentContainer.Resolve(filter, stateSelector).Concat(result);
+			}
+
+			return result;
+		}
+
+		public void Dispose()
 	    {
 	        var disposableKeys = new List<IDisposable>(_factories.Keys.OfType<IDisposable>());
             foreach (var disposableKey in disposableKeys)

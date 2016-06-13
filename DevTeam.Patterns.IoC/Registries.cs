@@ -1,8 +1,9 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
     using System;
+    using System.Collections.Generic;
 
-    public static class Registries
+	public static class Registries
     {
         public static IDisposable Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, string name = "")
         {
@@ -59,7 +60,12 @@
 
             public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
             {
-                using (_container.Register(_factoryMethod))
+	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+	            if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
+	            if (name == null) throw new ArgumentNullException(nameof(name));
+
+	            using (_container.Register(_factoryMethod))
                 {
                     return _container.Register(stateType, instanceType, factoryMethod, name);
                 }
@@ -67,10 +73,23 @@
 
             public object Resolve(Type stateType, Type instanceType, object state, string name = "")
             {
-                return _container.Resolve(stateType, instanceType, state, name);
+	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+	            if (state == null) throw new ArgumentNullException(nameof(state));
+	            if (name == null) throw new ArgumentNullException(nameof(name));
+
+	            return _container.Resolve(stateType, instanceType, state, name);
             }
 
-            public void Dispose()
+	        public IEnumerable<Tuple<IRegistryKey, object>> Resolve(Func<IRegistryKey, bool> filter, Func<IRegistryKey, object> stateSelector)
+	        {
+		        if (filter == null) throw new ArgumentNullException(nameof(filter));
+		        if (stateSelector == null) throw new ArgumentNullException(nameof(stateSelector));
+
+		        return _container.Resolve(filter, stateSelector);
+	        }
+
+	        public void Dispose()
             {
                 _container.Dispose();
             }
