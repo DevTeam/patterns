@@ -21,7 +21,7 @@
             if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-            var key = new Key(factory, state);
+            var key = new Key(registryKey, state);
             Lazy<object> currentFactory;
             if (!_factories.TryGetValue(key, out currentFactory))
             {
@@ -42,37 +42,37 @@
         
         private class Key
         {
-            private readonly object _factory;
-            private readonly object _state;
+	        private readonly IRegistryKey _registryKey;
+	        private readonly object _state;
 
-            public Key(object factory, object state)
-            {
-                if (factory == null) throw new ArgumentNullException(nameof(factory));
+	        public Key(IRegistryKey registryKey, object state)
+	        {
+		        if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
 
-                _factory = factory;
-                _state = state;
-            }
+		        _registryKey = registryKey;
+		        _state = state;
+	        }
 
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != GetType()) return false;
-                return Equals((Key)obj);
-            }
+	        public override bool Equals(object obj)
+	        {
+		        if (ReferenceEquals(null, obj)) return false;
+		        if (ReferenceEquals(this, obj)) return true;
+		        if (obj.GetType() != this.GetType()) return false;
+		        return Equals((Key) obj);
+	        }
 
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    return ((_factory?.GetHashCode() ?? 0) * 397) ^ (_state?.GetHashCode() ?? 0);
-                }
-            }
+	        public override int GetHashCode()
+	        {
+		        unchecked
+		        {
+			        return ((_registryKey?.GetHashCode() ?? 0)*397) ^ (_state?.GetHashCode() ?? 0);
+		        }
+	        }
 
-            private bool Equals(Key other)
-            {
-                return _factory == other._factory && Equals(_state, other._state);
-            }
+	        private bool Equals(Key other)
+	        {
+		        return Equals(_registryKey, other._registryKey) && Equals(_state, other._state);
+	        }
         }
     }
 }
