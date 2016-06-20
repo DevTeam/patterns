@@ -62,13 +62,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Host\CommandLineArgsToPropertiesConverter.cs" />
-    <Compile Include="Host\ToolFactory.cs" />
+    <Compile Include="Host\IPropertyFactory.cs" />
+    <Compile Include="Host\PropertyFactory.cs" />
     <Compile Include="Host\ToolProperty.cs" />
-    <Compile Include="AssemblyProperty.cs" />
-    <Compile Include="BaseProperty.cs" />
+    <Compile Include="Host\AssemblyProperty.cs" />
+    <Compile Include="Host\BaseProperty.cs" />
     <Compile Include="Host\HostContainerConfiguration.cs" />
     <Compile Include="Explorer\ExplorerTool.cs" />
     <Compile Include="Explorer\ExplorerContainerConfiguration.cs" />
+    <Compile Include="Reporter\ReporterTool.cs" />
+    <Compile Include="Reporter\ReporterContainerConfiguration.cs" />
+    <Compile Include="Reporter\TextTestReporter.cs" />
     <Compile Include="Runner\RunnerTool.cs" />
     <Compile Include="Runner\RunnerContainerConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

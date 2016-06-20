@@ -2,20 +2,33 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
 
     using Contracts;
 
     internal class CommandLineArgsToPropertiesConverter: IConverter<string[], IEnumerable<PropertyValue>>
     {
+        private static readonly Regex PropertyRegex = new Regex("-(?<name>.+)=(?<value>.+)", RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        private readonly IPropertyFactory _propertyFactory;
+
+        public CommandLineArgsToPropertiesConverter(
+            IPropertyFactory propertyFactory)
+        {
+            if (propertyFactory == null) throw new ArgumentNullException(nameof(propertyFactory));
+
+            _propertyFactory = propertyFactory;
+        }
+
         public IEnumerable<PropertyValue> Convert(string[] source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            return new[]
-                {
-                    new PropertyValue(ToolProperty.Shared, "explorer"),
-                    new PropertyValue(AssemblyProperty.Shared, @"C:\Projects\GitHub\patterns\TestTool\DevTeam.TestTool.dotNet\bin\Debug\DevTeam.TestTool.Test.Mocks.dll")
-                };
+            return 
+                from propertyStr in source
+                let propertyMath = PropertyRegex.Match(propertyStr)
+                where propertyMath.Success
+                select _propertyFactory.CreatePropertyValue(propertyMath.Groups["name"].Value, propertyMath.Groups["value"].Value);
         }
     }
 }

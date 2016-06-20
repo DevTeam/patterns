@@ -4,5 +4,6 @@
     {
         public static readonly string Explorer = "explorer";
         public static readonly string Runnner = "runner";
+        public static readonly string Reporter = "reporter";
     }
 }

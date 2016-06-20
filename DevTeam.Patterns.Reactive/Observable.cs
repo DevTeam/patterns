@@ -107,7 +107,34 @@
                 }
 
                 subscription.Dispose();
-            }
+            }           
+        }
+
+
+        public static IObservable<TSource> Empty<TSource>()
+        {
+            return Create<TSource>(
+                observer =>
+                {
+                    observer.OnCompleted();
+                    return Disposable.Empty();
+                });
+        }
+
+        public static IObservable<TSource> Concat<TSource>(this IObservable<TSource> source1, IObservable<TSource> source2)
+        {
+            return Create<TSource>(
+                observer =>
+                    {
+                        var disposable = new CompositeDisposable();
+                        disposable.Add(
+                            source1.Subscribe(observer.OnNext, observer.OnError, () =>
+                                {
+                                    disposable.Add(source2.Subscribe(observer.OnNext, observer.OnError, observer.OnCompleted));
+                                }));
+
+                        return disposable;
+                    });
         }
 
         private class ObservableCreate<TSource> : IObservable<TSource>

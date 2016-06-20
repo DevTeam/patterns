@@ -9,7 +9,7 @@
 
     using Patterns.Reactive;
 
-    internal class RunnerTool : ITool
+    internal class RunnerTool: ITool
     {
         private readonly IScheduler _scheduler;
         private readonly ISession _session;
@@ -34,10 +34,7 @@
 
         public IDisposable Run()
         {
-            var disposable = new CompositeDisposable();
-            disposable.Add(Disposable.Create(() => _testRunner.WaitForCompletion()));
-            disposable.Add(_eventAggregator.RegisterConsumer(((IObserver<Test>)_testRunner).ObserveOn(_scheduler)));            
-            return disposable;
+            return _eventAggregator.RegisterConsumer(((IObserver<Test>)_testRunner).ObserveOn(_scheduler));
         }
 
         public void OnNext(Test value)

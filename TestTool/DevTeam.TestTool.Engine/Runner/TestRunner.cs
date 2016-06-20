@@ -8,7 +8,7 @@
 
     internal class TestRunner : ITestRunner
     {
-        private readonly Subject<TestResult> _results = new Subject<TestResult>();
+        private readonly Subject<TestProgress> _results = new Subject<TestProgress>();
         private readonly IReflection _reflection;
 
         public TestRunner(IReflection reflection)
@@ -28,8 +28,16 @@
                 var testFixtureType = _reflection.LoadType(testAssembly, test.Method.Fixture.Name);
                 var methodInfo = _reflection.LoadMethod(testFixtureType, test.Method.Name);
                 var testInstance = _reflection.CreateInstance(testFixtureType);
-                var result = methodInfo.Invoke(testInstance, null);
-                _results.OnNext(new TestResult(test, result));
+                try
+                {
+                    _results.OnNext(new TestProgress(TestState.Starting));
+                    var result = methodInfo.Invoke(testInstance, null);
+                    _results.OnNext(new TestProgress(TestState.Finished, new TestResult(test, result)));
+                }
+                catch (Exception exception)
+                {
+                    _results.OnNext(new TestProgress(TestState.Finished, new TestResult(test, exception)));                    
+                }                
             }
             catch (Exception ex)
             {
@@ -47,7 +55,7 @@
             _results.OnCompleted();
         }
 
-        public IDisposable Subscribe(IObserver<TestResult> observer)
+        public IDisposable Subscribe(IObserver<TestProgress> observer)
         {
             return _results.Subscribe(observer);
         }

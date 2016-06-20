@@ -40,9 +40,9 @@
     <Compile Include="Event.cs" />
     <Compile Include="IConverter.cs" />
     <Compile Include="IReflection.cs" />
+    <Compile Include="ITestReporter.cs" />
     <Compile Include="ITool.cs" />
     <Compile Include="ISession.cs" />
-    <Compile Include="IToolFactory.cs" />
     <Compile Include="ITestRunner.cs" />
     <Compile Include="ITestsSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -52,7 +52,10 @@
     <Compile Include="TestAssembly.cs" />
     <Compile Include="TestFixture.cs" />
     <Compile Include="TestMethod.cs" />
+    <Compile Include="TestReport.cs" />
     <Compile Include="TestResult.cs" />
+    <Compile Include="TestProgress.cs" />
+    <Compile Include="TestState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

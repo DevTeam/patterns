@@ -6,6 +6,8 @@
     using Patterns.Reactive;
     using Contracts;
 
+    using DevTeam.TestTool.Engine.Host;
+
     using TestTool.Contracts;
 
     internal class TestsSource : ITestsSource

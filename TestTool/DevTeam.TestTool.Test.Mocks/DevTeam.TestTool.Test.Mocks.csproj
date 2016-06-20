@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestFixtureFail.cs" />
     <Compile Include="TestFixtureSuccess.cs" />
   </ItemGroup>
   <ItemGroup>

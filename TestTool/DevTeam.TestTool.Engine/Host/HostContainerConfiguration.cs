@@ -20,12 +20,19 @@
             var disposable = new CompositeDisposable();
 
             disposable.Add(new ReactiveContainerConfiguration().Apply(container));
-            disposable.Add(container.Register<IEnumerable<PropertyValue>, ISession>(p => new Session(p)));
-            disposable.Add(container.Register<IContainer, IToolFactory>(p => new ToolFactory(p)));
+            disposable.Add(container.Register<IEnumerable<PropertyValue>, ISession>(properties => new Session(container, properties)));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IEventAggregator>(() => new Aggregator()));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IPropertyFactory>(() => new PropertyFactory(container.ResolveAll<IProperty>())));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConverter<string[], IEnumerable<PropertyValue>>>(() => new CommandLineArgsToPropertiesConverter(container.Resolve<IPropertyFactory>())));
+
+            // Tools
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConfiguration>(() => new Explorer.ExplorerContainerConfiguration(), WellknownTool.Explorer));
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConfiguration>(() => new Runner.RunnerContainerConfiguration(), WellknownTool.Runnner));
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IEventAggregator>(() => new Aggregator()));
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConverter<string[], IEnumerable<PropertyValue>>>(() => new CommandLineArgsToPropertiesConverter()));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConfiguration>(() => new Reporter.ReporterContainerConfiguration(), WellknownTool.Reporter));
+
+            // Properties
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(() => ToolProperty.Shared, ToolProperty.Shared.Id));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(() => AssemblyProperty.Shared, AssemblyProperty.Shared.Id));
 
             return disposable;
         }
