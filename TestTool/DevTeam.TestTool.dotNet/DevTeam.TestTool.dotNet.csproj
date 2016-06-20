@@ -45,6 +45,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
+      <Project>{FE61929A-6F78-40B6-8929-62CFB62E3BE6}</Project>
+      <Name>DevTeam.Patterns.Dispose</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
       <Project>{35055D77-822C-4D69-8DF2-722B42CC405A}</Project>
       <Name>DevTeam.Patterns.IoC</Name>

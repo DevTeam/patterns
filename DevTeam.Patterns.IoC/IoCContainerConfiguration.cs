@@ -2,21 +2,25 @@
 {
     using System;
 
+    using Dispose;
+
     internal class IoCContainerConfiguration: IConfiguration
     {
         internal static readonly Lazy<ILifetime> TransientLifetime = new Lazy<ILifetime>(() => new TransientLifetime());
         private static readonly Lazy<ILifetime> SingletoneLifetime = new Lazy<ILifetime>(() => new SingletoneLifetime(new ControlledLifetime()));
         private static readonly Lazy<ILifetime> ControlledLifetime = new Lazy<ILifetime>(() => new ControlledLifetime());
 
-        public IContainer Apply(IContainer container)
+        public IDisposable Apply(IContainer container)
         {
-            container.Register(() => TransientLifetime.Value, WellknownLifetime.Transient);
-            container.Register(() => SingletoneLifetime.Value, WellknownLifetime.Singletone);
-            container.Register(() => ControlledLifetime.Value, WellknownLifetime.Controlled);
+            var disposable = new CompositeDisposable();
 
-            container.Using<ILifetime>(WellknownLifetime.Controlled).Register<ContainerInfo, IContainer>(childContainerInfo => new Container(childContainerInfo));
+            disposable.Add(container.Register(() => TransientLifetime.Value, WellknownLifetime.Transient));
+            disposable.Add(container.Register(() => SingletoneLifetime.Value, WellknownLifetime.Singletone));
+            disposable.Add(container.Register(() => ControlledLifetime.Value, WellknownLifetime.Controlled));
 
-            return container;
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Controlled).Register<ContainerInfo, IContainer>(childContainerInfo => new Container(childContainerInfo)));
+
+            return disposable;
         }
     }
 }

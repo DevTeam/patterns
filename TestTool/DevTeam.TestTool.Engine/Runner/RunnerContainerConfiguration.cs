@@ -5,30 +5,30 @@
     using Patterns.IoC;
     using Contracts;
 
+    using Patterns.Dispose;
+
     using Patterns.Reactive;
 
     using Patterns.EventAggregator;
 
     public class RunnerContainerConfiguration: IConfiguration
     {
-        public IContainer Apply(IContainer container)
+        public IDisposable Apply(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            container = container.Resolve<IContainer>(nameof(RunnerContainerConfiguration));            
+            var disposable = new CompositeDisposable();
 
-            container
+            disposable.Add(container
                 .Register<ISession, ITool>(session => new RunnerTool(
                     container.Resolve<IScheduler>(WellknownScheduler.PrivateSingleThread),
                     session, 
                     container.Resolve<ITestRunner>(),
-                    container.Resolve<IEventAggregator>()));
+                    container.Resolve<IEventAggregator>())));
 
-            container
-                .Using<ILifetime>(WellknownLifetime.Singletone)
-                .Register<ITestRunner>(() => new TestRunner(container.Resolve<IReflection>()));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<ITestRunner>(() => new TestRunner(container.Resolve<IReflection>())));
 
-            return container;
+            return disposable;
         }
     }
 }

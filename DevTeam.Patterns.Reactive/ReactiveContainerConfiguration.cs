@@ -3,33 +3,25 @@
     using System;
     using System.Threading.Tasks;
 
+    using Dispose;
+
     using IoC;
 
     public class ReactiveContainerConfiguration: IConfiguration
     {
-        public IContainer Apply(IContainer container)
+        public IDisposable Apply(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            container = container.Resolve<IContainer>(nameof(ReactiveContainerConfiguration));
-            
+            var disposable = new CompositeDisposable();
             var taskFactory = new TaskFactory();
 
-            container
-                .Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.PrivateSingleThread);
+            disposable.Add(container.Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.PrivateSingleThread));
+            disposable.Add(container.Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.PrivateMultiThread));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.SharedSingleThread));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.SharedMultiThread));
 
-            container
-                .Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.PrivateMultiThread);
-
-            container
-                .Using<ILifetime>(WellknownLifetime.Singletone)
-                .Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.SharedSingleThread);
-
-            container
-                .Using<ILifetime>(WellknownLifetime.Singletone)
-                .Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.SharedMultiThread);
-
-            return container;
+            return disposable;
         }
 
         private static Scheduler CreateMultiThreadScheduler(TaskFactory taskFactory)

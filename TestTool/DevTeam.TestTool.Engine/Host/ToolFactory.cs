@@ -30,8 +30,9 @@
             }
 
             var tooContainerConfiguration = _container.Resolve<IConfiguration>(toolName);
-            var toolContainer = tooContainerConfiguration.Apply(_container);
-            return toolContainer.Resolve<ISession, ITool>(session);
+            var tooContainer = _container.Resolve<IContainer>(toolName);
+            tooContainerConfiguration.Apply(tooContainer);
+            return tooContainer.Resolve<ISession, ITool>(session);
         }
     }
 }

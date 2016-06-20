@@ -2,23 +2,22 @@
 {
     using System;
 
-    using DevTeam.TestTool.Engine.Contracts;
+    using Patterns.Dispose;
+    using Engine.Contracts;
 
     using Patterns.IoC;
 
     public class DotNetContainerConfiguration: IConfiguration
     {
-        public IContainer Apply(IContainer container)
+        public IDisposable Apply(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            container = container.Resolve<IContainer>(nameof(DotNetContainerConfiguration));
-            
-            container
-                .Using<ILifetime>(WellknownLifetime.Singletone)
-                .Register<IReflection>(() => new Reflection());
+            var disposable = new CompositeDisposable();
 
-            return container;
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IReflection>(() => new Reflection()));
+
+            return disposable;
         }
     }
 }

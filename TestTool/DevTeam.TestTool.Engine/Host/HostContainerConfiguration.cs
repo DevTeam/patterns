@@ -6,39 +6,28 @@
     using Patterns.IoC;
     using Contracts;
 
-    using DevTeam.Patterns.Reactive;
+    using Patterns.Dispose;
+    using Patterns.Reactive;
 
     using Patterns.EventAggregator;
 
     public class HostContainerConfiguration: IConfiguration
     {
-        public IContainer Apply(IContainer container)
+        public IDisposable Apply(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            container = new ReactiveContainerConfiguration().Apply(container);
-            container = container.Resolve<IContainer>(nameof(HostContainerConfiguration));
+            var disposable = new CompositeDisposable();
 
-            container.Register<IEnumerable<PropertyValue>, ISession>(p => new Session(p));
-            container.Register<IContainer, IToolFactory>(p => new ToolFactory(p));
+            disposable.Add(new ReactiveContainerConfiguration().Apply(container));
+            disposable.Add(container.Register<IEnumerable<PropertyValue>, ISession>(p => new Session(p)));
+            disposable.Add(container.Register<IContainer, IToolFactory>(p => new ToolFactory(p)));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConfiguration>(() => new Explorer.ExplorerContainerConfiguration(), WellknownTool.Explorer));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConfiguration>(() => new Runner.RunnerContainerConfiguration(), WellknownTool.Runnner));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IEventAggregator>(() => new Aggregator()));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConverter<string[], IEnumerable<PropertyValue>>>(() => new CommandLineArgsToPropertiesConverter()));
 
-            container
-                .Using<ILifetime>(WellknownLifetime.Singletone)
-                .Register<IConfiguration>(() => new Explorer.ExplorerContainerConfiguration(), WellknownTool.Explorer);
-            
-            container
-                .Using<ILifetime>(WellknownLifetime.Singletone)
-                .Register<IConfiguration>(() => new Runner.RunnerContainerConfiguration(), WellknownTool.Runnner);
-
-            container
-                .Using<ILifetime>(WellknownLifetime.Singletone)
-                .Register<IEventAggregator>(() => new Aggregator());
-
-            container
-                .Using<ILifetime>(WellknownLifetime.Singletone)
-                .Register<IConverter<string[], IEnumerable<PropertyValue>>>(() => new CommandLineArgsToPropertiesConverter());
-
-            return container;
+            return disposable;
         }
     }
 }
