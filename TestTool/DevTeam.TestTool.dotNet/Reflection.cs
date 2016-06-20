@@ -40,13 +40,13 @@
         public IEnumerable<T> GetCustomAttribute<T>(Type type)
             where T : Attribute
         {
-            return type.CustomAttributes.OfType<T>();
+            return type.GetCustomAttributes<T>();
         }
 
         public IEnumerable<T> GetCustomAttribute<T>(MethodInfo method)
             where T : Attribute
         {
-            return method.GetCustomAttributes<T>().OfType<T>();
+            return method.GetCustomAttributes<T>();
         }
 
         public IEnumerable<MethodInfo> GetMethods(Type type)
@@ -54,11 +54,11 @@
             return type.GetMethods();
         }
 
-        public object CreateInstance(Type testFixtureType)
+        public object CreateInstance(Type type)
         {
-            if (testFixtureType == null) throw new ArgumentNullException(nameof(testFixtureType));
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
-            return Activator.CreateInstance(testFixtureType);
+            return Activator.CreateInstance(type);
         }
     }
 }

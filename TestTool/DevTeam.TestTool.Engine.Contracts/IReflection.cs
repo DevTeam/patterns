@@ -6,7 +6,7 @@
 
     public interface IReflection
     {
-        object CreateInstance(Type testFixtureType);        
+        object CreateInstance(Type type);        
 
         Assembly LoadAssembly(string assemblyFileName);
 

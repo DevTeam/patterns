@@ -34,8 +34,10 @@
 
         public IDisposable Run()
         {
-            _eventAggregator.RegisterConsumer(((IObserver<Test>)_testRunner).ObserveOn(_scheduler));            
-            return Disposable.Create(() => _testRunner.WaitForCompletion());
+            var disposable = new CompositeDisposable();
+            disposable.Add(Disposable.Create(() => _testRunner.WaitForCompletion()));
+            disposable.Add(_eventAggregator.RegisterConsumer(((IObserver<Test>)_testRunner).ObserveOn(_scheduler)));            
+            return disposable;
         }
 
         public void OnNext(Test value)
