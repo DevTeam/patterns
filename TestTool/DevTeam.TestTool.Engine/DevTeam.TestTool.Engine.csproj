@@ -63,6 +63,8 @@
   <ItemGroup>
     <Compile Include="Host\CommandLineArgsToPropertiesConverter.cs" />
     <Compile Include="Host\IPropertyFactory.cs" />
+    <Compile Include="Host\IReportPublisher.cs" />
+    <Compile Include="Host\ReportPublisher.cs" />
     <Compile Include="Host\PropertyFactory.cs" />
     <Compile Include="Host\ToolProperty.cs" />
     <Compile Include="Host\AssemblyProperty.cs" />

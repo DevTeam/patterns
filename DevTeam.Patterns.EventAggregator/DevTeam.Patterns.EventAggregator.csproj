@@ -35,6 +35,14 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <ProjectReference Include="..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
+      <Project>{FE61929A-6F78-40B6-8929-62CFB62E3BE6}</Project>
+      <Name>DevTeam.Patterns.Dispose</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
+      <Project>{35055D77-822C-4D69-8DF2-722B42CC405A}</Project>
+      <Name>DevTeam.Patterns.IoC</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DevTeam.Patterns.Reactive\DevTeam.Patterns.Reactive.csproj">
       <Project>{79F43401-CED2-46C1-A3C9-A8E9F94A1DEA}</Project>
       <Name>DevTeam.Patterns.Reactive</Name>
@@ -44,6 +52,7 @@
     <Compile Include="Aggregator.cs" />
     <Compile Include="IEventAggregator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EventAggregatorContainerConfiguration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

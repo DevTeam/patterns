@@ -36,6 +36,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Console.cs" />
     <Compile Include="DotNetContainerConfiguration.cs" />
     <Compile Include="Reflection.cs" />
     <Compile Include="Program.cs" />

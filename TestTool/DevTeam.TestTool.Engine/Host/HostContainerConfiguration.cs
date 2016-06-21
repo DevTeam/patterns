@@ -20,10 +20,11 @@
             var disposable = new CompositeDisposable();
 
             disposable.Add(new ReactiveContainerConfiguration().Apply(container));
-            disposable.Add(container.Register<IEnumerable<PropertyValue>, ISession>(properties => new Session(container, properties)));
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IEventAggregator>(() => new Aggregator()));
+            disposable.Add(new EventAggregatorContainerConfiguration().Apply(container));
+            disposable.Add(container.Register<IEnumerable<PropertyValue>, ISession>(properties => new Session(container, container.Resolve<IEventAggregator>(), container.Resolve<IReportPublisher>(), properties)));
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IPropertyFactory>(() => new PropertyFactory(container.ResolveAll<IProperty>())));
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConverter<string[], IEnumerable<PropertyValue>>>(() => new CommandLineArgsToPropertiesConverter(container.Resolve<IPropertyFactory>())));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IReportPublisher>(() => new ReportPublisher(container.ResolveAll<IOutput>())));
 
             // Tools
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConfiguration>(() => new Explorer.ExplorerContainerConfiguration(), WellknownTool.Explorer));

@@ -21,7 +21,6 @@
 
             disposable.Add(container
                 .Register<ISession, ITool>(session => new RunnerTool(
-                    container.Resolve<IScheduler>(WellknownScheduler.PrivateSingleThread),
                     session, 
                     container.Resolve<ITestRunner>(),
                     container.Resolve<IEventAggregator>())));

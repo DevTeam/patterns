@@ -13,8 +13,13 @@
             Name = name;
         }
 
-        public TestAssembly Assembly { get; private set; }
+        public TestAssembly Assembly { get; }
 
-        public string Name { get; private set; }        
+        public string Name { get; }
+
+        public override string ToString()
+        {
+            return $"{Assembly}:{Name}";
+        }
     }
 }

@@ -4,6 +4,8 @@
 
     public interface ITool
     {
-        IDisposable Run();
+        ToolType ToolType { get; }
+
+        IDisposable Activate();
     }
 }

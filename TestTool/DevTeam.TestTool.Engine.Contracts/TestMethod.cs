@@ -13,8 +13,13 @@
             Name = name;
         }
 
-        public TestFixture Fixture { get; private set; }
+        public TestFixture Fixture { get; }
 
-        public string Name { get; private set; }
+        public string Name { get; }
+
+        public override string ToString()
+        {
+            return $"{Fixture}.{Name}";
+        }
     }
 }

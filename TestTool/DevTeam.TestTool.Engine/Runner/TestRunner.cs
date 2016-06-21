@@ -30,13 +30,13 @@
                 var testInstance = _reflection.CreateInstance(testFixtureType);
                 try
                 {
-                    _results.OnNext(new TestProgress(TestState.Starting));
+                    _results.OnNext(new TestProgress(test, TestState.Starting));
                     var result = methodInfo.Invoke(testInstance, null);
-                    _results.OnNext(new TestProgress(TestState.Finished, new TestResult(test, result)));
+                    _results.OnNext(new TestProgress(test, TestState.Finished, new TestResult(result)));
                 }
                 catch (Exception exception)
                 {
-                    _results.OnNext(new TestProgress(TestState.Finished, new TestResult(test, exception)));                    
+                    _results.OnNext(new TestProgress(test, TestState.Finished, new TestResult(exception)));                    
                 }                
             }
             catch (Exception ex)

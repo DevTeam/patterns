@@ -2,10 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Contracts;
-
-    using DevTeam.Patterns.Reactive;
 
     using Patterns.EventAggregator;
 
@@ -31,18 +30,17 @@
             _eventAggregator = eventAggregator;
         }
 
-        public IDisposable Run()
+        public ToolType ToolType => ToolType.Reporter;
+
+        public IDisposable Activate()
         {
-            var disposable = new CompositeDisposable();
-            foreach (var testReporter in _testReporters)
-            {
-                var testReportSubject = new Subject<TestReport>();
-                disposable.Add(testReporter.Subscribe(testReportSubject));
-                disposable.Add(_eventAggregator.RegisterConsumer(testReportSubject));
-                disposable.Add(Disposable.Create(() => testReportSubject.WaitForCompletion()));                
-            }
-                        
-            return disposable;
+            return new CompositeDisposable(
+                _testReporters.Select(reporter => new []
+                    {
+                        _eventAggregator.RegisterProvider(reporter),
+                        _eventAggregator.RegisterConsumer(reporter)
+                    })
+                .SelectMany(i => i));            
         }
     }
 }

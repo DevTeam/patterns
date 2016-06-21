@@ -35,10 +35,12 @@
             _testsSources = testsSources;
         }
 
-        public IDisposable Run()
+        public ToolType ToolType => ToolType.Explorer;
+
+        public IDisposable Activate()
         {
             var testSource = _testsSources.Aggregate(Observable.Empty<Test>(), (currentSource, nextSource) => currentSource.Concat(nextSource.Create(_session)));
-            return _eventAggregator.RegisterProvider(testSource.SubscribeOn(_scheduler));
+            return _eventAggregator.RegisterProvider(testSource);
         }
     }
 }

@@ -4,23 +4,15 @@
 
     public class TestResult
     {
-        public TestResult(Test test, object result)
+        public TestResult(object result)
         {
-            if (test == null) throw new ArgumentNullException(nameof(test));
-
-            Test = test;
             Result = result;
         }
 
-        public TestResult(Test test, Exception exception)
+        public TestResult(Exception exception)
         {
-            if (test == null) throw new ArgumentNullException(nameof(test));
-
-            Test = test;
             Exception = exception;
         }
-
-        public Test Test { get; private set; }
 
         public object Result { get; private set; }
 

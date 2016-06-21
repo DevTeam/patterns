@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Event.cs" />
     <Compile Include="IConverter.cs" />
+    <Compile Include="IOutput.cs" />
     <Compile Include="IReflection.cs" />
     <Compile Include="ITestReporter.cs" />
     <Compile Include="ITool.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="TestResult.cs" />
     <Compile Include="TestProgress.cs" />
     <Compile Include="TestState.cs" />
+    <Compile Include="ToolType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

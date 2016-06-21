@@ -7,6 +7,8 @@
 
     using Contracts;
 
+    using DevTeam.Patterns.EventAggregator;
+
     using Patterns.Dispose;
     using Patterns.IoC;
 
@@ -17,18 +19,23 @@
 
         public Session(
             IContainer container, 
+            IEventAggregator eventAggregator,
+            IReportPublisher reportPublisher,
             IEnumerable<PropertyValue> properties)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
+            if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));
+            if (reportPublisher == null) throw new ArgumentNullException(nameof(reportPublisher));
             if (properties == null) throw new ArgumentNullException(nameof(properties));
             
             _container = container;
             Properties = new ReadOnlyCollection<PropertyValue>(new List<PropertyValue>(properties));
 
-            foreach (var toolName in GetToolNames())
+            _disposable.Add(eventAggregator.RegisterConsumer(reportPublisher));
+            foreach (var tool in GetToolNames().Select(CreateTool).OrderByDescending(tool => tool.ToolType))
             {
-                _disposable.Add(CreateTool(toolName).Run());
-            }                       
+                _disposable.Add(tool.Activate());
+            }            
         }
 
         public IEnumerable<PropertyValue> Properties { get; }
@@ -41,13 +48,6 @@
         private ITool CreateTool(string toolName)
         {
             if (toolName == null) throw new ArgumentNullException(nameof(toolName));
-
-            if (string.IsNullOrEmpty(toolName))
-            {
-                var toolProperty = Properties.SingleOrDefault(p => Equals(p.Property, ToolProperty.Shared));
-                toolName = toolProperty.Value;
-            }
-
             var tooContainerConfiguration = _container.Resolve<IConfiguration>(toolName);
             var tooContainer = _container.Resolve<IContainer>(toolName);
             tooContainerConfiguration.Apply(tooContainer);

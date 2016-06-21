@@ -4,7 +4,7 @@
 
     using Contracts;
 
-    using DevTeam.Patterns.Reactive;
+    using Patterns.Reactive;
 
     internal class TextTestReporter: ITestReporter
     {
@@ -16,7 +16,17 @@
         }
 
         public void OnNext(TestProgress value)
-        {            
+        {
+            switch (value.TestState)
+            {
+                case TestState.Starting:
+                    _testReportSubject.OnNext(new TestReport(value.Test, $"{value.Test} - starting"));
+                    break;
+
+                case TestState.Finished:
+                    _testReportSubject.OnNext(new TestReport(value.Test, $"{value.Test} - finished"));
+                    break;
+            }            
         }
 
         public void OnError(Exception error)

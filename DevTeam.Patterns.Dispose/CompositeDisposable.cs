@@ -2,8 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
-	public class CompositeDisposable: IDisposable
+    public class CompositeDisposable: IDisposable
     {
 		private readonly HashSet<IDisposable> _disposables = new HashSet<IDisposable>();
         private bool _disposed;
@@ -14,13 +15,20 @@
 
         public CompositeDisposable(IEnumerable<IDisposable> items)
         {
-	        foreach (var disposable in items)
+            if (items == null) throw new ArgumentNullException(nameof(items));
+
+            foreach (var disposable in items)
 	        {
 		        _disposables.Add(disposable);
 	        }
-		}
+        }
 
-	    internal int Count => _disposables.Count;
+        public CompositeDisposable(params IDisposable[] items)
+            :this((IEnumerable<IDisposable>)items)
+        {            
+        }
+
+        internal int Count => _disposables.Count;
 
         public void Dispose()
         {            
@@ -52,7 +60,7 @@
 
 	    public void Clear()
 	    {
-		    foreach (var disposable in _disposables)
+		    foreach (var disposable in _disposables.Reverse())
 		    {
 				disposable.Dispose();
 		    }

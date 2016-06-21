@@ -8,9 +8,17 @@
         {
             if (method == null) throw new ArgumentNullException(nameof(method));
 
+            Id = Guid.NewGuid();
             Method = method;
         }
 
-        public TestMethod Method { get; private set; }
+        public Guid Id { get; }
+
+        public TestMethod Method { get; }
+
+        public override string ToString()
+        {
+            return $"{Id} {Method}";
+        }
     }
 }
