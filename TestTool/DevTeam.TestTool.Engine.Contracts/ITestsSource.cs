@@ -2,8 +2,7 @@
 {
     using System;
 
-    public interface ITestsSource
-    {
-        IObservable<Test> Create(ISession session);
+    public interface ITestsSource: IObservable<Test>
+    {    
     }
 }

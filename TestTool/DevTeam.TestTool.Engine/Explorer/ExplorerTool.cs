@@ -40,7 +40,7 @@
 
         public IDisposable Activate()
         {
-            var testSource = _testsSources.Aggregate(Observable.Empty<Test>(), (currentSource, nextSource) => currentSource.Concat(nextSource.Create(_session))).SubscribeOn(_scheduler);
+            var testSource = _testsSources.Aggregate(Observable.Empty<Test>(), (currentSource, nextSource) => currentSource.Concat(nextSource)).SubscribeOn(_scheduler);
             var testSubject = new Subject<Test>();
             return new CompositeDisposable(
                 _eventAggregator.RegisterProvider(testSubject),

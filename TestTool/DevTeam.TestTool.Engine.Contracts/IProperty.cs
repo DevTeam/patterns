@@ -1,7 +1,5 @@
 ﻿namespace DevTeam.TestTool.Engine.Contracts
 {
-    using System;
-
     public interface IProperty
     {
         string Id { get; }

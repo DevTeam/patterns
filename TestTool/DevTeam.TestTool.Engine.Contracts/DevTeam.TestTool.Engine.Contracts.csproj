@@ -37,7 +37,6 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Event.cs" />
     <Compile Include="IConverter.cs" />
     <Compile Include="IOutput.cs" />
     <Compile Include="IReflection.cs" />

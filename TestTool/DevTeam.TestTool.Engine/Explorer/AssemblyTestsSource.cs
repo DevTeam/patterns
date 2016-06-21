@@ -3,29 +3,27 @@
     using System;
     using System.Linq;
 
-    using Patterns.Reactive;
     using Contracts;
 
-    using DevTeam.TestTool.Engine.Host;
+    using Patterns.Reactive;
+
+    using Host;
 
     using TestTool.Contracts;
 
-    internal class TestsSource : ITestsSource
+    internal class AssemblyTestsSource : ITestsSource
     {
         private readonly IReflection _reflection;
+        private readonly IObservable<Test> _testSource;
 
-        public TestsSource(IReflection reflection)
+        public AssemblyTestsSource(ISession session, IReflection reflection)
         {
+            if (session == null) throw new ArgumentNullException(nameof(session));
             if (reflection == null) throw new ArgumentNullException(nameof(reflection));
 
             _reflection = reflection;
-        }
 
-        public IObservable<Test> Create(ISession session)
-        {
-            if (session == null) throw new ArgumentNullException(nameof(session));
-
-            return (
+            _testSource = (
                 from assemblyFileName in
                 session.Properties.Where(p => Equals(p.Property, AssemblyProperty.Shared)).Select(p => p.Value)
                 let assembly = _reflection.LoadAssembly(assemblyFileName)
@@ -38,8 +36,12 @@
                 let testAttribute = _reflection.GetCustomAttribute<TestAttribute>(method).SingleOrDefault()
                 where testAttribute != null
                 let testMethod = new TestMethod(testFixture, method.Name)
-                select new Test(testMethod)
-                ).ToObservable();
+                select new Test(testMethod)).ToObservable();
+        }
+
+        public IDisposable Subscribe(IObserver<Test> observer)
+        {
+            return _testSource.Subscribe(observer);
         }
     }
 }

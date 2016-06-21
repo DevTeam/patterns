@@ -25,9 +25,9 @@
                         container.Resolve<IScheduler>(WellknownScheduler.PrivateSingleThread),
                         session, 
                         container.Resolve<IEventAggregator>(), 
-                        container.ResolveAll<ITestsSource>())));
+                        container.ResolveAll<ISession, ITestsSource>(name => session))));
 
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<ITestsSource>(() => new TestsSource(container.Resolve<IReflection>())));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<ISession, ITestsSource>(session => new AssemblyTestsSource(session , container.Resolve<IReflection>())));
 
             return disposable;
         }

@@ -1,0 +1,1 @@
+msbuild build.proj /t:PushPackages /p:ApiKey=%1 /p:BuildNumber=1

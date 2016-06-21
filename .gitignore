@@ -20,3 +20,5 @@ DevTeam.Patterns.Reactive.Tests/obj/
 packages/
 DevTeam.Patterns.Reactive.Tests/bin/
 DevTeam.Patterns.EventAggregator.Tests/bin/
+DevTeam.Patterns.Dispose.Tests/bin/
+DevTeam.Patterns.IoC.Tests/bin/

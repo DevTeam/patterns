@@ -78,7 +78,7 @@
     <Compile Include="Runner\RunnerTool.cs" />
     <Compile Include="Runner\RunnerContainerConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Explorer\TestsSource.cs" />
+    <Compile Include="Explorer\AssemblyTestsSource.cs" />
     <Compile Include="Runner\TestRunner.cs" />
     <Compile Include="Host\Session.cs" />
     <Compile Include="WellknownTool.cs" />

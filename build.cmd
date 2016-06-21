@@ -1,1 +1,0 @@
-msbuild build.proj /p:ApiKey=fd942c1c-6836-46c5-a961-bdad2fbd6087
