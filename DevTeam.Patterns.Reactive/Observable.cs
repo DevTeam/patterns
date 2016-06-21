@@ -1,6 +1,7 @@
 ﻿namespace DevTeam.Patterns.Reactive
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Threading;
 
@@ -83,6 +84,11 @@
                 });
         }
 
+        public static IObservable<TSource> ToObservable<TSource>(params TSource[] source)
+        {
+            return source.ToObservable();
+        }
+
         public static void WaitForCompletion<TSource>(this IObservable<TSource> observable)
         {
             var lockObject = new object();
@@ -135,6 +141,152 @@
 
                         return disposable;
                     });
+        }
+
+        public static IEnumerable<Event<TSource>> Materialize<TSource>(this IObservable<TSource> source)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
+            return new MaterializeEnumerable<TSource>(source);            
+        }
+
+        public static IObservable<TSource> Dematerialize<TSource>(this IEnumerable<Event<TSource>> source)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
+            return Create<TSource>(
+                observer =>
+                    {
+                        foreach (var ev in source)
+                        {
+                            switch (ev.EventType)
+                            {
+                                case Event<TSource>.Type.OnNext:
+                                    observer.OnNext(ev.Value);
+                                    break;
+
+                                case Event<TSource>.Type.OnError:
+                                    observer.OnError(ev.Error);
+                                    break;
+
+                                case Event<TSource>.Type.OnComplete:
+                                    observer.OnCompleted();
+                                    break;
+                            }                            
+                        }
+
+                        return Disposable.Empty();
+                    });
+        }
+
+        public static IDisposable Materialize<TSource>(this IObservable<TSource> source, Action<Event<TSource>> handler)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+
+            return source.Subscribe(
+                i => handler(Event<TSource>.CreateOnNext(i)),
+                e => handler(Event<TSource>.CreateOnError(e)),
+                () => handler(Event<TSource>.CreateOnComplete()));
+        }
+
+        public static IDisposable MaterializeTo<TSource>(this IObservable<TSource> source, ICollection<Event<TSource>> collection)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (collection == null) throw new ArgumentNullException(nameof(collection));
+
+            return Materialize(source, collection.Add);
+        }
+
+        private class MaterializeEnumerable<TSource> : IEnumerable<Event<TSource>>
+        {
+            private readonly IObservable<TSource> _source;
+
+            public MaterializeEnumerable(IObservable<TSource> source)
+            {
+                if (source == null) throw new ArgumentNullException(nameof(source));
+
+                _source = source;
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            public IEnumerator<Event<TSource>> GetEnumerator()
+            {
+                return new MaterializeEnumerator<TSource>(_source);
+            }
+        }
+
+        private class MaterializeEnumerator<TSource> : IEnumerator<Event<TSource>>
+        {
+            private readonly IObservable<TSource> _source;
+
+            private readonly LinkedList<Event<TSource>> _events = new LinkedList<Event<TSource>>();
+            private IDisposable _disposable = Disposable.Empty();
+
+            public MaterializeEnumerator(IObservable<TSource> source)
+            {
+                if (source == null) throw new ArgumentNullException(nameof(source));
+
+                _source = source;
+                Subscribe();
+            }
+
+            object IEnumerator.Current => Current;
+
+            public Event<TSource> Current { get; private set; }
+
+            public bool MoveNext()
+            {
+                lock (_events)
+                {
+                    if (Current != null && Current.EventType != Event<TSource>.Type.OnNext)
+                    {
+                        return false;
+                    }
+
+                    while (_events.Count == 0)
+                    {
+                        Monitor.Wait(_events);
+                    }
+
+                    Current = _events.First.Value;
+                    _events.RemoveFirst();
+                }
+
+                return true;
+            }
+
+            public void Reset()
+            {
+                Subscribe();
+            }
+
+            public void Dispose()
+            {
+                _disposable.Dispose();
+            }
+
+            private void Subscribe()
+            {
+                _disposable.Dispose();
+                _events.Clear();
+                _disposable = Materialize(_source, AddEvent);                    
+            }
+
+            private void AddEvent(Event<TSource> ev)
+            {
+                if (ev == null) throw new ArgumentNullException(nameof(ev));
+
+                lock (_events)
+                {
+                    _events.AddLast(ev);
+                    Monitor.Pulse(_events);
+                }
+            }
         }
 
         private class ObservableCreate<TSource> : IObservable<TSource>

@@ -4,26 +4,29 @@
 
     using Contracts;
 
+    using DevTeam.Patterns.Reactive;
+
     internal class TextTestReporter: ITestReporter
     {
+        private readonly Subject<TestReport> _testReportSubject = new Subject<TestReport>();
+
         public IDisposable Subscribe(IObserver<TestReport> observer)
         {
-            throw new NotImplementedException();
+            return _testReportSubject.Subscribe(observer);
         }
 
         public void OnNext(TestProgress value)
-        {
-            throw new NotImplementedException();
+        {            
         }
 
         public void OnError(Exception error)
         {
-            throw new NotImplementedException();
+            _testReportSubject.OnError(error);
         }
 
         public void OnCompleted()
         {
-            throw new NotImplementedException();
+            _testReportSubject.OnCompleted();         
         }
     }
 }

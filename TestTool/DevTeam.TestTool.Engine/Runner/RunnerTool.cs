@@ -5,8 +5,6 @@
     using Patterns.EventAggregator;
     using Contracts;
 
-    using Patterns.Dispose;
-
     using Patterns.Reactive;
 
     internal class RunnerTool: ITool

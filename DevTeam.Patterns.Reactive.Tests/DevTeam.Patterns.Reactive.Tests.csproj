@@ -56,10 +56,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObservableTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
+      <Project>{FE61929A-6F78-40B6-8929-62CFB62E3BE6}</Project>
+      <Name>DevTeam.Patterns.Dispose</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DevTeam.Patterns.Reactive\DevTeam.Patterns.Reactive.csproj">
+      <Project>{79F43401-CED2-46C1-A3C9-A8E9F94A1DEA}</Project>
+      <Name>DevTeam.Patterns.Reactive</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

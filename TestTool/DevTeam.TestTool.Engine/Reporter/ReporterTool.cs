@@ -5,6 +5,8 @@
 
     using Contracts;
 
+    using DevTeam.Patterns.Reactive;
+
     using Patterns.EventAggregator;
 
     using Patterns.Dispose;
@@ -34,9 +36,12 @@
             var disposable = new CompositeDisposable();
             foreach (var testReporter in _testReporters)
             {
-                disposable.Add(_eventAggregator.RegisterConsumer(testReporter));                
+                var testReportSubject = new Subject<TestReport>();
+                disposable.Add(testReporter.Subscribe(testReportSubject));
+                disposable.Add(_eventAggregator.RegisterConsumer(testReportSubject));
+                disposable.Add(Disposable.Create(() => testReportSubject.WaitForCompletion()));                
             }
-            
+                        
             return disposable;
         }
     }

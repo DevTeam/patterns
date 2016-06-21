@@ -15,11 +15,13 @@
         private readonly IContainer _container;
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
 
-        public Session(IContainer container, IEnumerable<PropertyValue> properties)
+        public Session(
+            IContainer container, 
+            IEnumerable<PropertyValue> properties)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (properties == null) throw new ArgumentNullException(nameof(properties));
-
+            
             _container = container;
             Properties = new ReadOnlyCollection<PropertyValue>(new List<PropertyValue>(properties));
 
