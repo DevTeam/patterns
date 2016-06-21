@@ -20,8 +20,6 @@
         <member name="M:NUnit.Framework.Internal.AssemblyHelper.GetAssemblyPath(System.Reflection.Assembly)">
             <summary>
             Gets the path from which an assembly was loaded.
-            For builds where this is not possible, returns
-            the name of the assembly.
             </summary>
             <param name="assembly">The assembly.</param>
             <returns>The path.</returns>
@@ -1218,24 +1216,6 @@
             Return a list of the composing filters.
             </summary>
         </member>
-        <member name="M:NUnit.Framework.Internal.Filters.CompositeFilter.Pass(NUnit.Framework.Interfaces.ITest)">
-            <summary>
-            Checks whether the CompositeFilter is matched by a test.
-            </summary>
-            <param name="test">The test to be matched</param>
-        </member>
-        <member name="M:NUnit.Framework.Internal.Filters.CompositeFilter.Match(NUnit.Framework.Interfaces.ITest)">
-            <summary>
-            Checks whether the CompositeFilter is matched by a test.
-            </summary>
-            <param name="test">The test to be matched</param>
-        </member>
-        <member name="M:NUnit.Framework.Internal.Filters.CompositeFilter.IsExplicitMatch(NUnit.Framework.Interfaces.ITest)">
-            <summary>
-            Checks whether the CompositeFilter is explicit matched by a test.
-            </summary>
-            <param name="test">The test to be matched</param>
-        </member>
         <member name="M:NUnit.Framework.Internal.Filters.CompositeFilter.AddToXml(NUnit.Framework.Interfaces.TNode,System.Boolean)">
             <summary>
             Adds an XML node
@@ -1382,13 +1362,6 @@
             <param name="test">The test to be matched</param>
             <returns>True if all the component filters match, otherwise false</returns>
         </member>
-        <member name="M:NUnit.Framework.Internal.Filters.AndFilter.IsExplicitMatch(NUnit.Framework.Interfaces.ITest)">
-            <summary>
-            Checks whether the AndFilter is explicit matched by a test.
-            </summary>
-            <param name="test">The test to be matched</param>
-            <returns>True if all the component filters explicit match, otherwise false</returns>
-        </member>
         <member name="P:NUnit.Framework.Internal.Filters.AndFilter.ElementName">
             <summary>
             Gets the element name
@@ -1523,13 +1496,6 @@
             </summary>
             <param name="test">The test to be matched</param>
             <returns>True if any of the component filters match, otherwise false</returns>
-        </member>
-        <member name="M:NUnit.Framework.Internal.Filters.OrFilter.IsExplicitMatch(NUnit.Framework.Interfaces.ITest)">
-            <summary>
-            Checks whether the OrFilter is explicit matched by a test
-            </summary>
-            <param name="test">The test to be matched</param>
-            <returns>True if any of the component filters explicit match, otherwise false</returns>
         </member>
         <member name="P:NUnit.Framework.Internal.Filters.OrFilter.ElementName">
             <summary>
@@ -1682,12 +1648,6 @@
             ExceptionHelper provides static methods for working with exceptions
             </summary>
         </member>
-        <member name="M:NUnit.Framework.Internal.ExceptionHelper.Rethrow(System.Exception)">
-            <summary>
-            Rethrows an exception, preserving its stack trace
-            </summary>
-            <param name="exception">The exception to rethrow</param>
-        </member>
         <member name="M:NUnit.Framework.Internal.ExceptionHelper.BuildMessage(System.Exception)">
             <summary>
             Builds up a message, using the Message field of the specified exception
@@ -1758,16 +1718,6 @@
             as all its child tests.
             </summary>
         </member>
-        <member name="P:NUnit.Framework.Internal.Execution.CompositeWorkItem.Children">
-            <summary>
-            List of Child WorkItems
-            </summary>
-        </member>
-        <member name="F:NUnit.Framework.Internal.Execution.CompositeWorkItem._countOrder">
-            <summary>
-            A count of how many tests in the work item have a value for the Order Property
-            </summary>
-        </member>
         <member name="M:NUnit.Framework.Internal.Execution.CompositeWorkItem.#ctor(NUnit.Framework.Internal.TestSuite,NUnit.Framework.Interfaces.ITestFilter)">
             <summary>
             Construct a CompositeWorkItem for executing a test suite
@@ -1782,26 +1732,6 @@
             in CompositeWorkItem to do setup, run all child
             items and then do teardown.
             </summary>
-        </member>
-        <member name="M:NUnit.Framework.Internal.Execution.CompositeWorkItem.WorkItemOrderComparer.Compare(NUnit.Framework.Internal.Execution.WorkItem,NUnit.Framework.Internal.Execution.WorkItem)">
-            <summary>
-            Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
-            </summary>
-            <returns>
-            A signed integer that indicates the relative values of <paramref name="x"/> and <paramref name="y"/>, as shown in the following table.Value Meaning Less than zero<paramref name="x"/> is less than <paramref name="y"/>.Zero<paramref name="x"/> equals <paramref name="y"/>.Greater than zero<paramref name="x"/> is greater than <paramref name="y"/>.
-            </returns>
-            <param name="x">The first object to compare.</param><param name="y">The second object to compare.</param>
-        </member>
-        <member name="M:NUnit.Framework.Internal.Execution.CompositeWorkItem.SortChildren">
-            <summary>
-            Sorts tests under this suite.
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.Internal.Execution.CompositeWorkItem.Cancel(System.Boolean)">
-            <summary>
-            Cancel (abort or stop) a CompositeWorkItem and all of its children
-            </summary>
-            <param name="force">true if the CompositeWorkItem and all of its children should be aborted, false if it should allow all currently running tests to complete</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Execution.EventPumpState">
             <summary>
@@ -2047,12 +1977,11 @@
             </summary>
             <param name="work">The item to dispatch</param>
         </member>
-        <member name="M:NUnit.Framework.Internal.Execution.IWorkItemDispatcher.CancelRun(System.Boolean)">
+        <member name="M:NUnit.Framework.Internal.Execution.IWorkItemDispatcher.CancelRun">
             <summary>
             Cancel the ongoing run completely.
             If no run is in process, the call has no effect.
             </summary>
-            <param name="force">true if the IWorkItemDispatcher should abort all currently running WorkItems, false if it should allow all currently running WorkItems to complete</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Execution.ParallelWorkItemDispatcher">
             <summary>
@@ -2079,7 +2008,7 @@
             </summary>
             <param name="work">The item to dispatch</param>
         </member>
-        <member name="M:NUnit.Framework.Internal.Execution.ParallelWorkItemDispatcher.CancelRun(System.Boolean)">
+        <member name="M:NUnit.Framework.Internal.Execution.ParallelWorkItemDispatcher.CancelRun">
             <summary>
             Cancel the ongoing run completely.
             If no run is in process, the call has no effect.
@@ -2145,12 +2074,11 @@
             </summary>
             <param name="work">The item to dispatch</param>
         </member>
-        <member name="M:NUnit.Framework.Internal.Execution.SimpleWorkItemDispatcher.CancelRun(System.Boolean)">
+        <member name="M:NUnit.Framework.Internal.Execution.SimpleWorkItemDispatcher.CancelRun">
             <summary>
-            Cancel (abort or stop) the ongoing run.
+            Cancel the ongoing run completely.
             If no run is in process, the call has no effect.
             </summary>
-            <param name="force">true if the run should be aborted, false if it should allow its currently running test to complete</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Execution.TestWorker">
             <summary>
@@ -2186,7 +2114,7 @@
             Indicates whether the worker thread is running
             </summary>
         </member>
-        <member name="F:NUnit.Framework.Internal.Execution.TestWorker._currentWorkItem">
+        <member name="M:NUnit.Framework.Internal.Execution.TestWorker.TestWorkerThreadProc">
             <summary>
             Our ThreadProc, which pulls and runs tests in a loop
             </summary>
@@ -2196,11 +2124,10 @@
             Start processing work items.
             </summary>
         </member>
-        <member name="M:NUnit.Framework.Internal.Execution.TestWorker.Cancel(System.Boolean)">
+        <member name="M:NUnit.Framework.Internal.Execution.TestWorker.Cancel">
             <summary>
             Stop the thread, either immediately or after finishing the current WorkItem
             </summary>
-            <param name="force">true if the thread should be aborted, false if it should allow the currently running test to complete</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Execution.TextCapture">
             <summary>
@@ -2241,17 +2168,17 @@
             <param name="value">The string to write</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Execution.WorkItem">
-             <summary>
-             A WorkItem may be an individual test case, a fixture or
-             a higher level grouping of tests. All WorkItems inherit
-             from the abstract WorkItem class, which uses the template
-             pattern to allow derived classes to perform work in
-             whatever way is needed.
+            <summary>
+            A WorkItem may be an individual test case, a fixture or
+            a higher level grouping of tests. All WorkItems inherit
+            from the abstract WorkItem class, which uses the template
+            pattern to allow derived classes to perform work in
+            whatever way is needed.
             
-             A WorkItem is created with a particular TestExecutionContext
-             and is responsible for re-establishing that context in the
-             current thread before it begins or resumes execution.
-             </summary>
+            A WorkItem is created with a particular TestExecutionContext
+            and is responsible for re-establishing that context in the
+            current thread before it begins or resumes execution.
+            </summary>
         </member>
         <member name="M:NUnit.Framework.Internal.Execution.WorkItem.CreateWorkItem(NUnit.Framework.Interfaces.ITest,NUnit.Framework.Interfaces.ITestFilter)">
             <summary>
@@ -2300,11 +2227,6 @@
             The execution context
             </summary>
         </member>
-        <member name="P:NUnit.Framework.Internal.Execution.WorkItem.WorkerId">
-            <summary>
-            The unique id of the worker executing this item.
-            </summary>
-        </member>
         <member name="P:NUnit.Framework.Internal.Execution.WorkItem.Actions">
             <summary>
             The test actions to be performed before and after this test
@@ -2325,12 +2247,6 @@
             Execute the current work item, including any
             child work items.
             </summary>
-        </member>
-        <member name="M:NUnit.Framework.Internal.Execution.WorkItem.Cancel(System.Boolean)">
-            <summary>
-            Cancel (abort or stop) a WorkItem
-            </summary>
-            <param name="force">true if the WorkItem should be aborted, false if it should run to completion</param>
         </member>
         <member name="M:NUnit.Framework.Internal.Execution.WorkItem.PerformWork">
             <summary>
@@ -2449,21 +2365,21 @@
             </summary>
         </member>
         <member name="T:NUnit.Framework.Internal.Execution.WorkShift">
-             <summary>
-             The dispatcher needs to do different things at different,
-             non-overlapped times. For example, non-parallel tests may
-             not be run at the same time as parallel tests. We model
-             this using the metaphor of a working shift. The WorkShift
-             class associates one or more WorkItemQueues with one or
-             more TestWorkers.
+            <summary>
+            The dispatcher needs to do different things at different, 
+            non-overlapped times. For example, non-parallel tests may
+            not be run at the same time as parallel tests. We model
+            this using the metaphor of a working shift. The WorkShift
+            class associates one or more WorkItemQueues with one or 
+            more TestWorkers. 
             
-             Work in the queues is processed until all queues are empty
-             and all workers are idle. Both tests are needed because a
-             worker that is busy may end up adding more work to one of
-             the queues. At that point, the shift is over and another
-             shift may begin. This cycle continues until all the tests
-             have been run.
-             </summary>
+            Work in the queues is processed until all queues are empty 
+            and all workers are idle. Both tests are needed because a 
+            worker that is busy may end up adding more work to one of 
+            the queues. At that point, the shift is over and another 
+            shift may begin. This cycle continues until all the tests 
+            have been run.
+            </summary>
         </member>
         <member name="M:NUnit.Framework.Internal.Execution.WorkShift.#ctor(System.String)">
             <summary>
@@ -2524,11 +2440,10 @@
             Shut down the shift.
             </summary>
         </member>
-        <member name="M:NUnit.Framework.Internal.Execution.WorkShift.Cancel(System.Boolean)">
+        <member name="M:NUnit.Framework.Internal.Execution.WorkShift.Cancel">
             <summary>
-            Cancel (abort or stop) the shift without completing all work
+            Cancel the shift without completing all work
             </summary>
-            <param name="force">true if the WorkShift should be aborted, false if it should allow its currently running tests to complete</param>
         </member>
         <member name="T:NUnit.Framework.Internal.TextMessageWriter">
             <summary>
@@ -3384,11 +3299,6 @@
         <member name="F:NUnit.Framework.Internal.PropertyNames.IgnoreUntilDate">
             <summary>
             The test will be ignored until the given date
-            </summary>
-        </member>
-        <member name="F:NUnit.Framework.Internal.PropertyNames.Order">
-            <summary>
-            The optional Order the test will run in
             </summary>
         </member>
         <member name="T:NUnit.Framework.Internal.Randomizer">
@@ -4282,12 +4192,6 @@
             For builds with out the parallel feature, it has no effect.
             </summary>
         </member>
-        <member name="P:NUnit.Framework.Internal.TestExecutionContext.WorkerId">
-            <summary>
-            The unique name of the worker that spawned the context.
-            For builds with out the parallel feature, it is null.
-            </summary>
-        </member>
         <member name="P:NUnit.Framework.Internal.TestExecutionContext.RandomGenerator">
             <summary>
             Gets the RandomGenerator specific to this Test
@@ -4324,16 +4228,6 @@
             Gets or sets the current <see cref="T:System.Security.Principal.IPrincipal"/> for the Thread.
             </summary>
         </member>
-        <member name="P:NUnit.Framework.Internal.TestExecutionContext.CurrentValueFormatter">
-            <summary>
-            The current head of the ValueFormatter chain, copied from MsgUtils.ValueFormatter
-            </summary>
-        </member>
-        <member name="P:NUnit.Framework.Internal.TestExecutionContext.IsSingleThreaded">
-            <summary>
-            If true, all tests must run on the same thread. No new thread may be spawned.
-            </summary>
-        </member>
         <member name="M:NUnit.Framework.Internal.TestExecutionContext.UpdateContextFromEnvironment">
             <summary>
             Record any changes in the environment made by
@@ -4357,12 +4251,6 @@
             <summary>
             Increments the assert count by a specified amount.
             </summary>
-        </member>
-        <member name="M:NUnit.Framework.Internal.TestExecutionContext.AddFormatter(NUnit.Framework.Constraints.ValueFormatterFactory)">
-            <summary>
-            Adds a new ValueFormatterFactory to the chain of formatters
-            </summary>
-            <param name="formatterFactory">The new factory</param>
         </member>
         <member name="M:NUnit.Framework.Internal.TestExecutionContext.InitializeLifetimeService">
             <summary>
@@ -5469,39 +5357,6 @@
             </summary>
             <param name="result">The child result to be added</param>
         </member>
-        <member name="T:NUnit.Framework.Compatibility.AttributeHelper">
-            <summary>
-            Provides a platform-independent methods for getting attributes
-            for use by AttributeConstraint and AttributeExistsConstraint.
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.Compatibility.AttributeHelper.GetCustomAttributes(System.Object,System.Type,System.Boolean)">
-            <summary>
-            Gets the custom attributes from the given object.
-            </summary>
-            <remarks>Portable libraries do not have an ICustomAttributeProvider, so we need to cast to each of
-            it's direct subtypes and try to get attributes off those instead.</remarks>
-            <param name="actual">The actual.</param>
-            <param name="attributeType">Type of the attribute.</param>
-            <param name="inherit">if set to <c>true</c> [inherit].</param>
-            <returns>A list of the given attribute on the given object.</returns>
-        </member>
-        <member name="T:NUnit.Framework.Compatibility.LongLivedMarshalByRefObject">
-            <summary>
-            A MarshalByRefObject that lives forever
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.Compatibility.LongLivedMarshalByRefObject.InitializeLifetimeService">
-            <summary>
-            Obtains a lifetime service object to control the lifetime policy for this instance.
-            </summary>
-        </member>
-        <member name="T:NUnit.Framework.Compatibility.Stopwatch">
-            <summary>
-            This class is a System.Diagnostics.Stopwatch on operating systems that support it. On those that don't,
-            it replicates the functionality at the resolution supported.
-            </summary>
-        </member>
         <member name="T:NUnit.Framework.Guard">
             <summary>
             Class used to guard against unexpected argument values
@@ -5683,55 +5538,6 @@
             Gets a dictionary of settings for the FrameworkController
             </summary>
         </member>
-        <member name="M:NUnit.Framework.Api.FrameworkController.LoadTests">
-            <summary>
-            Loads the tests in the assembly
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:NUnit.Framework.Api.FrameworkController.ExploreTests(System.String)">
-            <summary>
-            Returns info about the tests in an assembly
-            </summary>
-            <param name="filter">A string containing the XML representation of the filter to use</param>
-            <returns>The XML result of exploring the tests</returns>
-        </member>
-        <member name="M:NUnit.Framework.Api.FrameworkController.RunTests(System.String)">
-            <summary>
-            Runs the tests in an assembly
-            </summary>
-            <param name="filter">A string containing the XML representation of the filter to use</param>
-            <returns>The XML result of the test run</returns>
-        </member>
-        <member name="M:NUnit.Framework.Api.FrameworkController.RunTests(System.Action{System.String},System.String)">
-            <summary>
-            Runs the tests in an assembly syncronously reporting back the test results through the callback
-            or through the return value
-            </summary>
-            <param name="callback">The callback that receives the test results</param>
-            <param name="filter">A string containing the XML representation of the filter to use</param>
-            <returns>The XML result of the test run</returns>
-        </member>
-        <member name="M:NUnit.Framework.Api.FrameworkController.RunAsync(System.Action{System.String},System.String)">
-            <summary>
-            Runs the tests in an assembly asyncronously reporting back the test results through the callback
-            </summary>
-            <param name="callback">The callback that receives the test results</param>
-            <param name="filter">A string containing the XML representation of the filter to use</param>
-        </member>
-        <member name="M:NUnit.Framework.Api.FrameworkController.StopRun(System.Boolean)">
-            <summary>
-            Stops the test run
-            </summary>
-            <param name="force">True to force the stop, false for a cooperative stop</param>
-        </member>
-        <member name="M:NUnit.Framework.Api.FrameworkController.CountTests(System.String)">
-            <summary>
-            Counts the number of test cases in the loaded TestSuite
-            </summary>
-            <param name="filter">A string containing the XML representation of the filter to use</param>
-            <returns>The number of tests</returns>
-        </member>
         <member name="M:NUnit.Framework.Api.FrameworkController.InsertEnvironmentElement(NUnit.Framework.Interfaces.TNode)">
             <summary>
             Inserts environment element
@@ -5892,7 +5698,7 @@
         </member>
         <member name="M:NUnit.Framework.Api.ITestAssemblyRunner.Load(System.String,System.Collections.IDictionary)">
             <summary>
-            Loads the tests found in an Assembly, returning an
+            Loads the tests found in an Assembly, returning an 
             indication of whether or not the load succeeded.
             </summary>
             <param name="assemblyName">File name of the assembly to load</param>
@@ -5901,7 +5707,7 @@
         </member>
         <member name="M:NUnit.Framework.Api.ITestAssemblyRunner.Load(System.Reflection.Assembly,System.Collections.IDictionary)">
             <summary>
-            Loads the tests found in an Assembly, returning an
+            Loads the tests found in an Assembly, returning an 
             indication of whether or not the load succeeded.
             </summary>
             <param name="assembly">The assembly to load</param>
@@ -6058,7 +5864,7 @@
             <summary>
             Signal any test run that is in process to stop. Return without error if no test is running.
             </summary>
-            <param name="force">If true, kill any tests that are currently running</param>
+            <param name="force">If true, kill any test-running threads</param>
         </member>
         <member name="M:NUnit.Framework.Api.NUnitTestAssemblyRunner.CreateTestExecutionContext(NUnit.Framework.Interfaces.ITestListener)">
             <summary>
@@ -7018,7 +6824,7 @@
         </member>
         <member name="M:NUnit.Framework.Assert.Equals(System.Object,System.Object)">
             <summary>
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an AssertionException. This is done 
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -7026,7 +6832,7 @@
         </member>
         <member name="M:NUnit.Framework.Assert.ReferenceEquals(System.Object,System.Object)">
             <summary>
-            override the default ReferenceEquals to throw an InvalidOperationException. This 
+            override the default ReferenceEquals to throw an AssertionException. This 
             implementation makes sure there is no mistake in calling this function 
             as part of Assert. 
             </summary>
@@ -7279,118 +7085,6 @@
             the expected and the actual</param>
             <param name="message">The message to display in case of failure</param>
             <param name="args">Array of objects to be used in formatting the message</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.ThrowsAsync(NUnit.Framework.Constraints.IResolveConstraint,NUnit.Framework.AsyncTestDelegate,System.String,System.Object[])">
-            <summary>
-            Verifies that an async delegate throws a particular exception when called.
-            </summary>
-            <param name="expression">A constraint to be satisfied by the exception</param>
-            <param name="code">A TestSnippet delegate</param>
-            <param name="message">The message that will be displayed on failure</param>
-            <param name="args">Arguments to be used in formatting the message</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.ThrowsAsync(NUnit.Framework.Constraints.IResolveConstraint,NUnit.Framework.AsyncTestDelegate)">
-            <summary>
-            Verifies that an async delegate throws a particular exception when called.
-            </summary>
-            <param name="expression">A constraint to be satisfied by the exception</param>
-            <param name="code">A TestSnippet delegate</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.ThrowsAsync(System.Type,NUnit.Framework.AsyncTestDelegate,System.String,System.Object[])">
-            <summary>
-            Verifies that an async delegate throws a particular exception when called.
-            </summary>
-            <param name="expectedExceptionType">The exception Type expected</param>
-            <param name="code">A TestDelegate</param>
-            <param name="message">The message that will be displayed on failure</param>
-            <param name="args">Arguments to be used in formatting the message</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.ThrowsAsync(System.Type,NUnit.Framework.AsyncTestDelegate)">
-            <summary>
-            Verifies that an async delegate throws a particular exception when called.
-            </summary>
-            <param name="expectedExceptionType">The exception Type expected</param>
-            <param name="code">A TestDelegate</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.ThrowsAsync``1(NUnit.Framework.AsyncTestDelegate,System.String,System.Object[])">
-            <summary>
-            Verifies that an async delegate throws a particular exception when called.
-            </summary>
-            <typeparam name="TActual">Type of the expected exception</typeparam>
-            <param name="code">A TestDelegate</param>
-            <param name="message">The message that will be displayed on failure</param>
-            <param name="args">Arguments to be used in formatting the message</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.ThrowsAsync``1(NUnit.Framework.AsyncTestDelegate)">
-            <summary>
-            Verifies that an async delegate throws a particular exception when called.
-            </summary>
-            <typeparam name="TActual">Type of the expected exception</typeparam>
-            <param name="code">A TestDelegate</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.CatchAsync(NUnit.Framework.AsyncTestDelegate,System.String,System.Object[])">
-            <summary>
-            Verifies that an async delegate throws an exception when called
-            and returns it.
-            </summary>
-            <param name="code">A TestDelegate</param>
-            <param name="message">The message that will be displayed on failure</param>
-            <param name="args">Arguments to be used in formatting the message</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.CatchAsync(NUnit.Framework.AsyncTestDelegate)">
-            <summary>
-            Verifies that an async delegate throws an exception when called
-            and returns it.
-            </summary>
-            <param name="code">A TestDelegate</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.CatchAsync(System.Type,NUnit.Framework.AsyncTestDelegate,System.String,System.Object[])">
-            <summary>
-            Verifies that an async delegate throws an exception of a certain Type
-            or one derived from it when called and returns it.
-            </summary>
-            <param name="expectedExceptionType">The expected Exception Type</param>
-            <param name="code">A TestDelegate</param>
-            <param name="message">The message that will be displayed on failure</param>
-            <param name="args">Arguments to be used in formatting the message</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.CatchAsync(System.Type,NUnit.Framework.AsyncTestDelegate)">
-            <summary>
-            Verifies that an async delegate throws an exception of a certain Type
-            or one derived from it when called and returns it.
-            </summary>
-            <param name="expectedExceptionType">The expected Exception Type</param>
-            <param name="code">A TestDelegate</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.CatchAsync``1(NUnit.Framework.AsyncTestDelegate,System.String,System.Object[])">
-            <summary>
-            Verifies that an async delegate throws an exception of a certain Type
-            or one derived from it when called and returns it.
-            </summary>
-            <param name="code">A TestDelegate</param>
-            <param name="message">The message that will be displayed on failure</param>
-            <param name="args">Arguments to be used in formatting the message</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.CatchAsync``1(NUnit.Framework.AsyncTestDelegate)">
-            <summary>
-            Verifies that an async delegate throws an exception of a certain Type
-            or one derived from it when called and returns it.
-            </summary>
-            <param name="code">A TestDelegate</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.DoesNotThrowAsync(NUnit.Framework.AsyncTestDelegate,System.String,System.Object[])">
-            <summary>
-            Verifies that an async delegate does not throw an exception
-            </summary>
-            <param name="code">A TestDelegate</param>
-            <param name="message">The message that will be displayed on failure</param>
-            <param name="args">Arguments to be used in formatting the message</param>
-        </member>
-        <member name="M:NUnit.Framework.Assert.DoesNotThrowAsync(NUnit.Framework.AsyncTestDelegate)">
-            <summary>
-            Verifies that an async delegate does not throw an exception.
-            </summary>
-            <param name="code">A TestDelegate</param>
         </member>
         <member name="M:NUnit.Framework.Assert.Throws(NUnit.Framework.Constraints.IResolveConstraint,NUnit.Framework.TestDelegate,System.String,System.Object[])">
             <summary>
@@ -7750,12 +7444,6 @@
             capture any thrown exception.
             </summary>
         </member>
-        <member name="T:NUnit.Framework.AsyncTestDelegate">
-            <summary>
-            Delegate used by tests that execute async code and
-            capture any thrown exception.
-            </summary>
-        </member>
         <member name="T:NUnit.Framework.AssertionHelper">
             <summary>
             AssertionHelper is an optional base class for user tests,
@@ -7843,7 +7531,7 @@
         </member>
         <member name="M:NUnit.Framework.Assume.Equals(System.Object,System.Object)">
             <summary>
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an AssertionException. This is done 
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -7851,7 +7539,7 @@
         </member>
         <member name="M:NUnit.Framework.Assume.ReferenceEquals(System.Object,System.Object)">
             <summary>
-            override the default ReferenceEquals to throw an InvalidOperationException. This 
+            override the default ReferenceEquals to throw an AssertionException. This 
             implementation makes sure there is no mistake in calling this function 
             as part of Assert. 
             </summary>
@@ -8244,29 +7932,6 @@
             The reason for including or excluding the test
             </summary>
         </member>
-        <member name="T:NUnit.Framework.SingleThreadedAttribute">
-            <summary>
-            SingleThreadedAttribute applies to a test fixture and indicates
-            that all the child tests must be run on the same thread as the
-            OneTimeSetUp and OneTimeTearDown. It sets a flag in the
-            TestExecutionContext and forces all tests to be run sequentially
-            on the current thread. Any ParallelScope setting is ignored.
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.SingleThreadedAttribute.ApplyToContext(NUnit.Framework.Internal.TestExecutionContext)">
-            <summary>
-            Apply changes to the TestExecutionContext
-            </summary>
-            <param name="context">The TestExecutionContext</param>
-        </member>
-        <member name="T:NUnit.Framework.TestAssemblyDirectoryResolveAttribute">
-            <summary>
-            TestAssemblyDirectoryResolveAttribute is used to mark a test assembly as needing a
-            special assembly resolution hook that will explicitly search the test assembly's
-            directory for dependent assemblies. This works around a conflict between mixed-mode
-            assembly initialization and tests running in their own AppDomain in some cases.
-            </summary>
-        </member>
         <member name="T:NUnit.Framework.LevelOfParallelismAttribute">
             <summary>
             LevelOfParallelismAttribute is used to set the number of worker threads
@@ -8312,28 +7977,6 @@
             after all the child tests have run. The method is 
             guaranteed to be called, even if an exception is thrown.
             </summary>
-        </member>
-        <member name="T:NUnit.Framework.OrderAttribute">
-            <summary>
-            Defines the order that the test will run in
-            </summary>
-        </member>
-        <member name="F:NUnit.Framework.OrderAttribute.Order">
-            <summary>
-            Defines the order that the test will run in
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.OrderAttribute.#ctor(System.Int32)">
-            <summary>
-            Defines the order that the test will run in
-            </summary>
-            <param name="order"></param>
-        </member>
-        <member name="M:NUnit.Framework.OrderAttribute.ApplyToTest(NUnit.Framework.Internal.Test)">
-            <summary>
-            Modifies a test as defined for the specific attribute.
-            </summary>
-            <param name="test">The test to modify</param>
         </member>
         <member name="T:NUnit.Framework.PairwiseAttribute">
             <summary>
@@ -9052,15 +8695,6 @@
             </summary>
             <param name="sourceName">The name of a static method, property or field that will provide data.</param>
         </member>
-        <member name="M:NUnit.Framework.TestCaseSourceAttribute.#ctor(System.Type,System.String,System.Object[])">
-            <summary>
-            Construct with a Type and name
-            </summary>
-            <param name="sourceType">The Type that will provide data</param>
-            <param name="sourceName">The name of a static method, property or field that will provide data.</param>
-            <param name="methodParams">A set of parameters passed to the method, works only if the Source Name is a method. 
-                                If the source name is a field or property has no effect.</param>
-        </member>
         <member name="M:NUnit.Framework.TestCaseSourceAttribute.#ctor(System.Type,System.String)">
             <summary>
             Construct with a Type and name
@@ -9073,12 +8707,6 @@
             Construct with a Type
             </summary>
             <param name="sourceType">The type that will provide data</param>
-        </member>
-        <member name="P:NUnit.Framework.TestCaseSourceAttribute.MethodParams">
-            <summary>
-            A set of parameters passed to the method, works only if the Source Name is a method. 
-            If the source name is a field or property has no effect.
-            </summary>
         </member>
         <member name="P:NUnit.Framework.TestCaseSourceAttribute.SourceName">
             <summary>
@@ -9450,7 +9078,7 @@
         </member>
         <member name="M:NUnit.Framework.CollectionAssert.Equals(System.Object,System.Object)">
             <summary>
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an AssertionException. This is done 
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -9458,7 +9086,7 @@
         </member>
         <member name="M:NUnit.Framework.CollectionAssert.ReferenceEquals(System.Object,System.Object)">
             <summary>
-            override the default ReferenceEquals to throw an InvalidOperationException. This 
+            override the default ReferenceEquals to throw an AssertionException. This 
             implementation makes sure there is no mistake in calling this function 
             as part of Assert. 
             </summary>
@@ -9773,6 +9401,39 @@
             <param name="collection">An array, list or other collection implementing IEnumerable</param>
             <param name="comparer">A custom comparer to perform the comparisons</param>
         </member>
+        <member name="T:NUnit.Framework.Compatibility.AttributeHelper">
+            <summary>
+            Provides a platform-independent methods for getting attributes
+            for use by AttributeConstraint and AttributeExistsConstraint.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Compatibility.AttributeHelper.GetCustomAttributes(System.Object,System.Type,System.Boolean)">
+            <summary>
+            Gets the custom attributes from the given object.
+            </summary>
+            <remarks>Portable libraries do not have an ICustomAttributeProvider, so we need to cast to each of
+            it's direct subtypes and try to get attributes off those instead.</remarks>
+            <param name="actual">The actual.</param>
+            <param name="attributeType">Type of the attribute.</param>
+            <param name="inherit">if set to <c>true</c> [inherit].</param>
+            <returns>A list of the given attribute on the given object.</returns>
+        </member>
+        <member name="T:NUnit.Framework.Compatibility.LongLivedMarshalByRefObject">
+            <summary>
+            A MarshalByRefObject that lives forever
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Compatibility.LongLivedMarshalByRefObject.InitializeLifetimeService">
+            <summary>
+            Obtains a lifetime service object to control the lifetime policy for this instance.
+            </summary>
+        </member>
+        <member name="T:NUnit.Framework.Compatibility.Stopwatch">
+            <summary>
+            This class is a System.Diagnostics.Stopwatch on operating systems that support it. On those that don't,
+            it replicates the functionality at the resolution supported.
+            </summary>
+        </member>
         <member name="T:NUnit.Framework.Constraints.AllItemsConstraint">
             <summary>
             AllItemsConstraint applies another constraint to each
@@ -10034,13 +9695,6 @@
             <param name="actual"></param>
             <returns></returns>
         </member>
-        <member name="M:NUnit.Framework.Constraints.CollectionContainsConstraint.Using``2(System.Func{``0,``1,System.Boolean})">
-            <summary>
-            Flag the constraint to use the supplied predicate function
-            </summary>
-            <param name="comparison">The comparison function to use.</param>
-            <returns>Self.</returns>
-        </member>
         <member name="T:NUnit.Framework.Constraints.CollectionEquivalentConstraint">
             <summary>
             CollectionEquivalentConstraint is used to determine whether two
@@ -10065,13 +9719,6 @@
             </summary>
             <param name="actual"></param>
             <returns></returns>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.CollectionEquivalentConstraint.Using``2(System.Func{``0,``1,System.Boolean})">
-            <summary>
-            Flag the constraint to use the supplied predicate function
-            </summary>
-            <param name="comparison">The comparison function to use.</param>
-            <returns>Self.</returns>
         </member>
         <member name="T:NUnit.Framework.Constraints.CollectionItemsEqualConstraint">
             <summary>
@@ -10223,13 +9870,6 @@
             <param name="actual"></param>
             <returns></returns>
         </member>
-        <member name="M:NUnit.Framework.Constraints.CollectionSubsetConstraint.Using``2(System.Func{``0,``1,System.Boolean})">
-            <summary>
-            Flag the constraint to use the supplied predicate function
-            </summary>
-            <param name="comparison">The comparison function to use.</param>
-            <returns>Self.</returns>
-        </member>
         <member name="T:NUnit.Framework.Constraints.CollectionSupersetConstraint">
             <summary>
             CollectionSupersetConstraint is used to determine whether
@@ -10255,13 +9895,6 @@
             </summary>
             <param name="actual"></param>
             <returns></returns>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.CollectionSupersetConstraint.Using``2(System.Func{``0,``1,System.Boolean})">
-            <summary>
-            Flag the constraint to use the supplied predicate function
-            </summary>
-            <param name="comparison">The comparison function to use.</param>
-            <returns>Self.</returns>
         </member>
         <member name="T:NUnit.Framework.Constraints.CollectionTally">
             <summary>
@@ -10511,15 +10144,6 @@
             </summary>
             <param name="actual">A reference to the value to be tested</param>
             <returns>A ConstraintResult</returns>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.Constraint.GetTestObject``1(NUnit.Framework.Constraints.ActualValueDelegate{``0})">
-            <summary>
-            Retrieves the value to be tested from an ActualValueDelegate.
-            The default implementation simply evaluates the delegate but derived
-            classes may override it to provide for delayed processing.
-            </summary>
-            <param name="del">An ActualValueDelegate</param>
-            <returns>Delegate evaluation result</returns>
         </member>
         <member name="M:NUnit.Framework.Constraints.Constraint.ToString">
             <summary>
@@ -10901,11 +10525,6 @@
         <member name="P:NUnit.Framework.Constraints.ConstraintExpression.Negative">
             <summary>
             Returns a constraint that tests for a negative value
-            </summary>
-        </member>
-        <member name="P:NUnit.Framework.Constraints.ConstraintExpression.Zero">
-            <summary>
-            Returns a constraint that tests if item is equal to zero
             </summary>
         </member>
         <member name="P:NUnit.Framework.Constraints.ConstraintExpression.NaN">
@@ -11292,11 +10911,6 @@
         <member name="P:NUnit.Framework.Constraints.ConstraintFactory.Negative">
             <summary>
             Returns a constraint that tests for a negative value
-            </summary>
-        </member>
-        <member name="P:NUnit.Framework.Constraints.ConstraintFactory.Zero">
-            <summary>
-            Returns a constraint that tests for equality with zero
             </summary>
         </member>
         <member name="P:NUnit.Framework.Constraints.ConstraintFactory.NaN">
@@ -12151,26 +11765,6 @@
             Returns an <see cref="T:NUnit.Framework.Constraints.EqualityAdapter"/> that wraps an <see cref="T:System.Collections.IEqualityComparer"/>.
             </summary>
         </member>
-        <member name="M:NUnit.Framework.Constraints.EqualityAdapter.For``2(System.Func{``0,``1,System.Boolean})">
-            <summary>
-            Returns an EqualityAdapter that uses a predicate function for items comparison.
-            </summary>
-            <typeparam name="TExpected"></typeparam>
-            <typeparam name="TActual"></typeparam>
-            <param name="comparison"></param>
-            <returns></returns>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.EqualityAdapter.PredicateEqualityAdapter`2.CanCompare(System.Object,System.Object)">
-            <summary>
-            Returns true if the two objects can be compared by this adapter.
-            The base adapter cannot handle IEnumerables except for strings.
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.EqualityAdapter.PredicateEqualityAdapter`2.AreEqual(System.Object,System.Object)">
-            <summary>
-            Compares two objects, returning true if they are equal
-            </summary>
-        </member>
         <member name="M:NUnit.Framework.Constraints.EqualityAdapter.GenericEqualityAdapter`1.CanCompare(System.Object,System.Object)">
             <summary>
             Returns true if the two objects can be compared by this adapter.
@@ -12215,19 +11809,6 @@
             </summary>
             <param name="actual">The actual argument</param>
             <returns>True if the constraint succeeds, otherwise false.</returns>
-        </member>
-        <member name="P:NUnit.Framework.Constraints.ExceptionNotThrownConstraint.Description">
-            <summary>
-            The Description of what this constraint tests, for
-            use in messages and in the ConstraintResult.
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.ExceptionNotThrownConstraint.ApplyTo``1(``0)">
-            <summary>
-            Applies the constraint to an actual value, returning a ConstraintResult.
-            </summary>
-            <param name="actual">The value to be tested</param>
-            <returns>A ConstraintResult</returns>
         </member>
         <member name="T:NUnit.Framework.Constraints.FalseConstraint">
             <summary>
@@ -12670,21 +12251,6 @@
             <param name="start">The starting point of the elements to write</param>
             <param name="max">The maximum number of elements to write</param>
         </member>
-        <member name="T:NUnit.Framework.Constraints.ValueFormatter">
-            <summary>
-            Custom value formatter function
-            </summary>
-            <param name="val">The value</param>
-            <returns></returns>
-        </member>
-        <member name="T:NUnit.Framework.Constraints.ValueFormatterFactory">
-            <summary>
-            Custom value formatter factory function
-            </summary>
-            <param name="next">The next formatter function</param>
-            <returns>ValueFormatter</returns>
-            <remarks>If the given formatter is unable to handle a certain format, it must call the next formatter in the chain</remarks>
-        </member>
         <member name="T:NUnit.Framework.Constraints.MsgUtils">
             <summary>
             Static methods used in creating messages
@@ -12699,17 +12265,6 @@
             <summary>
             Formatting strings used for expected and actual _values
             </summary>
-        </member>
-        <member name="P:NUnit.Framework.Constraints.MsgUtils.DefaultValueFormatter">
-            <summary>
-            Current head of chain of value formatters. Public for testing.
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.MsgUtils.AddFormatter(NUnit.Framework.Constraints.ValueFormatterFactory)">
-            <summary>
-            Add a formatter to the chain of responsibility.
-            </summary>
-            <param name="formatterFactory"></param>
         </member>
         <member name="M:NUnit.Framework.Constraints.MsgUtils.FormatValue(System.Object)">
             <summary>
@@ -13979,13 +13534,6 @@
             <param name="actual">A delegate representing the code to be tested</param>
             <returns>True if an exception is thrown, otherwise false</returns>
         </member>
-        <member name="M:NUnit.Framework.Constraints.ThrowsExceptionConstraint.GetTestObject``1(NUnit.Framework.Constraints.ActualValueDelegate{``0})">
-            <summary>
-            Returns the ActualValueDelegate itself as the value to be tested.
-            </summary>
-            <param name="del">A delegate representing the code to be tested</param>
-            <returns>The delegate itself</returns>
-        </member>
         <member name="T:NUnit.Framework.Constraints.ThrowsNothingConstraint">
             <summary>
             ThrowsNothingConstraint tests that a delegate does not
@@ -14339,7 +13887,7 @@
         </member>
         <member name="M:NUnit.Framework.DirectoryAssert.Equals(System.Object,System.Object)">
             <summary>
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an AssertionException. This is done 
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -14347,7 +13895,7 @@
         </member>
         <member name="M:NUnit.Framework.DirectoryAssert.ReferenceEquals(System.Object,System.Object)">
             <summary>
-            override the default ReferenceEquals to throw an InvalidOperationException. This 
+            override the default ReferenceEquals to throw an AssertionException. This 
             implementation makes sure there is no mistake in calling this function 
             as part of Assert. 
             </summary>
@@ -14638,7 +14186,7 @@
         </member>
         <member name="M:NUnit.Framework.FileAssert.Equals(System.Object,System.Object)">
             <summary>
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an AssertionException. This is done 
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -14646,7 +14194,7 @@
         </member>
         <member name="M:NUnit.Framework.FileAssert.ReferenceEquals(System.Object,System.Object)">
             <summary>
-            override the default ReferenceEquals to throw an InvalidOperationException. This 
+            override the default ReferenceEquals to throw an AssertionException. This 
             implementation makes sure there is no mistake in calling this function 
             as part of Assert. 
             </summary>
@@ -14833,10 +14381,8 @@
         </member>
         <member name="T:NUnit.Framework.GlobalSettings">
             <summary>
-            GlobalSettings is a place for setting default values used
-            by the framework in performing asserts. Anything set through
-            this class applies to the entire test run. It should not normally
-            be used from within a test, since it is not thread-safe.
+            GlobalSettings is a place for setting default _values used
+            by the framework in performing asserts.
             </summary>
         </member>
         <member name="F:NUnit.Framework.GlobalSettings.DefaultFloatingPointTolerance">
@@ -16216,11 +15762,6 @@
             Returns a constraint that tests for a negative value
             </summary>
         </member>
-        <member name="P:NUnit.Framework.Is.Zero">
-            <summary>
-            Returns a constraint that tests for equality with zero
-            </summary>
-        </member>
         <member name="P:NUnit.Framework.Is.NaN">
             <summary>
             Returns a constraint that tests for NaN
@@ -16498,7 +16039,7 @@
         </member>
         <member name="M:NUnit.Framework.StringAssert.Equals(System.Object,System.Object)">
             <summary>
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an AssertionException. This is done 
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -16506,7 +16047,7 @@
         </member>
         <member name="M:NUnit.Framework.StringAssert.ReferenceEquals(System.Object,System.Object)">
             <summary>
-            override the default ReferenceEquals to throw an InvalidOperationException. This 
+            override the default ReferenceEquals to throw an AssertionException. This 
             implementation makes sure there is no mistake in calling this function 
             as part of Assert. 
             </summary>
@@ -16813,11 +16354,6 @@
             Gets a Representation of the TestResult for the current test. 
             </summary>
         </member>
-        <member name="P:NUnit.Framework.TestContext.WorkerId">
-            <summary>
-            Gets the unique name of the  Worker that is executing this test.
-            </summary>
-        </member>
         <member name="P:NUnit.Framework.TestContext.TestDirectory">
             <summary>
             Gets the directory containing the current test assembly.
@@ -16935,25 +16471,6 @@
         </member>
         <member name="M:NUnit.Framework.TestContext.WriteLine(System.String,System.Object[])">
             <summary>Write a formatted string to the current result followed by a line terminator</summary>
-        </member>
-        <member name="M:NUnit.Framework.TestContext.AddFormatter(NUnit.Framework.Constraints.ValueFormatterFactory)">
-            <summary>
-            This method adds the a new ValueFormatterFactory to the
-            chain of responsibility used for fomatting values in messages.
-            The scope of the change is the current TestContext.
-            </summary>
-            <param name="formatterFactory">The factory delegate</param>
-        </member>
-        <member name="M:NUnit.Framework.TestContext.AddFormatter``1(NUnit.Framework.Constraints.ValueFormatter)">
-            <summary>
-            This method provides a simplified way to add a ValueFormatter
-            delegate to the chain of responsibility, creating the factory
-            delegate internally. It is useful when the Type of the object
-            is the only criterion for selection of the formatter, since
-            it can be used without getting involved with a compould function.
-            </summary>
-            <typeparam name="TSUPPORTED">The type supported by this formatter</typeparam>
-            <param name="formatter">The ValueFormatter delegate</param>
         </member>
         <member name="T:NUnit.Framework.TestContext.TestAdapter">
             <summary>
@@ -17342,30 +16859,6 @@
         <member name="F:NUnit.Common.PackageSettings.SynchronousEvents">
             <summary>
             If true, use of the event queue is suppressed and test events are synchronous.
-            </summary>
-        </member>
-        <member name="F:NUnit.Common.PackageSettings.ImageRuntimeVersion">
-            <summary>
-            If the package represents an assembly, then this is the CLR version
-            stored in the assembly image. If it represents a project or other
-            group of assemblies, it is the maximum version for all the assemblies.
-            </summary>
-        </member>
-        <member name="F:NUnit.Common.PackageSettings.ImageRequiresX86">
-            <summary>
-            True if any assembly in the package requires running as a 32-bit
-            process when on a 64-bit system.
-            </summary>
-        </member>
-        <member name="F:NUnit.Common.PackageSettings.ImageRequiresDefaultAppDomainAssemblyResolver">
-            <summary>
-            True if any assembly in the package requires a special assembly resolution hook
-            in the default AppDomain in order to find dependent assemblies.
-            </summary>
-        </member>
-        <member name="F:NUnit.Common.PackageSettings.ImageTargetFrameworkName">
-            <summary>
-            The FrameworkName specified on a TargetFrameworkAttribute for the assembly
             </summary>
         </member>
     </members>
