@@ -5,7 +5,7 @@
 
     using Dispose;
 
-    public class ManualScheduler: IScheduler
+    public class ManualScheduler: IScheduler, IDisposable
     {
         private readonly LinkedList<Action> _actions = new LinkedList<Action>();
 

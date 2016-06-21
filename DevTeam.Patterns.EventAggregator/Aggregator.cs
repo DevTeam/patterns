@@ -2,8 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
 
-    using DevTeam.Patterns.Dispose;
+    using Dispose;
 
     using Reactive;
 
@@ -15,24 +16,24 @@
         {
             if (provider == null) throw new ArgumentNullException(nameof(provider));
 
-            System.Diagnostics.Debug.WriteLine($"{nameof(Aggregator)}: Register provider for {typeof(T).Name}");
+            WriteLog($"Register provider for {typeof(T).Name}");
 
             var subject = GetSubject<T>();
             return new CompositeDisposable(
                 provider.Subscribe(subject),
-                Disposable.Create(() => { System.Diagnostics.Debug.WriteLine($"{nameof(Aggregator)}: Unregister provider for {typeof(T).Name}"); }));
+                Disposable.Create(() => { WriteLog($"Unregister provider for {typeof(T).Name}"); }));
         }
 
         public IDisposable RegisterConsumer<T>(IObserver<T> consumer)
         {
             if (consumer == null) throw new ArgumentNullException(nameof(consumer));
 
-            System.Diagnostics.Debug.WriteLine($"{nameof(Aggregator)}: Register consumer for {typeof(T).Name}");
+            WriteLog($"Register consumer for {typeof(T).Name}");
 
             var subject = GetSubject<T>();
             return new CompositeDisposable(
-                subject.Subscribe(consumer),
-                Disposable.Create(() => { System.Diagnostics.Debug.WriteLine($"{nameof(Aggregator)}: Unregister consumer for {typeof(T).Name}"); }));
+                subject.Subscribe(consumer),                
+                Disposable.Create(() => { WriteLog($"Unregister consumer for {typeof(T).Name}"); }));
         }       
 
         private Subject<T> GetSubject<T>()
@@ -40,12 +41,18 @@
             object subject;
             if (!_subjects.TryGetValue(typeof(T), out subject))
             {
-                System.Diagnostics.Debug.WriteLine($"{nameof(Aggregator)}: Create subject for {typeof(T).Name}");
+                WriteLog($"Create subject for {typeof(T).Name}");
                 subject = new Subject<T>();
                 _subjects.Add(typeof(T), subject);
             }
 
             return (Subject<T>)subject;
+        }
+
+        [Conditional("DEBUG")]
+        private void WriteLog(string message)
+        {
+            Debug.WriteLine($"{nameof(Aggregator)}: {message}");
         }
     }
 }

@@ -6,6 +6,9 @@
     using Contracts;
 
     using Patterns.Dispose;
+
+    using Patterns.Reactive;
+
     using Patterns.EventAggregator;
 
     public class ExplorerContainerConfiguration: IConfiguration
@@ -19,6 +22,7 @@
             disposable.Add(
                 container
                     .Register<ISession, ITool>(session => new ExplorerTool(
+                        container.Resolve<IScheduler>(WellknownScheduler.PrivateSingleThread),
                         session, 
                         container.Resolve<IEventAggregator>(), 
                         container.ResolveAll<ITestsSource>())));
