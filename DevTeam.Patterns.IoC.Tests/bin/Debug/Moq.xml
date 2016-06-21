@@ -4,6 +4,85 @@
         <name>Moq</name>
     </assembly>
     <members>
+        <member name="T:Moq.Capture">
+            <summary>
+            Allows to create parameter captures in setup expressions.
+            </summary>
+        </member>
+        <member name="M:Moq.Capture.In``1(System.Collections.Generic.ICollection{``0})">
+            <summary>
+            Creates a parameter capture that will store values in a collection.
+            </summary>
+            <typeparam name="T">The captured object type</typeparam>
+            <param name="collection">The collection that will store captured parameter values</param>
+            <example>
+            Arrange code:
+            <code>
+            var parameters = new List{string}();
+            mock.Setup(x => x.DoSomething(Capture.In(parameters)));
+            </code>
+            Assert code:
+            <code>
+            Assert.Equal("Hello!", parameters.Single());
+            </code>
+            </example>
+        </member>
+        <member name="M:Moq.Capture.In``1(System.Collections.Generic.IList{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            Creates a parameter capture that will store specific values in a collection.
+            </summary>
+            <typeparam name="T">The captured object type</typeparam>
+            <param name="collection">The collection that will store captured parameter values</param>
+            <param name="predicate">A predicate used to filter captured parameters</param>
+            <example>
+            Arrange code:
+            <code>
+            var parameters = new List{string}();
+            mock.Setup(x => x.DoSomething(Capture.In(parameters, p => p.StartsWith("W"))));
+            </code>
+            Assert code:
+            <code>
+            Assert.Equal("Hello!", parameters.Single());
+            </code>
+            </example>
+        </member>
+        <member name="M:Moq.Capture.With``1(Moq.CaptureMatch{``0})">
+            <summary>
+            Creates a parameter capture using specified <see cref="T:Moq.CaptureMatch`1"/>.
+            </summary>
+            <typeparam name="T">The captured object type</typeparam>
+            <example>
+            Arrange code:
+            <code>
+            var capturedValue = string.Empty;
+            var match = new CaptureMatch{string}(x => capturedValue = x);
+            mock.Setup(x => x.DoSomething(Capture.With(match)));
+            </code>
+            Assert code:
+            <code>
+            Assert.Equal("Hello!", capturedValue);
+            </code>
+            </example>
+        </member>
+        <member name="T:Moq.CaptureMatch`1">
+            <summary>
+            Allows creation custom matchers that can be used on setups to capture parameter values.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Moq.CaptureMatch`1.#ctor(System.Action{`0})">
+            <summary>
+            Initializes an instance of the capture match.
+            </summary>
+            <param name="captureCallback">An action to run on captured value</param>
+        </member>
+        <member name="M:Moq.CaptureMatch`1.#ctor(System.Action{`0},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Initializes an instance of the capture match.
+            </summary>
+            <param name="captureCallback">An action to run on captured value</param>
+            <param name="predicate">A predicate used to filter captured parameters</param>
+        </member>
         <member name="M:Moq.IInterceptStrategy.HandleIntercept(Moq.Proxy.ICallContext,Moq.InterceptorContext,Moq.CurrentInterceptContext)">
             <summary>
             Handle interception
@@ -5523,13 +5602,13 @@
             <summary>Branch: master</summary>
         </member>
         <member name="F:ThisAssembly.Git.Commit">
-            <summary>Commit: 44b3fbc</summary>
+            <summary>Commit: e500f69</summary>
         </member>
         <member name="F:ThisAssembly.Git.Sha">
-            <summary>Sha: 44b3fbc099d53ce1efc52922a4f6414a57a6426a</summary>
+            <summary>Sha: e500f69a896daf83e3aca2cee316c70e929bbd4b</summary>
         </member>
         <member name="F:ThisAssembly.Git.Commits">
-            <summary>Commits on top of base version: 8</summary>
+            <summary>Commits on top of base version: 10</summary>
         </member>
         <member name="F:ThisAssembly.Git.Tag">
             <summary>Tag: </summary>
@@ -5559,7 +5638,7 @@
             <summary>Minor: 5</summary>
         </member>
         <member name="F:ThisAssembly.Git.SemVer.Patch">
-            <summary>Patch: 8</summary>
+            <summary>Patch: 10</summary>
         </member>
         <member name="F:ThisAssembly.Git.SemVer.Label">
             <summary>Label: </summary>

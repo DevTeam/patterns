@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Import Project="tests.proj" />
 	<Import Project="packages.proj" />
+
 	<UsingTask TaskName="DownloadFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
 		<ParameterGroup>
 			<Url ParameterType="System.String" Required="true" />
@@ -50,10 +53,16 @@
 	</Target>	
 
 	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<PackagesDirectory>packages</PackagesDirectory>	
 	</PropertyGroup>
 
-	<Target Name="CreatePackages" DependsOnTargets="Build">
+	<Target Name="RunTests">
+		<Exec Command="nuget.exe install NUnit.Console -Version 3.0.1 -o packages"/>
+		<Exec Command="$(MSBuildProjectDirectory)\packages\NUnit.Console.3.0.1\tools\nunit3-console.exe %(TestAssembly.Identity)\bin\$(Configuration)\%(TestAssembly.FileName)%(TestAssembly.Extension).dll"/>
+	</Target>
+
+	<Target Name="CreatePackages" DependsOnTargets="Build;RunTests">
 		<Exec Command="nuget.exe pack %(Package.Identity)\package.nuspec -Version $(Version) -OutputDirectory $(PackagesDirectory)"/>
 	</Target>
 
