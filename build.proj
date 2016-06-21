@@ -68,7 +68,7 @@
 		<Exec Command="nuget.exe pack %(Package.Identity)\package.nuspec -Version $(Version) -OutputDirectory $(PackagesDirectory)"/>
 	</Target>
 
-	<Target Name="PushPackages" DependsOnTargets="CreatePackages">
+	<Target Name="PushPackages">
 		<Exec Command="nuget.exe push $(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg -ApiKey $(ApiKey) -Source https://nuget.org/"/>
 	</Target>
 
