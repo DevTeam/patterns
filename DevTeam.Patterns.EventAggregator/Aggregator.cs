@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
 
+    using DevTeam.Patterns.Dispose;
+
     using Reactive;
 
     internal class Aggregator : IEventAggregator
@@ -16,7 +18,9 @@
             System.Diagnostics.Debug.WriteLine($"{nameof(Aggregator)}: Register provider for {typeof(T).Name}");
 
             var subject = GetSubject<T>();
-            return provider.Subscribe(subject);
+            return new CompositeDisposable(
+                provider.Subscribe(subject),
+                Disposable.Create(() => { System.Diagnostics.Debug.WriteLine($"{nameof(Aggregator)}: Unregister provider for {typeof(T).Name}"); }));
         }
 
         public IDisposable RegisterConsumer<T>(IObserver<T> consumer)
@@ -26,7 +30,9 @@
             System.Diagnostics.Debug.WriteLine($"{nameof(Aggregator)}: Register consumer for {typeof(T).Name}");
 
             var subject = GetSubject<T>();
-            return subject.Subscribe(consumer);
+            return new CompositeDisposable(
+                subject.Subscribe(consumer),
+                Disposable.Create(() => { System.Diagnostics.Debug.WriteLine($"{nameof(Aggregator)}: Unregister consumer for {typeof(T).Name}"); }));
         }       
 
         private Subject<T> GetSubject<T>()

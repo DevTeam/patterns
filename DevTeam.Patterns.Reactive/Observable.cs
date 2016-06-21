@@ -65,7 +65,11 @@
             return Create<TSource>(observer =>
                 {
                     var disposable = new CompositeDisposable();
-                    scheduler.Schedule(() => disposable.Add(observable.Subscribe(observer)));
+                    scheduler.Schedule(
+                    () =>
+                        {
+                            disposable.Add(observable.Subscribe(observer));
+                        });
                     return disposable;
                 });
         }
@@ -134,7 +138,10 @@
                     {
                         var disposable = new CompositeDisposable();
                         disposable.Add(
-                            source1.Subscribe(observer.OnNext, observer.OnError, () =>
+                            source1.Subscribe(
+                                observer.OnNext, 
+                                observer.OnError, 
+                                () =>
                                 {
                                     disposable.Add(source2.Subscribe(observer.OnNext, observer.OnError, observer.OnCompleted));
                                 }));
