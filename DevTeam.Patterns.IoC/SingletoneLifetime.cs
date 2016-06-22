@@ -15,7 +15,7 @@
             _baseLifetime = baseLifetime;
         }
 
-        public object Create(IContainer container, IRegistryKey registryKey, Func<object, object> factory, object state)
+        public object Create(IContainer container, IKey registryKey, Func<object, object> factory, object state)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
@@ -32,7 +32,7 @@
             return currentFactory.Value;
         }
 
-        public void Release(IContainer container, IRegistryKey registryKey)
+        public void Release(IContainer container, IKey registryKey)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
@@ -42,10 +42,10 @@
         
         private class Key
         {
-	        private readonly IRegistryKey _registryKey;
+	        private readonly IKey _registryKey;
 	        private readonly object _state;
 
-	        public Key(IRegistryKey registryKey, object state)
+	        public Key(IKey registryKey, object state)
 	        {
 		        if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
 
@@ -57,7 +57,7 @@
 	        {
 		        if (ReferenceEquals(null, obj)) return false;
 		        if (ReferenceEquals(this, obj)) return true;
-		        if (obj.GetType() != this.GetType()) return false;
+		        if (obj.GetType() != GetType()) return false;
 		        return Equals((Key) obj);
 	        }
 

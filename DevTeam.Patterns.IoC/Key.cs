@@ -2,11 +2,11 @@ namespace DevTeam.Patterns.IoC
 {
     using System;
 
-    internal class RegistryKey: IRegistryKey, IDisposable
+    internal class Key: IKey, IDisposable
     {
         private readonly IDisposable _resources;
 
-        public RegistryKey(Type stateType, Type instanceType, string name, IDisposable resources)
+        public Key(Type stateType, Type instanceType, string name, IDisposable resources)
         {            
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
@@ -35,7 +35,7 @@ namespace DevTeam.Patterns.IoC
             return $"{InstanceType.FullName}({StateType.FullName}, \"{Name}\")";
         }
 
-        public bool Equals(IRegistryKey other)
+        public bool Equals(IKey other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -47,7 +47,7 @@ namespace DevTeam.Patterns.IoC
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((RegistryKey)obj);
+            return Equals((Key)obj);
         }
 
         public override int GetHashCode()

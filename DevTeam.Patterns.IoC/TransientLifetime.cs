@@ -5,19 +5,19 @@
     internal class TransientLifetime : ILifetime
     {
     
-        public object Create(IContainer container, IRegistryKey registryKey, Func<object, object> factory, object state)
+        public object Create(IContainer container, IKey key, Func<object, object> factory, object state)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
-            if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
+            if (key == null) throw new ArgumentNullException(nameof(key));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
             return factory(state);
         }
 
-        public void Release(IContainer container, IRegistryKey registryKey)
+        public void Release(IContainer container, IKey key)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
-            if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
+            if (key == null) throw new ArgumentNullException(nameof(key));
         }
     }
 }

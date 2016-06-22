@@ -58,7 +58,7 @@
 
             public string Name => _container.Name;
 
-            public IEnumerable<IRegistryKey> Keys => _container.Keys;
+            public IEnumerable<IKey> Keys => _container.Keys;
 
             public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
             {

@@ -9,7 +9,7 @@
     public class Container: IContainer
 	{
         private static readonly IConfiguration Configuration = new IoCContainerConfiguration();
-        private readonly Dictionary<IRegistryKey, Func<object, object>> _factories = new Dictionary<IRegistryKey, Func<object, object>>();
+        private readonly Dictionary<IKey, Func<object, object>> _factories = new Dictionary<IKey, Func<object, object>>();
 		private readonly IContainer _parentContainer;
         
         /// <summary>
@@ -34,7 +34,7 @@
 
         public string Name { get; }
 
-	    public IEnumerable<IRegistryKey> Keys => _factories.Keys.Union(_parentContainer != null ? _parentContainer.Keys : Enumerable.Empty<IRegistryKey>());
+	    public IEnumerable<IKey> Keys => _factories.Keys.Union(_parentContainer != null ? _parentContainer.Keys : Enumerable.Empty<IKey>());
 
 	    public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
 		{
@@ -44,7 +44,7 @@
 		    if (name == null) throw new ArgumentNullException(nameof(name));
 
 		    var resources = new CompositeDisposable();
-            var key = new RegistryKey(stateType, instanceType, name, resources);            
+            var key = new Key(stateType, instanceType, name, resources);            
 		    try
 		    {                
 		        if (instanceType != typeof(ILifetime))
@@ -78,7 +78,7 @@
                 return (IContainer)Resolve(typeof(ContainerInfo), typeof(IContainer), new ContainerInfo(this, name));
             }
 
-            var key = new RegistryKey(stateType, instanceType, name, Disposable.Empty());
+            var key = new Key(stateType, instanceType, name, Disposable.Empty());
             Func<object, object> factory;
 			if (_factories.TryGetValue(key, out factory))
 			{                
@@ -121,14 +121,14 @@
 	        return Name;
 	    }
 
-	    internal IEnumerable<IRegistryKey> Registrations => _factories.Keys;
+	    internal IEnumerable<IKey> Registrations => _factories.Keys;
 
-	    private bool Unregister(IRegistryKey key)
+	    private bool Unregister(IKey key)
         {
             return _factories.Remove(key);
         }
 
-        private bool Unregister(IRegistryKey key, ILifetime factory)
+        private bool Unregister(IKey key, ILifetime factory)
         {
             if (Unregister(key))
             {
