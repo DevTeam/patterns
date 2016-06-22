@@ -34,7 +34,9 @@
 
         public string Name { get; }
 
-        public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
+	    public IEnumerable<IRegistryKey> Keys => _factories.Keys.Union(_parentContainer != null ? _parentContainer.Keys : Enumerable.Empty<IRegistryKey>());
+
+	    public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
 		{
 		    if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
@@ -104,23 +106,7 @@
 
             throw new InvalidOperationException($"The entry {key} was not registered. {GetRegisteredInfo()}", innerException);
         }
-
-		public IEnumerable<Tuple<IRegistryKey, object>> Resolve(Func<IRegistryKey, bool> filter, Func<IRegistryKey, object> stateSelector)
-		{
-			var result = 
-				from factory in _factories
-				where factory.Key.InstanceType != typeof(ILifetime) && factory.Key.InstanceType != typeof(IContainer)
-				where filter(factory.Key)
-				select Tuple.Create(factory.Key, factory.Value(stateSelector(factory.Key)));
-
-			if (_parentContainer != null)
-			{
-				result = _parentContainer.Resolve(filter, stateSelector).Concat(result);
-			}
-
-			return result;
-		}
-
+        	
 		public void Dispose()
 	    {
 	        var disposableKeys = new List<IDisposable>(_factories.Keys.OfType<IDisposable>());

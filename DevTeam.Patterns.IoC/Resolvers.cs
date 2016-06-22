@@ -26,11 +26,11 @@
 		public static IEnumerable<T> ResolveAll<T>(this IResolver resolver)
 		{
 			if (resolver == null) throw new ArgumentNullException(nameof(resolver));
-			
-			return
-				resolver.Resolve(key => key.InstanceType == typeof(T) && key.StateType == typeof(EmptyState), key => EmptyState.Shared)
-				.Select(i => i.Item2)
-				.Cast<T>();
+            
+		    return 
+                from key in resolver.Keys
+		        where key.InstanceType == typeof(T) && key.StateType == typeof(EmptyState)
+		        select (T)resolver.Resolve(key.StateType, key.InstanceType, EmptyState.Shared, key.Name);
 		}
 
 		public static IEnumerable<T> ResolveAll<TState, T>(this IResolver resolver, Func<string, TState> stateSelector)
@@ -38,10 +38,10 @@
 			if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 			if (stateSelector == null) throw new ArgumentNullException(nameof(stateSelector));
 
-			return
-				resolver.Resolve(key => key.InstanceType == typeof(T) && key.StateType == typeof(TState), key => stateSelector(key.Name))
-				.Select(i => i.Item2)
-				.Cast<T>();
+			return                
+                from key in resolver.Keys
+                where key.InstanceType == typeof(T) && key.StateType == typeof(TState)
+                select (T)resolver.Resolve(key.StateType, key.InstanceType, stateSelector(key.Name), key.Name);
 		}
 
 		public static async Task<T> ResolveAsync<T>(this IResolver resolver, string name = "")

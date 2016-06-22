@@ -58,6 +58,8 @@
 
             public string Name => _container.Name;
 
+            public IEnumerable<IRegistryKey> Keys => _container.Keys;
+
             public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
             {
 	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
@@ -80,14 +82,6 @@
 
 	            return _container.Resolve(stateType, instanceType, state, name);
             }
-
-	        public IEnumerable<Tuple<IRegistryKey, object>> Resolve(Func<IRegistryKey, bool> filter, Func<IRegistryKey, object> stateSelector)
-	        {
-		        if (filter == null) throw new ArgumentNullException(nameof(filter));
-		        if (stateSelector == null) throw new ArgumentNullException(nameof(stateSelector));
-
-		        return _container.Resolve(filter, stateSelector);
-	        }
 
 	        public void Dispose()
             {
