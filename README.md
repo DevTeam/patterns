@@ -8,6 +8,6 @@
 
 * _EventAggregator_ patterns [NuGet](https://www.nuget.org/packages/DevTeam.Patterns.EventAggregator)
 
+How to use see [samples](https://github.com/DevTeam/patterns/tree/master/Samples).
 Build server: [TeamCity](http://win10nik.cloudapp.net/project.html?projectId=DevTeam&tab=projectOverview)
-
 Author: [Nikolay Pianikov](https://github.com/NikolayPianikov)
