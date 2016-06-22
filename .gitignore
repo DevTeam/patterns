@@ -22,3 +22,5 @@ DevTeam.Patterns.Reactive.Tests/bin/
 DevTeam.Patterns.EventAggregator.Tests/bin/
 DevTeam.Patterns.Dispose.Tests/bin/
 DevTeam.Patterns.IoC.Tests/bin/
+Samples/ConsoleTimer/bin/
+Samples/ConsoleTimer/obj/
