@@ -10,7 +10,7 @@
             // Create root IoC container
             using (var container = new Container())
             // Apply configuration
-            using (new TimerConfiguration().Apply(container))
+            using (new ConsoleTimerConfiguration().Apply(container))
             // Create publisher
             using (container.Resolve<ITimePublisher>())
             {

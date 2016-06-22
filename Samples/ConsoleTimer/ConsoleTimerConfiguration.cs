@@ -5,7 +5,7 @@
     using DevTeam.Patterns.Dispose;
     using DevTeam.Patterns.IoC;
 
-    internal class TimerConfiguration: IConfiguration
+    internal class ConsoleTimerConfiguration: IConfiguration
     {
         public IDisposable Apply(IContainer container)
         {
