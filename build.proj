@@ -45,6 +45,7 @@
 	</Target>
 
 	<Target Name="RestorePackages" DependsOnTargets="GetNuGet">
+		<Exec Command="rmdir -p packages"/>
 		<Exec Command="nuget.exe restore patterns.sln"/>
 	</Target>
 
