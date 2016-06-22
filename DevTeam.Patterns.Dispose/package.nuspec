@@ -19,5 +19,7 @@
 	</metadata>
 	<files>
   		<file src="bin\Release\DevTeam.Patterns.Dispose.*" target="lib\portable-net45+netcore1+win8+wp8+wpa81/" />
+		<file src="**\*.*" target="src\DevTeam.Patterns.Dispose" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
+		<file src="..\DevTeam.Patterns.Dispose.Tests\**\*.*" target="src\DevTeam.Patterns.Dispose.Tests" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
 	</files>
 </package>
