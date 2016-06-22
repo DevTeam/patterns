@@ -4,6 +4,12 @@
 	<Import Project="tests.proj" />
 	<Import Project="packages.proj" />
 
+	<PropertyGroup>
+		<Version Condition=" '$(Version)' == '' ">1.0.0-beta</Version>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<PackagesDirectory>packages</PackagesDirectory>	
+	</PropertyGroup>
+
 	<UsingTask TaskName="DownloadFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
 		<ParameterGroup>
 			<Url ParameterType="System.String" Required="true" />
@@ -52,11 +58,6 @@
 	<Target Name="Build" DependsOnTargets="RestorePackages">
 		<MSBuild Projects="patterns.sln" BuildInParallel="true" Properties="Configuration=Release"/>
 	</Target>	
-
-	<PropertyGroup>
-		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-		<PackagesDirectory>packages</PackagesDirectory>	
-	</PropertyGroup>
 
 	<Target Name="RunTests" DependsOnTargets="RestorePackages">
 		<Exec Command="nuget.exe install NUnit.Console -Version 3.0.1 -o packages"/>
