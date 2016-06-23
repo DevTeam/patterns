@@ -6,11 +6,11 @@
     using DevTeam.Patterns.EventAggregator;
     using DevTeam.Patterns.Reactive;
 
-    public class EchoService: IEchoService, IObserver<EchoRequest>, IObservable<EchoResponse>
+    public class EchoService: IEchoService, IObserver<EchoRequest>, IObservable<Echo>
     {
         private readonly string _id;
         private readonly IEventAggregator _eventAggregator;
-        private readonly Subject<EchoResponse> _echoSubject = new Subject<EchoResponse>();
+        private readonly Subject<Echo> _echoSubject = new Subject<Echo>();
 
         public EchoService(
             string id, 
@@ -30,14 +30,14 @@
                 _eventAggregator.RegisterConsumer(this));
         }
 
-        IDisposable IObservable<EchoResponse>.Subscribe(IObserver<EchoResponse> observer)
+        IDisposable IObservable<Echo>.Subscribe(IObserver<Echo> observer)
         {
-            return _echoSubject.Subscribe(observer);
+            return _echoSubject.Subscribe(observer);            
         }
 
         void IObserver<EchoRequest>.OnNext(EchoRequest value)
         {
-            _echoSubject.OnNext(new EchoResponse($"echo from {_id} \"{value.Message}\""));
+            _echoSubject.OnNext(new Echo($"echo from {_id} \"{value.Message}\""));
         }
 
         void IObserver<EchoRequest>.OnError(Exception error)

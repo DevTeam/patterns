@@ -4,9 +4,9 @@
 
     internal class ConsoleEchoPublisher: IEchoPublisher
     {
-        public void OnNext(EchoResponse value)
+        public void OnNext(Echo value)
         {
-            Console.WriteLine(value.Echo);
+            Console.WriteLine(value.EchoMessage);
         }
 
         public void OnError(Exception error)

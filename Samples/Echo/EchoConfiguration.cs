@@ -22,9 +22,9 @@
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IEchoPublisher>(
                 () => new ConsoleEchoPublisher()));
 
-            // Register ConsoleEchoRequestProvider as Singletone
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IEchoRequestProvider>(
-                () => new ConsoleEchoRequestProvider()));
+            // Register ConsoleEchoRequestSource as Singletone
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IEchoRequestSource>(
+                () => new ConsoleEchoRequestSource()));
 
             return disposable;
         }

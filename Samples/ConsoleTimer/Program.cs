@@ -11,11 +11,19 @@
             using (var container = new Container())
             // Apply configuration
             using (new ConsoleTimerConfiguration().Apply(container))
-            // Create publisher
-            using (container.Resolve<ITimePublisher>())
             {
-                // Wait for any key
-                container.Resolve<IConsole>().ReadLine();
+                // Create console
+                var console = container.Resolve<IConsole>();
+
+                // Create publisher
+                using (container.Resolve<ITimePublisher>())
+                {
+                    // Wait for any key
+                    console.ReadLine();                    
+                }
+
+                console.WriteLine("Press any key to exit");
+                console.ReadLine();
             }
         }
     }

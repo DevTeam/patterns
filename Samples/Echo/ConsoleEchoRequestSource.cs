@@ -4,14 +4,13 @@
 
     using DevTeam.Patterns.Dispose;
 
-    internal class ConsoleEchoRequestProvider: IEchoRequestProvider
+    internal class ConsoleEchoRequestSource: IEchoRequestSource
     {
         public IDisposable Subscribe(IObserver<EchoRequest> observer)
         {
-            string input;
             do
             {
-                input = Console.ReadLine();
+                var input = Console.ReadLine();
                 if (!string.IsNullOrEmpty(input))
                 {
                     observer.OnNext(new EchoRequest(input));                    
