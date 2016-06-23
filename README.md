@@ -13,3 +13,17 @@ How to use see [samples](https://github.com/DevTeam/patterns/tree/master/Samples
 Build server: [TeamCity](http://win10nik.cloudapp.net/project.html?projectId=DevTeam&tab=projectOverview)
 
 Author: [Nikolay Pianikov](https://github.com/NikolayPianikov)
+
+Supports: 
+* portable-net45
+* win8
+* wp8
+* wpa81
+* MonoAndroid10
+* xamarinios10
+* MonoTouch10
+* Xamarin.iOS
+* monoandroid
+* monotouch
+* netstandard1.0
+* netcoreapp
