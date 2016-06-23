@@ -20,7 +20,7 @@
 		</dependencies>
 	</metadata>
 	<files>
-  		<file src="bin\Release\DevTeam.Patterns.EventAggregator.*" target="lib\portable-net45+netcoreapp1.0+win8+wp8+wpa81/" />
+  		<file src="bin\Release\DevTeam.Patterns.EventAggregator.*" target="lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp" />
 		<file src="**\*.*" target="src\DevTeam.Patterns.EventAggregator" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
 		<file src="..\DevTeam.Patterns.EventAggregator.Tests\**\*.*" target="src\DevTeam.Patterns.EventAggregator.Tests" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
 	</files>

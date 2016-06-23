@@ -19,7 +19,7 @@
 		</dependencies>
 	</metadata>
 	<files>
-  		<file src="bin\Release\DevTeam.Patterns.Reactive.*" target="lib\portable-net45+netcoreapp1.0+win8+wp8+wpa81/" />
+  		<file src="bin\Release\DevTeam.Patterns.Reactive.*" target="lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp" />
 		<file src="**\*.*" target="src\DevTeam.Patterns.Reactive" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
 		<file src="..\DevTeam.Patterns.Reactive.Tests\**\*.*" target="src\DevTeam.Patterns.Reactive.Tests" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
 	</files>

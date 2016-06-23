@@ -5,7 +5,6 @@
   },
 
   "dependencies": {
-    "DevTeam.Patterns.EventAggregator": "1.0.32-beta",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.0-rc2-3002702"
