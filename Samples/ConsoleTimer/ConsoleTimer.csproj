@@ -32,16 +32,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevTeam.Patterns.Dispose, Version=1.0.32.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DevTeam.Patterns.Dispose.1.0.32-beta\lib\portable-net45+netcore1+win8+wp8+wpa81\DevTeam.Patterns.Dispose.dll</HintPath>
+    <Reference Include="DevTeam.Patterns.Dispose, Version=1.0.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DevTeam.Patterns.Dispose.1.0.34-beta\lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp\DevTeam.Patterns.Dispose.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DevTeam.Patterns.IoC, Version=1.0.32.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DevTeam.Patterns.IoC.1.0.32-beta\lib\portable-net45+netcore1+win8+wp8+wpa81\DevTeam.Patterns.IoC.dll</HintPath>
+    <Reference Include="DevTeam.Patterns.IoC, Version=1.0.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DevTeam.Patterns.IoC.1.0.34-beta\lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp\DevTeam.Patterns.IoC.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DevTeam.Patterns.Reactive, Version=1.0.32.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DevTeam.Patterns.Reactive.1.0.32-beta\lib\portable-net45+netcore1+win8+wp8+wpa81\DevTeam.Patterns.Reactive.dll</HintPath>
+    <Reference Include="DevTeam.Patterns.Reactive, Version=1.0.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DevTeam.Patterns.Reactive.1.0.34-beta\lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp\DevTeam.Patterns.Reactive.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
