@@ -24,3 +24,5 @@ DevTeam.Patterns.Dispose.Tests/bin/
 DevTeam.Patterns.IoC.Tests/bin/
 Samples/ConsoleTimer/bin/
 Samples/ConsoleTimer/obj/
+Samples/Echo/obj/
+Samples/Echo/bin/

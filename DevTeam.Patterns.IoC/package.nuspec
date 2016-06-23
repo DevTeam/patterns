@@ -18,7 +18,7 @@
 		</dependencies>
 	</metadata>
 	<files>
-  		<file src="bin\Release\DevTeam.Patterns.IoC.*" target="lib\portable-net45+netcore1+win8+wp8+wpa81/" />
+  		<file src="bin\Release\DevTeam.Patterns.IoC.*" target="lib\portable-net45+netcoreapp1.0+win8+wp8+wpa81/" />
 		<file src="**\*.*" target="src\DevTeam.Patterns.IoC" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
 		<file src="..\DevTeam.Patterns.IoC.Tests\**\*.*" target="src\DevTeam.Patterns.IoC.Tests" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
 	</files>
