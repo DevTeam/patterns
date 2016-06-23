@@ -5,6 +5,10 @@
   },
 
   "dependencies": {
+    "DevTeam.Patterns.Dispose": "1.0.34-beta",
+    "DevTeam.Patterns.EventAggregator": "1.0.34-beta",
+    "DevTeam.Patterns.IoC": "1.0.34-beta",
+    "DevTeam.Patterns.Reactive": "1.0.34-beta",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.0-rc2-3002702"
