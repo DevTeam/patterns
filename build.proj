@@ -70,8 +70,12 @@
 		<Message Text="##teamcity[publishArtifacts '$(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg=>$(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg']" />
 	</Target>
 
-	<Target Name="PushPackages">
-		<Exec Command="nuget.exe push $(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg -ApiKey $(ApiKey) -Source https://nuget.org/"/>
+	<Target Name="PushPackagesToNuGet">
+		<Exec Command="nuget.exe push $(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg -ApiKey $(NuGetApiKey) -Source https://nuget.org/"/>
+	</Target>
+
+	<Target Name="PushPackagesToMyGet">
+		<Exec Command="nuget.exe push $(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg -ApiKey $(MyGetApiKey) -Source https://myget.org/"/>
 	</Target>
 
 </Project>
