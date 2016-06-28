@@ -1,11 +1,11 @@
-﻿namespace DevTeam.TestTool.dotNet
+﻿namespace DevTeam.TestTool.Engine.Host
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
-    using Engine.Contracts;
+    using Contracts;
 
     public class Reflection: IReflection
     {
@@ -13,7 +13,7 @@
         {
             if (assemblyFileName == null) throw new ArgumentNullException(nameof(assemblyFileName));
 
-            return Assembly.LoadFrom(assemblyFileName);
+            return Assembly.Load(new AssemblyName(assemblyFileName));
         }
         
         public Type LoadType(Assembly assembly, string typeName)
@@ -26,7 +26,7 @@
 
         public IEnumerable<Type> GetTypes(Assembly assembly)
         {
-            return assembly.GetTypes();
+            return assembly.DefinedTypes.Select(i => i.AsType());
         }
 
         public MethodInfo LoadMethod(Type type, string methodName)
@@ -34,13 +34,13 @@
             if (type == null) throw new ArgumentNullException(nameof(type));
             if (methodName == null) throw new ArgumentNullException(nameof(methodName));
 
-            return type.GetMethod(methodName);
+            return type.GetTypeInfo().GetDeclaredMethod(methodName);
         }
 
         public IEnumerable<T> GetCustomAttribute<T>(Type type)
             where T : Attribute
         {
-            return type.GetCustomAttributes<T>();
+            return type.GetTypeInfo().GetCustomAttributes<T>();
         }
 
         public IEnumerable<T> GetCustomAttribute<T>(MethodInfo method)
@@ -51,7 +51,7 @@
 
         public IEnumerable<MethodInfo> GetMethods(Type type)
         {
-            return type.GetMethods();
+            return type.GetTypeInfo().DeclaredMethods;
         }
 
         public object CreateInstance(Type type)

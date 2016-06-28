@@ -1,13 +1,12 @@
-﻿namespace DevTeam.TestTool.dotNet
+﻿namespace DevTeam.TestTool.dotNetCore
 {
     using System;
 
     using Patterns.Dispose;
+    using Patterns.IoC;
     using Engine.Contracts;
 
-    using Patterns.IoC;
-
-    public class DotNetContainerConfiguration: IConfiguration
+    public class DotNetCoreContainerConfiguration: IConfiguration
     {
         public IDisposable Apply(IContainer container)
         {

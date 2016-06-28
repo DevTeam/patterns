@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0-rc2-3002702"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "DevTeam.Patterns.Dispose": {
+          "target": "project"
+        },
+        "DevTeam.Patterns.IoC": {
+          "target": "project"
+        },
+        "DevTeam.TestTool.Engine": {
+          "target": "project"
+        },
+        "DevTeam.TestTool.Engine.Contracts": {
+          "target": "project"
+        },
+        "DevTeam.TestTool.Test.Mocks": {
+          "target": "project"
+        }
+      },
+      "imports": "dnxcore50"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "version": 2,
+  "exports": {
+    "DevTeam.Patterns.Dispose/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.0",
+      "compile": {
+        "bin/Debug/DevTeam.Patterns.Dispose.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/DevTeam.Patterns.Dispose.dll": {}
+      }
+    },
+    "DevTeam.Patterns.IoC/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.0",
+      "compile": {
+        "bin/Debug/DevTeam.Patterns.IoC.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/DevTeam.Patterns.IoC.dll": {}
+      }
+    },
+    "DevTeam.TestTool.Engine.Contracts/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.0",
+      "compile": {
+        "bin/Debug/DevTeam.TestTool.Engine.Contracts.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/DevTeam.TestTool.Engine.Contracts.dll": {}
+      }
+    },
+    "DevTeam.TestTool.Engine/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.0",
+      "compile": {
+        "bin/Debug/DevTeam.TestTool.Engine.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/DevTeam.TestTool.Engine.dll": {}
+      }
+    },
+    "DevTeam.TestTool.Test.Mocks/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.0",
+      "compile": {
+        "bin/Debug/DevTeam.TestTool.Test.Mocks.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/DevTeam.TestTool.Test.Mocks.dll": {}
+      }
+    },
+    "DevTeam.Patterns.EventAggregator/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.0",
+      "compile": {
+        "bin/Debug/DevTeam.Patterns.EventAggregator.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/DevTeam.Patterns.EventAggregator.dll": {}
+      }
+    },
+    "DevTeam.Patterns.Reactive/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.0",
+      "compile": {
+        "bin/Debug/DevTeam.Patterns.Reactive.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/DevTeam.Patterns.Reactive.dll": {}
+      }
+    },
+    "DevTeam.TestTool.Contracts/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.0",
+      "compile": {
+        "bin/Debug/DevTeam.TestTool.Contracts.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/DevTeam.TestTool.Contracts.dll": {}
+      }
+    }
+  }
+}
