@@ -52,7 +52,7 @@
 	</Target>
 
 	<Target Name="RestorePackages" DependsOnTargets="GetNuGet">
-		<Exec Command="nuget.exe restore patterns.sln"/>
+		<!--Exec Command="nuget.exe restore patterns.sln"/-->
 	</Target>
 
 	<Target Name="Build" DependsOnTargets="RestorePackages">
