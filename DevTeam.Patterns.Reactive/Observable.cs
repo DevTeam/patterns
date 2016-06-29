@@ -3,7 +3,9 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
 
     using Dispose;
 
@@ -91,6 +93,45 @@
         public static IObservable<TSource> ToObservable<TSource>(params TSource[] source)
         {
             return source.ToObservable();
+        }
+
+        public static IObservable<TResult> ToObservable<TResult>(this Task<TResult> task)
+        {
+            if (task == null) throw new ArgumentNullException(nameof(task));
+            
+            return Create<TResult>(observer => {
+                try
+                { 
+                    task.Wait();
+
+                    if (task.IsFaulted)
+                    {
+                        observer.OnError(task.Exception);
+                        return Disposable.Empty();
+                    }
+
+                    if (task.IsCompleted)
+                    {
+                        observer.OnNext(task.Result);
+                    }
+
+                    observer.OnCompleted();
+                }
+                catch (AggregateException ex)
+                {
+                    observer.OnError(ex.InnerException);
+                }
+
+                return Disposable.Empty();
+            });
+        }
+
+        public static IObservable<TResult> ToObservable<TResult>(this IEnumerable<Task<TResult>> tasks)
+        {
+            if (tasks == null) throw new ArgumentNullException(nameof(tasks));
+
+            var observable = Empty<TResult>();
+            return tasks.Aggregate(observable, (current, task) => current.Concat(task.ToObservable()));
         }
 
         public static void WaitForCompletion<TSource>(this IObservable<TSource> observable)

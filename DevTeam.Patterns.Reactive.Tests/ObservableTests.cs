@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Castle.Components.DictionaryAdapter;
 
@@ -292,6 +293,68 @@
             events[2].Value.ShouldBe(2);
 
             events[3].EventType.ShouldBe(Event<int>.Type.OnComplete);
+        }
+
+        [Test]
+        public void ShouldObserveTaskResult()
+        {
+            // Given            
+            
+            // When
+            var events = Task.Run(() => 1)
+                .ToObservable()
+                .Materialize()
+                .ToList();
+
+            // Then
+            events.Count.ShouldBe(2);
+
+            events[0].EventType.ShouldBe(Event<int>.Type.OnNext);
+            events[0].Value.ShouldBe(1);
+
+            events[1].EventType.ShouldBe(Event<int>.Type.OnComplete);
+        }
+
+        [Test]
+        public void ShouldObserveTaskFault()
+        {
+            // Given            
+            var ex = new Exception();
+
+            // When
+            var events = Task.Run(() => { throw ex; return 1; })
+                .ToObservable()
+                .Materialize()
+                .ToList();
+
+            // Then
+            events.Count.ShouldBe(1);
+
+            events[0].EventType.ShouldBe(Event<int>.Type.OnError);
+            events[0].Error.ShouldBe(ex);            
+        }
+
+        [Test]
+        public void ShouldObserveTasks()
+        {
+            // Given            
+
+            // When
+            var events = new[] { Task.Run(() => 0), Task.Run(() => 1) }                
+                .ToObservable()
+                .Materialize()
+                .ToList();
+
+            // Then
+            events.Count.ShouldBe(3);
+
+            events[0].EventType.ShouldBe(Event<int>.Type.OnNext);
+            events[0].Value.ShouldBe(0);
+
+            events[1].EventType.ShouldBe(Event<int>.Type.OnNext);
+            events[1].Value.ShouldBe(1);
+
+            events[2].EventType.ShouldBe(Event<int>.Type.OnComplete);
         }
     }
 }
