@@ -322,7 +322,7 @@
             var ex = new Exception();
 
             // When
-            var events = Task.Run(() => { throw ex; return 1; })
+            var events = Task.Run((Func<int>) (() => { throw ex; }))
                 .ToObservable()
                 .Materialize()
                 .ToList();
