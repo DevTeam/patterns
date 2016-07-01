@@ -24,12 +24,12 @@
             Configuration.Apply(this);            
         }
 
-        internal Container(ContainerInfo containerInfo)
+        internal Container(ContainerDescription containerDescription)
         {
-            if (containerInfo == null) throw new ArgumentNullException(nameof(containerInfo));
+            if (containerDescription == null) throw new ArgumentNullException(nameof(containerDescription));
 
-            Name = containerInfo.Name;
-            _parentContainer = containerInfo.ParentContainer;
+            Name = containerDescription.Name;
+            _parentContainer = containerDescription.ParentContainer;
         }
 
         public string Name { get; }
@@ -43,28 +43,40 @@
 		    if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 		    if (name == null) throw new ArgumentNullException(nameof(name));
 
-		    var resources = new CompositeDisposable();
-            var key = new Key(false, stateType, instanceType, name, resources);            
-		    try
-		    {                
-		        if (instanceType != typeof(ILifetime))
-                {
-		            var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
-                    _factories.Add(key, (type, state) => lifetime.Create(this, key, factoryMethod, type, state));
-                    resources.Add(Disposable.Create(() => Unregister(key, lifetime)));
-                }
-                else
-                {
-                    _factories.Add(key, factoryMethod);
-                    resources.Add(Disposable.Create(() => Unregister(key)));
-                }
-                                
-                return key;
-		    }
-		    catch (Exception ex)
-		    {
-                throw new InvalidOperationException($"The entry {key} registration failed. Registered entries:\n{GetRegisteredInfo()}", ex);
-            }		    
+            var registration = new CompositeDisposable();
+            var resources = new CompositeDisposable();
+            var keyDescription = new KeyDescription(stateType, instanceType, name, resources);
+	        foreach (var key in GetRegisterKeys(keyDescription))
+	        {
+	            try
+	            {
+	                if (instanceType != typeof(ILifetime))
+	                {
+	                    var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
+	                    _factories.Add(key, (type, state) => lifetime.Create(this, key, factoryMethod, type, state));
+	                    resources.Add(Disposable.Create(() => Unregister(key, lifetime)));
+	                }
+	                else
+	                {
+	                    _factories.Add(key, factoryMethod);
+	                    resources.Add(Disposable.Create(() => Unregister(key)));
+	                }
+
+	                var disposableKey = key as IDisposable;
+	                if (disposableKey != null)
+	                {
+	                    registration.Add(disposableKey);
+	                }
+	            }
+	            catch (Exception ex)
+	            {
+	                throw new InvalidOperationException(
+	                    $"The entry {key} registration failed. Registered entries:\n{GetRegisteredInfo()}",
+	                    ex);
+	            }
+	        }
+
+	        return registration;
 		}
 
 	    public object Resolve(Type stateType, Type instanceType, object state, string name = "")
@@ -75,17 +87,20 @@
 
             if (instanceType == typeof(IContainer) && stateType == typeof(EmptyState))
             {
-                return (IContainer)Resolve(typeof(ContainerInfo), typeof(IContainer), new ContainerInfo(this, name));
+                return (IContainer)Resolve(typeof(ContainerDescription), typeof(IContainer), new ContainerDescription(this, name));
             }
 
-            var key = new Key(true, stateType, instanceType, name, Disposable.Empty());
-            Func<Type, object, object> factory;
-			if (_factories.TryGetValue(key, out factory))
-			{                
-				return factory(instanceType, state);				
-			}
+            var keyDescription = new KeyDescription(stateType, instanceType, name, Disposable.Empty());
+	        foreach (var key in GetResolveKeys(keyDescription))
+	        {
+	            Func<Type, object, object> factory;
+	            if (_factories.TryGetValue(key, out factory))
+                {
+                    return factory(instanceType, state);
+                }
+	        }
 
-		    Exception innerException = null;
+	        Exception innerException = null;
 		    try
 		    {
 		        if (_parentContainer != null)
@@ -98,13 +113,14 @@
 		        {
                     return IoCContainerConfiguration.TransientLifetime.Value;
 		        }
-		    }
+            }
 		    catch (InvalidOperationException ex)
 		    {
 		        innerException = ex;                
             }
 
-            throw new InvalidOperationException($"The entry {key} was not registered. {GetRegisteredInfo()}", innerException);
+	        var keys = string.Join(" or ", GetResolveKeys(keyDescription).Select(i => i.ToString()));
+            throw new InvalidOperationException($"The entry {keys} was not registered. {GetRegisteredInfo()}", innerException);
         }
         	
 		public void Dispose()
@@ -144,5 +160,16 @@
 	        var details = _factories.Count == 0 ? "no entries" : string.Join(", ", _factories.Keys.Select(k => k.ToString()));
             return $"Container \"{Name}\". Registered entries: {details}";
 	    }
-	}
+
+        private IEnumerable<IKey> GetRegisterKeys(KeyDescription keyDescription)
+        {
+            yield return new StrictKey(keyDescription);
+        }
+
+        private IEnumerable<IKey> GetResolveKeys(KeyDescription keyDescription)
+        {
+            yield return new StrictKey(keyDescription);
+            yield return new GenericKey(keyDescription);
+        }
+    }
 }

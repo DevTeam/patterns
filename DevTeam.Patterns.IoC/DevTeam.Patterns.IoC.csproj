@@ -44,7 +44,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContainerInfo.cs" />
+    <Compile Include="ContainerDescription.cs" />
     <Compile Include="ControlledLifetime.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="IoCContainerConfiguration.cs" />
@@ -53,8 +53,10 @@
     <Compile Include="IKey.cs" />
     <Compile Include="IResolver`2.cs" />
     <Compile Include="IResolver`1.cs" />
+    <Compile Include="KeyDescription.cs" />
     <Compile Include="Registries.cs" />
-    <Compile Include="Key.cs" />
+    <Compile Include="GenericKey.cs" />
+    <Compile Include="StrictKey.cs" />
     <Compile Include="Resolver%271.cs" />
     <Compile Include="Resolver%272.cs" />
     <Compile Include="Resolvers.cs" />

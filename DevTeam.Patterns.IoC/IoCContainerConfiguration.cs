@@ -14,11 +14,15 @@
         {
             var disposable = new CompositeDisposable();
 
+            // Wellknown lifetimes
             disposable.Add(container.Register(() => TransientLifetime.Value, WellknownLifetime.Transient));
             disposable.Add(container.Register(() => SingletoneLifetime.Value, WellknownLifetime.Singletone));
             disposable.Add(container.Register(() => ControlledLifetime.Value, WellknownLifetime.Controlled));
 
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Controlled).Register<ContainerInfo, IContainer>(childContainerInfo => new Container(childContainerInfo)));
+            // Child container
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Controlled).Register<ContainerDescription, IContainer>(containerDescription => new Container(containerDescription)));
+
+            // Resolvers
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(typeof(EmptyState), typeof(IResolver<>),
                 (type, emptyState) =>
                     {

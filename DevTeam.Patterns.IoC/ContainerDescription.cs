@@ -2,9 +2,9 @@
 {
     using System;
 
-    public class ContainerInfo
+    public class ContainerDescription
     {
-        public ContainerInfo(IContainer parentContainer, string name)
+        public ContainerDescription(IContainer parentContainer, string name)
         {
             if (parentContainer == null) throw new ArgumentNullException(nameof(parentContainer));
             if (name == null) throw new ArgumentNullException(nameof(name));
