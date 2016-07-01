@@ -1,1 +1,1 @@
-msbuild build.proj /t:CreatePackages
+msbuild build.proj /t:CreatePackages /p:Version=1.0.37-beta

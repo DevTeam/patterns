@@ -7,18 +7,25 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using IoC;
+
     using Dispose;
 
     public static class Observable
     {
-        public static IObservable<TSource> Create<TSource>(Func<IObserver<TSource>, IDisposable> observable)
+        public static IObservable<TSource> Create<TSource>(
+            Func<IObserver<TSource>, IDisposable> observable)
         {
             if (observable == null) throw new ArgumentNullException(nameof(observable));
 
             return new ObservableCreate<TSource>(observable);
         }
 
-        public static IDisposable Subscribe<TSource>(this IObservable<TSource> observable, Action<TSource> onNext, Action<Exception> onError, Action onComplete)
+        public static IDisposable Subscribe<TSource>(
+            this IObservable<TSource> observable,
+            Action<TSource> onNext,
+            Action<Exception> onError,
+            Action onComplete)
         {
             if (observable == null) throw new ArgumentNullException(nameof(observable));
             if (onNext == null) throw new ArgumentNullException(nameof(onNext));
@@ -26,9 +33,11 @@
             if (onComplete == null) throw new ArgumentNullException(nameof(onComplete));
 
             return new Subscription<TSource>(observable, onNext, onError, onComplete);                
-        }
+        }      
 
-        public static IObservable<TDestination> Select<TSource, TDestination>(this IObservable<TSource> observable, Func<TSource, TDestination> selector)
+        public static IObservable<TDestination> Select<TSource, TDestination>(
+            this IObservable<TSource> observable,
+            Func<TSource, TDestination> selector)
         {
             if (observable == null) throw new ArgumentNullException(nameof(observable));
             if (selector == null) throw new ArgumentNullException(nameof(selector));
@@ -43,7 +52,31 @@
                     });
         }
 
-        public static IObservable<TSource> ObserveOn<TSource>(this IObservable<TSource> observable, IScheduler scheduler)
+        public static IObservable<TSource> Where<TSource>(
+            this IObservable<TSource> observable,
+            Func<TSource, bool> filter)
+        {
+            if (observable == null) throw new ArgumentNullException(nameof(observable));
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
+
+            return Create<TSource>(
+                observer =>
+                {
+                    return observable.Subscribe(
+                        i => {
+                            if (filter(i))
+                            {
+                                observer.OnNext(i);
+                            }
+                        },
+                        observer.OnError,
+                        observer.OnCompleted);
+                });
+        }
+
+        public static IObservable<TSource> ObserveOn<TSource>(
+            this IObservable<TSource> observable,
+            IScheduler scheduler)
         {
             if (observable == null) throw new ArgumentNullException(nameof(observable));
             if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
@@ -59,7 +92,9 @@
             return new ObserverOn<TSource>(observer, scheduler);            
         }
 
-        public static IObservable<TSource> SubscribeOn<TSource>(this IObservable<TSource> observable, IScheduler scheduler)
+        public static IObservable<TSource> SubscribeOn<TSource>(
+            this IObservable<TSource> observable,
+            IScheduler scheduler)
         {
             if (observable == null) throw new ArgumentNullException(nameof(observable));
             if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
@@ -68,16 +103,50 @@
                 {
                     var disposable = new CompositeDisposable();
                     scheduler.Schedule(
-                    () =>
-                        {
-                            disposable.Add(observable.Subscribe(observer));
-                        });
+                    () => { disposable.Add(observable.Subscribe(observer)); });
                     return disposable;
                 });
         }
 
-        public static IObservable<TSource> ToObservable<TSource>(this IEnumerable<TSource> source)
+
+        public static IObservable<TSource> AsObservable<TSource>(
+            this TSource value)
         {
+            return Create<TSource>(observer =>
+            {
+                observer.OnNext(value);
+                observer.OnCompleted();
+                return Disposable.Empty();
+            });
+        }
+
+        public static IObservable<TSource> AsObservable<TSource>(
+            this Exception error)
+        {
+            if (error == null) throw new ArgumentNullException(nameof(error));
+
+            return Create<TSource>(observer =>
+            {
+                observer.OnError(error);
+                return Disposable.Empty();
+            });
+        }
+
+        public static IObservable<TSource> Empty<TSource>()
+        {
+            return Create<TSource>(
+                observer =>
+                {
+                    observer.OnCompleted();
+                    return Disposable.Empty();
+                });
+        }
+
+        public static IObservable<TSource> ToObservable<TSource>(
+            this IEnumerable<TSource> source)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
             return Create<TSource>(observer =>
                 {
                     foreach (var value in source)
@@ -90,18 +159,90 @@
                 });
         }
 
-        public static IObservable<TSource> ToObservable<TSource>(params TSource[] source)
+        public static IObservable<TSource> ToObservable<TSource>(
+            params TSource[] source)
         {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
             return source.ToObservable();
         }
 
-        public static IObservable<TResult> ToObservable<TResult>(this Task<TResult> task)
+        public static IObservable<TResult> ToObservable<TResult>(
+            this Task<TResult> task)
         {
             if (task == null) throw new ArgumentNullException(nameof(task));
-            
+
+            return ToObservable(task, t => t.Result);
+        }
+
+        public static IObservable<EmptyState> ToObservable(
+            this Task task)
+        {
+            if (task == null) throw new ArgumentNullException(nameof(task));
+
+            return ToObservable(task, t => EmptyState.Shared);
+        }
+
+        public static IObservable<TResult> SelectMany<TSource, TResult>(
+            this IObservable<TSource> source,
+            Func<TSource, IObservable<TResult>> selector)
+            where TSource : IObservable<TResult>
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
+
+            return SelectMany(
+                source,
+                src => selector(src).Materialize().Where(i => i.EventType == Event<TResult>.Type.OnNext).Dematerialize(),
+                e => e.AsObservable<TResult>(),
+                Empty<TResult>);
+        }
+
+        private static IObservable<TResult> SelectMany<TSource, TResult>(
+            this IObservable<TSource> source,
+            Func<TSource, IObservable<TResult>> onNext,
+            Func<Exception, IObservable<TResult>> onError,
+            Func<IObservable<TResult>> onCompleted)
+            where TSource: IObservable<TResult>
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (onNext == null) throw new ArgumentNullException(nameof(onNext));
+            if (onError == null) throw new ArgumentNullException(nameof(onError));
+            if (onCompleted == null) throw new ArgumentNullException(nameof(onCompleted));
+
+            return Create<TResult>(
+                observer =>
+                    {
+                        var disposableOnNext = new SerialDisposable();
+                        var disposableOnError = new SerialDisposable();
+                        var disposableOnCompleted = new SerialDisposable();
+
+                        source.Subscribe(
+                            i => {
+                                    disposableOnNext.Disposable = onNext(i).Subscribe(observer.OnNext, observer.OnError, observer.OnCompleted);
+                                },
+                            e => {
+                                    disposableOnError.Disposable = onError(e).Subscribe(observer.OnNext, observer.OnError, observer.OnCompleted);
+                                },
+                            () => {
+                                    disposableOnCompleted.Disposable = onCompleted().Subscribe(observer.OnNext, observer.OnError, observer.OnCompleted);
+                                });
+
+                        return new CompositeDisposable(disposableOnNext, disposableOnError, disposableOnCompleted);
+                    });
+        }
+
+        private static IObservable<TResult> ToObservable<TTask, TResult>(
+            this TTask task,
+            Func<TTask, TResult> resultSelector)
+            where TTask: Task
+        {
+            if (task == null) throw new ArgumentNullException(nameof(task));
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
+
             return Create<TResult>(observer => {
                 try
-                { 
+                {
                     task.Wait();
 
                     if (task.IsFaulted)
@@ -112,7 +253,7 @@
 
                     if (task.IsCompleted)
                     {
-                        observer.OnNext(task.Result);
+                        observer.OnNext(resultSelector(task));
                     }
 
                     observer.OnCompleted();
@@ -126,7 +267,8 @@
             });
         }
 
-        public static IObservable<TResult> ToObservable<TResult>(this IEnumerable<Task<TResult>> tasks)
+        public static IObservable<TResult> ToObservable<TResult>(
+            this IEnumerable<Task<TResult>> tasks)
         {
             if (tasks == null) throw new ArgumentNullException(nameof(tasks));
 
@@ -134,8 +276,20 @@
             return tasks.Aggregate(observable, (current, task) => current.Concat(task.ToObservable()));
         }
 
-        public static void WaitForCompletion<TSource>(this IObservable<TSource> observable)
+        public static IObservable<EmptyState> ToObservable(
+            this IEnumerable<Task> tasks)
         {
+            if (tasks == null) throw new ArgumentNullException(nameof(tasks));
+
+            var observable = Empty<EmptyState>();
+            return tasks.Aggregate(observable, (current, task) => current.Concat(task.ToObservable()));
+        } 
+
+        public static void WaitForCompletion<TSource>(
+            this IObservable<TSource> observable)
+        {
+            if (observable == null) throw new ArgumentNullException(nameof(observable));
+
             var lockObject = new object();
             var isCompleted = false;
             var subscription = observable.Subscribe(
@@ -159,21 +313,15 @@
 
                 subscription.Dispose();
             }           
-        }
+        }        
 
-
-        public static IObservable<TSource> Empty<TSource>()
+        public static IObservable<TSource> Concat<TSource>(
+            this IObservable<TSource> source1,
+            IObservable<TSource> source2)
         {
-            return Create<TSource>(
-                observer =>
-                {
-                    observer.OnCompleted();
-                    return Disposable.Empty();
-                });
-        }
+            if (source1 == null) throw new ArgumentNullException(nameof(source1));
+            if (source2 == null) throw new ArgumentNullException(nameof(source2));
 
-        public static IObservable<TSource> Concat<TSource>(this IObservable<TSource> source1, IObservable<TSource> source2)
-        {
             return Create<TSource>(
                 observer =>
                     {
@@ -191,66 +339,70 @@
                     });
         }
 
-        public static IEnumerable<Event<TSource>> Materialize<TSource>(this IObservable<TSource> source)
+        public static IObservable<Event<TSource>> Materialize<TSource>(
+            this IObservable<TSource> source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            return new MaterializeEnumerable<TSource>(source);            
-        }
-
-        public static IObservable<TSource> Dematerialize<TSource>(this IEnumerable<Event<TSource>> source)
-        {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-
-            return Create<TSource>(
+            return Create<Event<TSource>>(
                 observer =>
                     {
-                        foreach (var ev in source)
-                        {
-                            switch (ev.EventType)
-                            {
-                                case Event<TSource>.Type.OnNext:
-                                    observer.OnNext(ev.Value);
-                                    break;
-
-                                case Event<TSource>.Type.OnError:
-                                    observer.OnError(ev.Error);
-                                    break;
-
-                                case Event<TSource>.Type.OnComplete:
+                        return source.Subscribe(
+                            i => observer.OnNext(Event<TSource>.CreateOnNext(i)),
+                            e =>
+                                {
+                                    observer.OnNext(Event<TSource>.CreateOnError(e));
                                     observer.OnCompleted();
-                                    break;
-                            }                            
-                        }
-
-                        return Disposable.Empty();
-                    });
+                                },
+                            () =>
+                                {
+                                    observer.OnNext(Event<TSource>.CreateOnComplete());
+                                    observer.OnCompleted();
+                                });
+                    });            
         }
 
-        public static IDisposable Materialize<TSource>(this IObservable<TSource> source, Action<Event<TSource>> handler)
+        public static IObservable<TSource> Dematerialize<TSource>(
+            this IObservable<Event<TSource>> source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            if (handler == null) throw new ArgumentNullException(nameof(handler));
 
-            return source.Subscribe(
-                i => handler(Event<TSource>.CreateOnNext(i)),
-                e => handler(Event<TSource>.CreateOnError(e)),
-                () => handler(Event<TSource>.CreateOnComplete()));
+            return Create<TSource>( observer => {
+                return source.Subscribe( i => {
+                        switch (i.EventType)
+                        {
+                            case Event<TSource>.Type.OnNext:
+                                observer.OnNext(i.Value);
+                                break;
+
+                            case Event<TSource>.Type.OnError:
+                                observer.OnError(i.Error);
+                                break;
+
+                            case Event<TSource>.Type.OnComplete:
+                                observer.OnCompleted();
+                                break;
+                        }                                
+                    },
+                    e => { },
+                    () => { });
+                });
         }
 
-        public static IDisposable MaterializeTo<TSource>(this IObservable<TSource> source, ICollection<Event<TSource>> collection)
+        public static IEnumerable<TSource> ToEnumerable<TSource>(
+            this IObservable<TSource> source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
 
-            return Materialize(source, collection.Add);
+            return new ObservableEnumerable<TSource>(source);
         }
 
-        private class MaterializeEnumerable<TSource> : IEnumerable<Event<TSource>>
+        private class ObservableEnumerable<TSource> : IEnumerable<TSource>
         {
             private readonly IObservable<TSource> _source;
 
-            public MaterializeEnumerable(IObservable<TSource> source)
+            public ObservableEnumerable(
+                IObservable<TSource> source)
             {
                 if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -262,20 +414,21 @@
                 return GetEnumerator();
             }
 
-            public IEnumerator<Event<TSource>> GetEnumerator()
+            public IEnumerator<TSource> GetEnumerator()
             {
-                return new MaterializeEnumerator<TSource>(_source);
+                return new ObservableEnumerator<TSource>(_source);
             }
         }
 
-        private class MaterializeEnumerator<TSource> : IEnumerator<Event<TSource>>
+        private class ObservableEnumerator<TSource> : IEnumerator<TSource>
         {
             private readonly IObservable<TSource> _source;
-
             private readonly LinkedList<Event<TSource>> _events = new LinkedList<Event<TSource>>();
             private IDisposable _disposable = Disposable.Empty();
+            private Event<TSource> _current;
 
-            public MaterializeEnumerator(IObservable<TSource> source)
+            public ObservableEnumerator(
+                IObservable<TSource> source)
             {
                 if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -283,26 +436,32 @@
                 Subscribe();
             }
 
-            object IEnumerator.Current => Current;
+            object IEnumerator.Current => _current.Value;
 
-            public Event<TSource> Current { get; private set; }
+            public TSource Current => _current.Value;
 
             public bool MoveNext()
             {
                 lock (_events)
                 {
-                    if (Current != null && Current.EventType != Event<TSource>.Type.OnNext)
-                    {
-                        return false;
-                    }
-
                     while (_events.Count == 0)
                     {
                         Monitor.Wait(_events);
                     }
 
-                    Current = _events.First.Value;
+                    _current = _events.First.Value;
                     _events.RemoveFirst();
+                    switch (_current.EventType)
+                    {
+                        case Event<TSource>.Type.OnNext:                            
+                            return true;                            
+
+                        case Event<TSource>.Type.OnComplete:
+                            return false;
+
+                        case Event<TSource>.Type.OnError:
+                            throw _current.Error;
+                    }                    
                 }
 
                 return true;
@@ -322,7 +481,7 @@
             {
                 _disposable.Dispose();
                 _events.Clear();
-                _disposable = Materialize(_source, AddEvent);                    
+                _disposable = _source.Materialize().Subscribe(AddEvent, e => { }, () => { });                    
             }
 
             private void AddEvent(Event<TSource> ev)
@@ -341,14 +500,16 @@
         {
             private readonly Func<IObserver<TSource>, IDisposable> _observable;
 
-            public ObservableCreate(Func<IObserver<TSource>, IDisposable> observable)
+            public ObservableCreate(
+                Func<IObserver<TSource>, IDisposable> observable)
             {
                 if (observable == null) throw new ArgumentNullException(nameof(observable));
 
                 _observable = observable;
             }
 
-            public IDisposable Subscribe(IObserver<TSource> observer)
+            public IDisposable Subscribe(
+                IObserver<TSource> observer)
             {
                 if (observer == null) throw new ArgumentNullException(nameof(observer));
 
@@ -361,7 +522,9 @@
             private readonly IObserver<T> _observer;
             private readonly IScheduler _scheduler;
 
-            public ObserverOn(IObserver<T> observer, IScheduler scheduler)
+            public ObserverOn(
+                IObserver<T> observer,
+                IScheduler scheduler)
             {
                 if (observer == null) throw new ArgumentNullException(nameof(observer));
                 if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
@@ -393,7 +556,11 @@
             private readonly Action _onComplete;
             private readonly IDisposable _subscription;
 
-            public Subscription(IObservable<T> observable, Action<T> onNext, Action<Exception> onError, Action onComplete)
+            public Subscription(
+                IObservable<T> observable,
+                Action<T> onNext,
+                Action<Exception> onError,
+                Action onComplete)
             {
                 if (observable == null) throw new ArgumentNullException(nameof(observable));
                 if (onNext == null) throw new ArgumentNullException(nameof(onNext));

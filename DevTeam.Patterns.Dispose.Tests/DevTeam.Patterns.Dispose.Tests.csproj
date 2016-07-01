@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SerialDisposableTests.cs" />
     <Compile Include="DisposableTests.cs" />
     <Compile Include="CompositeDisposableTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
