@@ -120,6 +120,20 @@
         }
 
         [Test]
+        public void ShouldResolveUndefinedGeneric()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register(typeof(Service1State), typeof(IService2<>), (type, state) => _service3.Object, "myService2");
+
+            // When
+            var instance = target.Resolve(typeof(Service1State), typeof(IService2<>), new Service1State(), "myService2");
+
+            // Then
+            instance.ShouldBe(_service3.Object);
+        }
+
+        [Test]
 		public void ShouldResolveFromChildContainer()
 		{
 			// Given

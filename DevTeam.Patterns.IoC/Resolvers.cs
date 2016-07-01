@@ -59,5 +59,26 @@
 
             return await resolver.Resolve<TState, Task<T>>(state, name);
         }
+
+        public static IContainer CreateChildContainer(this IResolver resolver, string name = "")
+        {
+            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
+
+            return resolver.Resolve<IContainer>(name);
+        }
+
+        public static IResolver<T> CreateResolver<T>(this IResolver resolver, string name = "")
+        {
+            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
+
+            return resolver.Resolve<IResolver<T>>(name);
+        }
+
+        public static IResolver<TState, T> CreateResolver<TState, T>(this IResolver resolver, string name = "")
+        {
+            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
+
+            return resolver.Resolve<IResolver<TState, T>>(name);
+        }
     }
 }
