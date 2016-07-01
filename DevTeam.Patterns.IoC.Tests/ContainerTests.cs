@@ -199,7 +199,7 @@
 		}
 
         [Test]
-        public void ShouldTypedResolverShouldBeSingletone()
+        public void TypedResolverShouldBeSingletone()
         {
             // Given
             var target = CreateTarget();
@@ -228,20 +228,35 @@
             val.ShouldBe(99);
         }
 
-        //[Test]
-        //public void ShouldCreateTypedResolverWithState()
-        //{
-        //    // Given
-        //    var target = CreateTarget();
-        //    target.Register<int, int>(i => i + 1);
+        [Test]
+        public void TypedResolverWithStateShouldBeSingletone()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register<int, int>(i => i + 1);
 
-        //    // When
-        //    var resolver = target.Resolve<IResolver<int, int>>();
-        //    var val = resolver.Resolve(9);
+            // When
+            var resolver = target.Resolve<IResolver<int, int>>();
+            var resolver2 = target.Resolve<IResolver<int, int>>();
 
-        //    // Then            
-        //    val.ShouldBe(10);
-        //}
+            // Then            
+            resolver.ShouldBe(resolver2);
+        }
+
+        [Test]
+        public void ShouldCreateTypedResolverWithState()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register<int, int>(i => i + 1);
+
+            // When
+            var resolver = target.Resolve<IResolver<int, int>>();
+            var val = resolver.Resolve(9);
+
+            // Then            
+            val.ShouldBe(10);
+        }
 
         private static Container CreateTarget(string name = "")
 		{

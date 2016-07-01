@@ -24,7 +24,14 @@
                     {
                         var resolverType = typeof(Resolver<>).MakeGenericType(type.GenericTypeArguments[0]);
                         return Activator.CreateInstance(resolverType, container);
-                    }));          
+                    }));
+
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(typeof(EmptyState), typeof(IResolver<,>),
+                (type, emptyState) =>
+                {
+                    var resolverType = typeof(Resolver<,>).MakeGenericType(type.GenericTypeArguments[0], type.GenericTypeArguments[1]);
+                    return Activator.CreateInstance(resolverType, container);
+                }));
 
             return disposable;
         }
