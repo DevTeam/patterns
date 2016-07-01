@@ -120,7 +120,7 @@
             }
 
 	        var keys = string.Join(" or ", GetResolveKeys(keyDescription).Select(i => i.ToString()));
-            throw new InvalidOperationException($"The entry {keys} was not registered. {GetRegisteredInfo()}", innerException);
+            throw new InvalidOperationException($"The entries {keys} was not registered. {GetRegisteredInfo()}", innerException);
         }
         	
 		public void Dispose()
@@ -161,12 +161,12 @@
             return $"Container \"{Name}\". Registered entries: {details}";
 	    }
 
-        private IEnumerable<IKey> GetRegisterKeys(KeyDescription keyDescription)
+        private static IEnumerable<IKey> GetRegisterKeys(KeyDescription keyDescription)
         {
             yield return new StrictKey(keyDescription);
         }
 
-        private IEnumerable<IKey> GetResolveKeys(KeyDescription keyDescription)
+        private static IEnumerable<IKey> GetResolveKeys(KeyDescription keyDescription)
         {
             yield return new StrictKey(keyDescription);
             yield return new GenericKey(keyDescription);
