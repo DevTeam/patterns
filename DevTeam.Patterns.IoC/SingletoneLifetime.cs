@@ -15,7 +15,7 @@
             _baseLifetime = baseLifetime;
         }
 
-        public object Create(IContainer container, IKey registryKey, Func<object, object> factory, object state)
+        public object Create(IContainer container, IKey registryKey, Func<Type, object, object> factory, Type instanceType, object state)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
@@ -25,7 +25,7 @@
             Lazy<object> currentFactory;
             if (!_factories.TryGetValue(key, out currentFactory))
             {
-                currentFactory = new Lazy<object>(() => _baseLifetime.Create(container, registryKey, factory, state));
+                currentFactory = new Lazy<object>(() => _baseLifetime.Create(container, registryKey, factory, instanceType, state));
                 _factories.Add(key, currentFactory);
             }
 

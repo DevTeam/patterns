@@ -4,9 +4,11 @@ namespace DevTeam.Patterns.IoC
 
     internal class Key: IKey, IDisposable
     {
+        private readonly bool _resolve;
         private readonly IDisposable _resources;
+        private readonly Type _instanceType;
 
-        public Key(Type stateType, Type instanceType, string name, IDisposable resources)
+        public Key(bool resolve, Type stateType, Type instanceType, string name, IDisposable resources)
         {            
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
@@ -14,16 +16,30 @@ namespace DevTeam.Patterns.IoC
             if (resources == null) throw new ArgumentNullException(nameof(resources));
 
             StateType = stateType;
-            InstanceType = instanceType;
+            _instanceType = instanceType;
             Name = name;
+            _resolve = resolve;
             _resources = resources;
         }
 
-        public Type StateType { get; private set; }
+        public Type StateType { get; }
 
-        public Type InstanceType { get; private set; }
+        public Type InstanceType => _instanceType;
 
-        public string Name { get; private set; }
+        public Type ResolvingInstanceType
+        {
+            get
+            {
+                if (!_resolve || _instanceType.GenericTypeArguments.Length == 0)
+                {
+                    return _instanceType;
+                }
+
+                return _instanceType.GetGenericTypeDefinition();                
+            }
+        }
+
+        public string Name { get; }
 
         public void Dispose()
         {
@@ -39,14 +55,14 @@ namespace DevTeam.Patterns.IoC
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return StateType == other.StateType && InstanceType == other.InstanceType && String.Equals(Name, other.Name);
+            return StateType == other.StateType && ResolvingInstanceType == other.ResolvingInstanceType && string.Equals(Name, other.Name);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Key)obj);
         }
 
@@ -55,7 +71,7 @@ namespace DevTeam.Patterns.IoC
             unchecked
             {
                 var hashCode = StateType.GetHashCode();
-                hashCode = (hashCode * 397) ^ InstanceType.GetHashCode();
+                hashCode = (hashCode * 397) ^ ResolvingInstanceType.GetHashCode();
                 hashCode = (hashCode * 397) ^ Name.GetHashCode();
                 return hashCode;
             }

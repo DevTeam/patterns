@@ -19,6 +19,12 @@
             disposable.Add(container.Register(() => ControlledLifetime.Value, WellknownLifetime.Controlled));
 
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Controlled).Register<ContainerInfo, IContainer>(childContainerInfo => new Container(childContainerInfo)));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(typeof(EmptyState), typeof(IResolver<>),
+                (type, emptyState) =>
+                    {
+                        var resolverType = typeof(Resolver<>).MakeGenericType(type.GenericTypeArguments[0]);
+                        return Activator.CreateInstance(resolverType, container);
+                    }));          
 
             return disposable;
         }

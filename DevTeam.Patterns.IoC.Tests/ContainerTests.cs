@@ -13,12 +13,14 @@
 		private Mock<IService1> _service1;
         private Mock<IService1> _service2;
         private Service1State _service1State;
+	    private Mock<IService2<int>> _service3;
 
-		[SetUp]
+	    [SetUp]
 		public void SetUp()
 		{
 			_service1 = new Mock<IService1>();
             _service2 = new Mock<IService1>();
+            _service3 = new Mock<IService2<int>>();
             _service1State = new Service1State();
 		}
 
@@ -29,7 +31,7 @@
 			var target = CreateTarget();
 
 			// When
-			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
 
 			// Then
 			target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService1) && i.Name == "myService1");				
@@ -40,7 +42,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			var registrationToken = target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+			var registrationToken = target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
 
 			// When
 			registrationToken.Dispose();
@@ -56,7 +58,7 @@
 			var target = CreateTarget();
 
 			// When
-			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
 			
 			// Then
 			var resolvedInstance = target.Resolve(typeof(Service1State), typeof(IService1), _service1State, "myService1");
@@ -94,7 +96,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
 
 			// When
 			var instance = target.Resolve(typeof(Service1State), typeof(IService1), new Service1State(), "myService1");
@@ -103,12 +105,26 @@
 			instance.ShouldBe(_service1.Object);
 		}
 
-		[Test]
+        [Test]
+        public void ShouldResolveGeneric()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register(typeof(Service1State), typeof(IService2<>), (type, state) => _service3.Object, "myService2");
+
+            // When
+            var instance = target.Resolve(typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
+
+            // Then
+            instance.ShouldBe(_service3.Object);
+        }
+
+        [Test]
 		public void ShouldResolveFromChildContainer()
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new");
@@ -123,7 +139,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
@@ -138,8 +154,8 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
-            target.Register(typeof(Service1State), typeof(IService1), state => _service2.Object, "myService2");
+			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
+            target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service2.Object, "myService2");
 
             // When
             var instances = target.ResolveAll<Service1State, IService1>(name => new Service1State()).ToList();
@@ -155,7 +171,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new");
@@ -171,7 +187,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), state => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
@@ -182,7 +198,52 @@
 			instances[0].ShouldBe(_service1.Object);
 		}
 
-		private static Container CreateTarget(string name = "")
+        [Test]
+        public void ShouldTypedResolverShouldBeSingletone()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register(() => 99);
+
+            // When
+            var resolver = target.Resolve<IResolver<int>>();
+            var resolver2 = target.Resolve<IResolver<int>>();            
+
+            // Then
+            resolver.ShouldBe(resolver2);            
+        }
+
+        [Test]
+        public void ShouldCreateTypedResolver()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register(() => 99);
+
+            // When
+            var resolver = target.Resolve<IResolver<int>>();            
+            var val =  resolver.Resolve();
+
+            // Then            
+            val.ShouldBe(99);
+        }
+
+        //[Test]
+        //public void ShouldCreateTypedResolverWithState()
+        //{
+        //    // Given
+        //    var target = CreateTarget();
+        //    target.Register<int, int>(i => i + 1);
+
+        //    // When
+        //    var resolver = target.Resolve<IResolver<int, int>>();
+        //    var val = resolver.Resolve(9);
+
+        //    // Then            
+        //    val.ShouldBe(10);
+        //}
+
+        private static Container CreateTarget(string name = "")
 		{
 			return new Container();
 		}

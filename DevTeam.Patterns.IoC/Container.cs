@@ -9,7 +9,7 @@
     public class Container: IContainer
 	{
         private static readonly IConfiguration Configuration = new IoCContainerConfiguration();
-        private readonly Dictionary<IKey, Func<object, object>> _factories = new Dictionary<IKey, Func<object, object>>();
+        private readonly Dictionary<IKey, Func<Type, object, object>> _factories = new Dictionary<IKey, Func<Type, object, object>>();
 		private readonly IContainer _parentContainer;
         
         /// <summary>
@@ -36,7 +36,7 @@
 
 	    public IEnumerable<IKey> Keys => _factories.Keys.Union(_parentContainer != null ? _parentContainer.Keys : Enumerable.Empty<IKey>());
 
-	    public IDisposable Register(Type stateType, Type instanceType, Func<object, object> factoryMethod, string name = "")
+	    public IDisposable Register(Type stateType, Type instanceType, Func<Type, object, object> factoryMethod, string name = "")
 		{
 		    if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
@@ -44,13 +44,13 @@
 		    if (name == null) throw new ArgumentNullException(nameof(name));
 
 		    var resources = new CompositeDisposable();
-            var key = new Key(stateType, instanceType, name, resources);            
+            var key = new Key(false, stateType, instanceType, name, resources);            
 		    try
 		    {                
 		        if (instanceType != typeof(ILifetime))
                 {
 		            var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
-                    _factories.Add(key, state => lifetime.Create(this, key, factoryMethod, state));
+                    _factories.Add(key, (type, state) => lifetime.Create(this, key, factoryMethod, type, state));
                     resources.Add(Disposable.Create(() => Unregister(key, lifetime)));
                 }
                 else
@@ -78,11 +78,11 @@
                 return (IContainer)Resolve(typeof(ContainerInfo), typeof(IContainer), new ContainerInfo(this, name));
             }
 
-            var key = new Key(stateType, instanceType, name, Disposable.Empty());
-            Func<object, object> factory;
+            var key = new Key(true, stateType, instanceType, name, Disposable.Empty());
+            Func<Type, object, object> factory;
 			if (_factories.TryGetValue(key, out factory))
 			{                
-				return factory(state);				
+				return factory(instanceType, state);				
 			}
 
 		    Exception innerException = null;

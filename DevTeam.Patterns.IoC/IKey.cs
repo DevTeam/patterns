@@ -8,6 +8,8 @@
 
         Type InstanceType { get; }
 
+        Type ResolvingInstanceType { get; }        
+
         string Name { get; }
     }
 }

@@ -7,13 +7,13 @@
     {
         private readonly Dictionary<IKey, HashSet<IDisposable>> _instances = new Dictionary<IKey, HashSet<IDisposable>>();
 
-        public object Create(IContainer container, IKey key, Func<object, object> factory, object state)
+        public object Create(IContainer container, IKey key, Func<Type, object, object> factory, Type instanceType, object state)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-            var instance = factory(state);
+            var instance = factory(instanceType, state);
             var disposable = instance as IDisposable;
             if (disposable == null)
             {

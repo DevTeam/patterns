@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KeyTests.cs" />
     <Compile Include="ContainerTests.cs" />
     <Compile Include="IService1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,6 +68,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
+      <Project>{fe61929a-6f78-40b6-8929-62cfb62e3be6}</Project>
+      <Name>DevTeam.Patterns.Dispose</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
       <Project>{35055d77-822c-4d69-8df2-722b42cc405a}</Project>
       <Name>DevTeam.Patterns.IoC</Name>

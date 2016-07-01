@@ -4,7 +4,7 @@
 
     public interface ILifetime: IContext
     {
-        object Create(IContainer container, IKey key, Func<object, object> factory, object state);
+        object Create(IContainer container, IKey key, Func<Type, object, object> factory, Type instanceType, object state);
 
         void Release(IContainer container, IKey key);
     }
