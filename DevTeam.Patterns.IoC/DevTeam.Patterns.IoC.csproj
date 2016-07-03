@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="ContainerDescription.cs" />
     <Compile Include="ControlledLifetime.cs" />
+    <Compile Include="IAccuracy.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="IoCContainerConfiguration.cs" />
     <Compile Include="EmptyState.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="IResolver`2.cs" />
     <Compile Include="IResolver`1.cs" />
     <Compile Include="KeyDescription.cs" />
+    <Compile Include="LowerAccuracy.cs" />
     <Compile Include="Registries.cs" />
     <Compile Include="GenericKey.cs" />
     <Compile Include="StrictKey.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingletoneLifetime.cs" />
     <Compile Include="TransientLifetime.cs" />
+    <Compile Include="WellknownAccuracy.cs" />
     <Compile Include="WellknownLifetime.cs" />
   </ItemGroup>
   <ItemGroup>

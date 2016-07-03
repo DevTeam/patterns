@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     using Dispose;
 
@@ -46,36 +47,30 @@
             var registration = new CompositeDisposable();
             var resources = new CompositeDisposable();
             var keyDescription = new KeyDescription(stateType, instanceType, name, resources);
-	        foreach (var key in GetRegisterKeys(keyDescription))
+	        var key = new StrictKey(keyDescription);
+            try
 	        {
-	            try
+	            if (instanceType != typeof(ILifetime))
 	            {
-	                if (instanceType != typeof(ILifetime))
-	                {
-	                    var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
-	                    _factories.Add(key, (type, state) => lifetime.Create(this, key, factoryMethod, type, state));
-	                    resources.Add(Disposable.Create(() => Unregister(key, lifetime)));
-	                }
-	                else
-	                {
-	                    _factories.Add(key, factoryMethod);
-	                    resources.Add(Disposable.Create(() => Unregister(key)));
-	                }
+	                var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
+	                _factories.Add(key, (type, state) => lifetime.Create(this, key, factoryMethod, type, state));
+	                resources.Add(Disposable.Create(() => Unregister(key, lifetime)));
+	            }
+	            else
+	            {
+	                _factories.Add(key, factoryMethod);
+	                resources.Add(Disposable.Create(() => Unregister(key)));
+	            }
 
-	                var disposableKey = key as IDisposable;
-	                if (disposableKey != null)
-	                {
-	                    registration.Add(disposableKey);
-	                }
-	            }
-	            catch (Exception ex)
-	            {
-	                throw new InvalidOperationException(
-	                    $"The entry {key} registration failed. Registered entries:\n{GetRegisteredInfo()}",
-	                    ex);
-	            }
+	            registration.Add(key);
 	        }
-
+	        catch (Exception ex)
+	        {
+	            throw new InvalidOperationException(
+	                $"The entry {key} registration failed. Registered entries:\n{GetRegisteredInfo()}",
+	                ex);
+	        }
+	        
 	        return registration;
 		}
 
@@ -91,7 +86,7 @@
             }
 
             var keyDescription = new KeyDescription(stateType, instanceType, name, Disposable.Empty());
-	        foreach (var key in GetResolveKeys(keyDescription))
+	        foreach (var key in GetResolverKeys(keyDescription))
 	        {
 	            Func<Type, object, object> factory;
 	            if (_factories.TryGetValue(key, out factory))
@@ -119,7 +114,7 @@
 		        innerException = ex;                
             }
 
-	        var keys = string.Join(" or ", GetResolveKeys(keyDescription).Select(i => i.ToString()));
+	        var keys = string.Join(" or ", GetResolverKeys(keyDescription).Select(i => i.ToString()));
             throw new InvalidOperationException($"The entries {keys} was not registered. {GetRegisteredInfo()}", innerException);
         }
         	
@@ -161,15 +156,14 @@
             return $"Container \"{Name}\". Registered entries: {details}";
 	    }
 
-        private static IEnumerable<IKey> GetRegisterKeys(KeyDescription keyDescription)
-        {
-            yield return new StrictKey(keyDescription);
-        }
-
-        private static IEnumerable<IKey> GetResolveKeys(KeyDescription keyDescription)
+        private static IEnumerable<IKey> GetResolverKeys(KeyDescription keyDescription)
         {
             yield return new StrictKey(keyDescription);
             yield return new GenericKey(keyDescription);
+            foreach (var implementedInterface in keyDescription.InstanceType.GetTypeInfo().ImplementedInterfaces)
+            {
+                yield return new StrictKey(new KeyDescription(keyDescription.StateType, implementedInterface, keyDescription.Name, keyDescription.Resources));
+            }
         }
     }
 }
