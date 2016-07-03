@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class KeyDescription
+    internal class KeyDescription
     {
         public KeyDescription(Type stateType, Type instanceType, string name, IDisposable resources)
         {

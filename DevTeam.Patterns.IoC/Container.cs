@@ -66,9 +66,7 @@
 	        }
 	        catch (Exception ex)
 	        {
-	            throw new InvalidOperationException(
-	                $"The entry {key} registration failed. Registered entries:\n{GetRegisteredInfo()}",
-	                ex);
+	            throw new InvalidOperationException($"The entry {key} registration failed. Registered entries:\n{GetRegisteredInfo()}", ex);
 	        }
 	        
 	        return registration;
@@ -159,11 +157,7 @@
         private static IEnumerable<IKey> GetResolverKeys(KeyDescription keyDescription)
         {
             yield return new StrictKey(keyDescription);
-            yield return new GenericKey(keyDescription);
-            foreach (var implementedInterface in keyDescription.InstanceType.GetTypeInfo().ImplementedInterfaces)
-            {
-                yield return new StrictKey(new KeyDescription(keyDescription.StateType, implementedInterface, keyDescription.Name, keyDescription.Resources));
-            }
+            yield return new GenericKey(keyDescription);            
         }
     }
 }
