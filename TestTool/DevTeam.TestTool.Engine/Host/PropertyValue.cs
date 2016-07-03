@@ -1,8 +1,10 @@
-﻿namespace DevTeam.TestTool.Engine.Contracts
+﻿namespace DevTeam.TestTool.Engine.Host
 {
     using System;
 
-    public class PropertyValue
+    using Contracts;
+
+    internal class PropertyValue : IPropertyValue
     {
         public PropertyValue(IProperty property, string value)
         {

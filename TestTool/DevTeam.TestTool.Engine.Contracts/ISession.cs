@@ -5,6 +5,6 @@
 
     public interface ISession: IDisposable
     {
-        IEnumerable<PropertyValue> Properties { get; }
+        IEnumerable<IPropertyValue> Properties { get; }
     }
 }

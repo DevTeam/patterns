@@ -21,9 +21,9 @@
 
             disposable.Add(new ReactiveContainerConfiguration().Apply(container));
             disposable.Add(new EventAggregatorContainerConfiguration().Apply(container));
-            disposable.Add(container.Register<IEnumerable<PropertyValue>, ISession>(properties => new Session(container, container.Resolve<IEventAggregator>(), container.Resolve<IReportPublisher>(), properties)));
+            disposable.Add(container.Register<IEnumerable<IPropertyValue>, ISession>(properties => new Session(container, container.Resolve<IEventAggregator>(), container.Resolve<IReportPublisher>(), properties)));
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IPropertyFactory>(() => new PropertyFactory(container.ResolveAll<IProperty>())));
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConverter<string[], IEnumerable<PropertyValue>>>(() => new CommandLineArgsToPropertiesConverter(container.Resolve<IPropertyFactory>())));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConverter<string[], IEnumerable<IPropertyValue>>>(() => new CommandLineArgsToPropertiesConverter(container.Resolve<IPropertyFactory>())));
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IReportPublisher>(() => new ReportPublisher(container.ResolveAll<IOutput>())));
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IReflection>(() => new Reflection()));
 

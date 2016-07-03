@@ -4,6 +4,6 @@
 
     internal interface IPropertyFactory
     {
-        PropertyValue CreatePropertyValue(string propertyId, string propertyValue);
+        IPropertyValue CreatePropertyValue(string propertyId, string propertyValue);
     }
 }

@@ -7,7 +7,7 @@
 
     using Contracts;
 
-    internal class CommandLineArgsToPropertiesConverter: IConverter<string[], IEnumerable<PropertyValue>>
+    internal class CommandLineArgsToPropertiesConverter: IConverter<string[], IEnumerable<IPropertyValue>>
     {
         private static readonly Regex PropertyRegex = new Regex("-(?<name>.+)=(?<value>.+)", RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.IgnoreCase);
         private readonly IPropertyFactory _propertyFactory;
@@ -20,7 +20,7 @@
             _propertyFactory = propertyFactory;
         }
 
-        public IEnumerable<PropertyValue> Convert(string[] source)
+        public IEnumerable<IPropertyValue> Convert(string[] source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 

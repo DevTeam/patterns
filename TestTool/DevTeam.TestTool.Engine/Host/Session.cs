@@ -7,7 +7,7 @@
 
     using Contracts;
 
-    using DevTeam.Patterns.EventAggregator;
+    using Patterns.EventAggregator;
 
     using Patterns.Dispose;
     using Patterns.IoC;
@@ -21,7 +21,7 @@
             IContainer container, 
             IEventAggregator eventAggregator,
             IReportPublisher reportPublisher,
-            IEnumerable<PropertyValue> properties)
+            IEnumerable<IPropertyValue> properties)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));
@@ -29,7 +29,7 @@
             if (properties == null) throw new ArgumentNullException(nameof(properties));
             
             _container = container;
-            Properties = new ReadOnlyCollection<PropertyValue>(new List<PropertyValue>(properties));
+            Properties = new ReadOnlyCollection<IPropertyValue>(new List<IPropertyValue>(properties));
 
             _disposable.Add(eventAggregator.RegisterConsumer(reportPublisher));
             foreach (var tool in GetToolNames().Select(CreateTool).OrderByDescending(tool => tool.ToolType))
@@ -38,7 +38,7 @@
             }            
         }
 
-        public IEnumerable<PropertyValue> Properties { get; }
+        public IEnumerable<IPropertyValue> Properties { get; }
 
         public void Dispose()
         {            

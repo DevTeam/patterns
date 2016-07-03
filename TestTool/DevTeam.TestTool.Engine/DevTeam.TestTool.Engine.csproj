@@ -67,6 +67,7 @@
     <Compile Include="Host\CommandLineArgsToPropertiesConverter.cs" />
     <Compile Include="Host\IPropertyFactory.cs" />
     <Compile Include="Host\IReportPublisher.cs" />
+    <Compile Include="Host\PropertyValue.cs" />
     <Compile Include="Host\Reflection.cs" />
     <Compile Include="Host\ReportPublisher.cs" />
     <Compile Include="Host\PropertyFactory.cs" />

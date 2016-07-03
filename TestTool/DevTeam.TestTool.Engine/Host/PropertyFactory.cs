@@ -15,7 +15,7 @@
             _properties = properties.ToDictionary(i => i.Id, i => i);
         }
         
-        public PropertyValue CreatePropertyValue(string propertyId, string propertyValue)
+        public IPropertyValue CreatePropertyValue(string propertyId, string propertyValue)
         {
             IProperty property;
             if (!_properties.TryGetValue(propertyId, out property))

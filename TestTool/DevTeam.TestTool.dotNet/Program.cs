@@ -16,9 +16,9 @@
             using (new DotNetContainerConfiguration().Apply(container))
             using (new HostContainerConfiguration().Apply(container))
             {
-                var commandLineArgsToPropertiesConverter = container.Resolve<IConverter<string[], IEnumerable<PropertyValue>>>();
+                var commandLineArgsToPropertiesConverter = container.Resolve<IConverter<string[], IEnumerable<IPropertyValue>>>();
                 var properties = commandLineArgsToPropertiesConverter.Convert(args);
-                using (container.Resolve<IEnumerable<PropertyValue>, ISession>(properties))
+                using (container.Resolve<IEnumerable<IPropertyValue>, ISession>(properties))
                 {                    
                 }
             }
