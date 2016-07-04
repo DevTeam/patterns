@@ -52,7 +52,7 @@ namespace DevTeam.Patterns.IoC
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((StrictRegestryKey)obj);
+            return Equals((IRegestryKey)obj);
         }
 
         public override int GetHashCode()
