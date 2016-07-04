@@ -9,7 +9,7 @@
     public class Container: IContainer
 	{
         private static readonly IConfiguration Configuration = new IoCContainerConfiguration();
-        private readonly Dictionary<IRegestryKey, Func<IResolvingContext, object>> _factories = new Dictionary<IRegestryKey, Func<IResolvingContext, object>>(new RegestryKeyComparer());
+        private readonly Dictionary<IRegestryKey, Func<IResolvingContext, object>> _factories = new Dictionary<IRegestryKey, Func<IResolvingContext, object>>(RootContainerRegestryKeyComparer.Shared);
 		private readonly IContainer _parentContainer;
         
         /// <summary>
@@ -154,8 +154,14 @@
             yield return new GenericRegestryKey(keyDescription);            
         }
 
-        private class RegestryKeyComparer: IEqualityComparer<IRegestryKey>
+        private class RootContainerRegestryKeyComparer: IEqualityComparer<IRegestryKey>
         {
+            public static readonly IEqualityComparer<IRegestryKey> Shared = new RootContainerRegestryKeyComparer();
+
+            private RootContainerRegestryKeyComparer()
+            {
+            }
+
             public bool Equals(IRegestryKey x, IRegestryKey y)
             {
                 if (x.InstanceType == typeof(IContainer) && x.StateType == typeof(EmptyState)
