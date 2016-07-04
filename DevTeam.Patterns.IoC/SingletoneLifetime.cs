@@ -21,7 +21,7 @@
             if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-            var key = new Key(registryKey, state);
+            var key = new Key(registryKey, instanceType, state);
             Lazy<object> currentFactory;
             if (!_factories.TryGetValue(key, out currentFactory))
             {
@@ -40,39 +40,47 @@
             _baseLifetime.Release(container, registryKey);
         }
         
-        private class Key
+        private class Key : IEquatable<Key>
         {
 	        private readonly IKey _registryKey;
-	        private readonly object _state;
+            private readonly Type _instanceType;
+            private readonly object _state;
 
-	        public Key(IKey registryKey, object state)
+	        public Key(IKey registryKey, Type instanceType, object state)
 	        {
 		        if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
+	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 
-		        _registryKey = registryKey;
-		        _state = state;
+	            _registryKey = registryKey;
+	            _instanceType = instanceType;
+	            _state = state;
 	        }
 
-	        public override bool Equals(object obj)
-	        {
-		        if (ReferenceEquals(null, obj)) return false;
-		        if (ReferenceEquals(this, obj)) return true;
-		        if (obj.GetType() != GetType()) return false;
-		        return Equals((Key) obj);
-	        }
+            public bool Equals(Key other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return Equals(_registryKey, other._registryKey) && _instanceType == other._instanceType && Equals(_state, other._state);
+            }
 
-	        public override int GetHashCode()
-	        {
-		        unchecked
-		        {
-			        return ((_registryKey?.GetHashCode() ?? 0)*397) ^ (_state?.GetHashCode() ?? 0);
-		        }
-	        }
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != GetType()) return false;
+                return Equals((Key)obj);
+            }
 
-	        private bool Equals(Key other)
-	        {
-		        return Equals(_registryKey, other._registryKey) && Equals(_state, other._state);
-	        }
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hashCode = _registryKey?.GetHashCode() ?? 0;
+                    hashCode = (hashCode * 397) ^ (_instanceType?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_state?.GetHashCode() ?? 0);
+                    return hashCode;
+                }
+            }
         }
     }
 }

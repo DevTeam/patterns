@@ -67,14 +67,14 @@
             return resolver.Resolve<IContainer>(name);
         }
 
-        public static IResolver<T> CreateResolver<T>(this IResolver resolver, string name = "")
+        public static IResolver<T> Resolver<T>(this IResolver resolver, string name = "")
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
             return resolver.Resolve<IResolver<T>>(name);
         }
 
-        public static IResolver<TState, T> CreateResolver<TState, T>(this IResolver resolver, string name = "")
+        public static IResolver<TState, T> Resolver<TState, T>(this IResolver resolver, string name = "")
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 

@@ -14,13 +14,15 @@
         private Mock<IService1> _service2;
         private Service1State _service1State;
 	    private Mock<IService2<int>> _service3;
+        private Mock<IService2<string>> _service4;
 
-	    [SetUp]
+        [SetUp]
 		public void SetUp()
 		{
 			_service1 = new Mock<IService1>();
             _service2 = new Mock<IService1>();
             _service3 = new Mock<IService2<int>>();
+            _service4 = new Mock<IService2<string>>();
             _service1State = new Service1State();
 		}
 
@@ -234,10 +236,12 @@
 
             // When
             var resolver = target.Resolve<IResolver<int>>();
-            var resolver2 = target.Resolve<IResolver<int>>();            
+            var resolver2 = target.Resolve<IResolver<int>>();
+            object resolver3 = target.Resolve<IResolver<string>>();
 
             // Then
-            resolver.ShouldBe(resolver2);            
+            resolver.ShouldBe(resolver2);
+            resolver.ShouldNotBe(resolver3);            
         }
 
         [Test]
@@ -285,9 +289,70 @@
             val.ShouldBe(10);
         }
 
+        [Test]
+        public void ShouldResolveGenerics()
+        {
+            // Given
+            var target = CreateTarget();
+            var service3 = new Service2Int();
+            var service4 = new Service2String();
+            target.Register(typeof(long), typeof(IService2<>), (type, o) => type == typeof(IService2<int>) ? (object)service3 : service4, "abc");
+
+            // When
+            var server3 = target.Resolve<long, IService2<int>>(1, "abc");
+            var server4 = target.Resolve<long, IService2<string>>(1, "abc");
+
+            // Then
+            server3.ShouldBe(service3);
+            server4.ShouldBe(service4);
+        }
+
+        [Test]
+        public void ShouldResolveGenericsWithDifStates()
+        {
+            // Given
+            var target = CreateTarget();
+            var service3 = new Service2Int();
+            long sum = 0;
+            target.Register(typeof(long), typeof(IService2<>), (type, o) => { sum+= (long)o; return service3; }, "abc");
+
+            // When
+            target.Resolve<long, IService2<int>>(3, "abc");
+            target.Resolve<long, IService2<int>>(5, "abc");
+
+            // Then
+            sum.ShouldBe(8);
+        }
+
+        [Test]
+        public void ShouldResolveGenericSingletones()
+        {
+            // Given
+            var target = CreateTarget();
+            var service3 = new Service2Int();
+            var service4 = new Service2String();
+            target.Using<ILifetime>(WellknownLifetime.Singletone).Register(typeof(long), typeof(IService2<>), (type, o) => type == typeof(IService2<int>) ? (object)service3 : service4, "abc");
+
+            // When
+            var server3 = target.Resolve<long, IService2<int>>(1, "abc");
+            var server4 = target.Resolve<long, IService2<string>>(1, "abc");
+
+            // Then
+            server3.ShouldBe(service3);
+            server4.ShouldBe(service4);
+        }
+
         private static Container CreateTarget(string name = "")
 		{
 			return new Container();
 		}
-	}
+
+        private class Service2Int: IService2<int>
+        {            
+        }
+
+        private class Service2String : IService2<string>
+        {
+        }
+    }
 }

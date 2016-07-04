@@ -4,24 +4,24 @@ namespace DevTeam.Patterns.IoC
 
     internal class StrictKey: IKey, IDisposable
     {
-        private readonly KeyDescription _description;
+        private readonly KeyDescription _keyDescription;
         
-        public StrictKey(KeyDescription description)
+        public StrictKey(KeyDescription keyDescription)
         {
-            if (description == null) throw new ArgumentNullException(nameof(description));
+            if (keyDescription == null) throw new ArgumentNullException(nameof(keyDescription));
 
-            _description = description;
+            _keyDescription = keyDescription;
         }
 
-        public Type StateType => _description.StateType;
+        public Type StateType => _keyDescription.StateType;
 
-        public Type InstanceType => _description.InstanceType;
+        public Type InstanceType => _keyDescription.InstanceType;
 
-        public string Name => _description.Name;
+        public string Name => _keyDescription.Name;
 
         public void Dispose()
         {
-            _description.Resources.Dispose();
+            _keyDescription.Resources.Dispose();
         }
 
         public override string ToString()
