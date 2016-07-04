@@ -1,11 +1,7 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    public class EmptyState
+    public struct EmptyState
     {
-        public static readonly EmptyState Shared = new EmptyState();
-
-        private EmptyState()
-        {
-        }
+        public static readonly EmptyState Shared = new EmptyState();        
     }
 }

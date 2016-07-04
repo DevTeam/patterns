@@ -8,8 +8,6 @@ namespace DevTeam.Patterns.IoC
         
         public StrictRegestryKey(KeyDescription keyDescription)
         {
-            if (keyDescription == null) throw new ArgumentNullException(nameof(keyDescription));
-
             _keyDescription = keyDescription;
         }
 

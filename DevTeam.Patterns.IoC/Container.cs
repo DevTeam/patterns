@@ -153,7 +153,12 @@
         private static IEnumerable<IRegestryKey> GetResolverKeys(KeyDescription keyDescription)
         {
             yield return new StrictRegestryKey(keyDescription);
-            yield return new GenericRegestryKey(keyDescription);            
+
+            IRegestryKey genericRegestryKey;
+            if (GenericRegestryKey.TryCreate(keyDescription, out genericRegestryKey))
+            {
+                yield return genericRegestryKey;
+            }
         }
 
         private void CreateFactories()
