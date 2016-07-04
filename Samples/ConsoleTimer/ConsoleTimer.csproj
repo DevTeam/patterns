@@ -32,18 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevTeam.Patterns.Dispose, Version=1.0.58.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DevTeam.Patterns.Dispose.1.0.58-beta\lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp\DevTeam.Patterns.Dispose.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DevTeam.Patterns.IoC, Version=1.0.58.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DevTeam.Patterns.IoC.1.0.58-beta\lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp\DevTeam.Patterns.IoC.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DevTeam.Patterns.Reactive, Version=1.0.58.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DevTeam.Patterns.Reactive.1.0.58-beta\lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp\DevTeam.Patterns.Reactive.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -66,7 +54,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
+      <Project>{fe61929a-6f78-40b6-8929-62cfb62e3be6}</Project>
+      <Name>DevTeam.Patterns.Dispose</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
+      <Project>{35055d77-822c-4d69-8df2-722b42cc405a}</Project>
+      <Name>DevTeam.Patterns.IoC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Patterns.Reactive\DevTeam.Patterns.Reactive.csproj">
+      <Project>{79f43401-ced2-46c1-a3c9-a8e9f94a1dea}</Project>
+      <Name>DevTeam.Patterns.Reactive</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

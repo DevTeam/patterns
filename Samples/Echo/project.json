@@ -5,9 +5,6 @@
   },
 
   "dependencies": {
-    "DevTeam.Patterns.Dispose": "1.0.58-beta",
-    "DevTeam.Patterns.EventAggregator": "1.0.58-beta",
-    "DevTeam.Patterns.IoC": "1.0.58-beta",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.0"
@@ -16,7 +13,16 @@
 
   "frameworks": {
     "netcoreapp1.0": {
-      "dependencies": {        
+      "dependencies": {
+        "DevTeam.Patterns.Dispose": {
+          "target": "project"
+        },
+        "DevTeam.Patterns.EventAggregator": {
+          "target": "project"
+        },
+        "DevTeam.Patterns.IoC": {
+          "target": "project"
+        }
       },
       "imports": "dnxcore50"
     }
