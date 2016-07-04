@@ -4,23 +4,30 @@
 
     using DevTeam.Patterns.Dispose;
     using DevTeam.Patterns.EventAggregator;
+    using DevTeam.Patterns.IoC;
     using DevTeam.Patterns.Reactive;
 
-    public class EchoService: IEchoService, IObserver<EchoRequest>, IObservable<Echo>
+    internal class EchoService: IEchoService, IObserver<IEchoRequest>, IObservable<IEcho>
     {
         private readonly string _id;
         private readonly IEventAggregator _eventAggregator;
-        private readonly Subject<Echo> _echoSubject = new Subject<Echo>();
+
+        private readonly IResolver<string, IEcho> _echoResolver;
+
+        private readonly Subject<IEcho> _echoSubject = new Subject<IEcho>();
 
         public EchoService(
             string id, 
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator,
+            IResolver<string, IEcho> echoResolver)
         {
             if (id == null) throw new ArgumentNullException(nameof(id));
             if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));
+            if (echoResolver == null) throw new ArgumentNullException(nameof(echoResolver));
 
             _id = id;
             _eventAggregator = eventAggregator;
+            _echoResolver = echoResolver;
         }
 
         public IDisposable Activate()
@@ -30,22 +37,22 @@
                 _eventAggregator.RegisterConsumer(this));
         }
 
-        IDisposable IObservable<Echo>.Subscribe(IObserver<Echo> observer)
+        IDisposable IObservable<IEcho>.Subscribe(IObserver<IEcho> observer)
         {
             return _echoSubject.Subscribe(observer);            
         }
 
-        void IObserver<EchoRequest>.OnNext(EchoRequest value)
+        void IObserver<IEchoRequest>.OnNext(IEchoRequest value)
         {
-            _echoSubject.OnNext(new Echo($"echo from {_id} \"{value.Message}\""));
+            _echoSubject.OnNext(_echoResolver.Resolve($"echo from {_id} \"{value.Message}\""));
         }
 
-        void IObserver<EchoRequest>.OnError(Exception error)
+        void IObserver<IEchoRequest>.OnError(Exception error)
         {
             _echoSubject.OnError(error);
         }
 
-        void IObserver<EchoRequest>.OnCompleted()
+        void IObserver<IEchoRequest>.OnCompleted()
         {
             _echoSubject.OnCompleted();
         }

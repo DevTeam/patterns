@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal interface IEchoRequestSource : IObservable<EchoRequest>
+    internal interface IEchoRequestSource : IObservable<IEchoRequest>
     {
     }
 }

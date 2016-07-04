@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal class EchoRequest
+    internal class EchoRequest : IEchoRequest
     {
         public EchoRequest(string message)
         {
