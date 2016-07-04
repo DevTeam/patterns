@@ -5,28 +5,27 @@ namespace DevTeam.Patterns.IoC
     internal class GenericRegestryKey: IRegestryKey, IDisposable
     {
         private readonly KeyDescription _description;
-        
-        public GenericRegestryKey(KeyDescription description)
-        {
-            if (description == null) throw new ArgumentNullException(nameof(description));
 
-            _description = description;
+        public static bool TryCreate(KeyDescription description, out IRegestryKey key)
+        {
+            if (description.InstanceType.GenericTypeArguments.Length > 0)
+            {
+                key = new GenericRegestryKey(description);
+                return true;
+            }
+
+            key = null;
+            return false;
+        }
+
+        private GenericRegestryKey(KeyDescription description)
+        {
+            _description = description;            
         }
 
         public Type StateType => _description.StateType;
 
-        public Type InstanceType
-        {
-            get
-            {
-                if (_description.InstanceType.GenericTypeArguments.Length == 0)
-                {
-                    return _description.InstanceType;
-                }
-
-                return _description.InstanceType.GetGenericTypeDefinition();
-            }
-        }
+        public Type InstanceType => _description.InstanceType.GetGenericTypeDefinition();
 
         public string Name => _description.Name;
 

@@ -30,3 +30,5 @@ Samples/Echo/bin/
 TestTool/DevTeam.TestTool.dotNetCore/bin/
 *.lock.json
 TestTool/DevTeam.TestTool.dotNetCore/obj/
+/Samples/Perf/bin/Debug
+/Samples/Perf/obj/Debug

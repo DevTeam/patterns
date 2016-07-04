@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal class ResolvingContext : IResolvingContext
+    internal struct ResolvingContext : IResolvingContext
     {
         public ResolvingContext(IContainer container, IRegestryKey regestryKey, Type resolvingInstanceType, object state)
         {
@@ -18,9 +18,7 @@
 
         public IContainer Container { get; }
 
-        public IRegestryKey RegestryKey { get; }
-
-        public string Name { get; }
+        public IRegestryKey RegestryKey { get; }        
 
         public Type ResolvingInstanceType { get; }
 

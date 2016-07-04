@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal class ReleasingContext : IReleasingContext
+    internal struct ReleasingContext : IReleasingContext
     {
         public ReleasingContext(IContainer container, IRegestryKey regestryKey, string name)
         {
