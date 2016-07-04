@@ -15,43 +15,41 @@
             _baseLifetime = baseLifetime;
         }
 
-        public object Create(IContainer container, IKey registryKey, Func<Type, object, object> factory, Type instanceType, object state)
+        public object Create(IResolvingContext ctx, Func<IResolvingContext, object> factory)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
-            if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
+            if (ctx == null) throw new ArgumentNullException(nameof(ctx));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-            var key = new Key(registryKey, instanceType, state);
+            var key = new Key(ctx.RegestryKey, ctx.ResolvingInstanceType, ctx.State);
             Lazy<object> currentFactory;
             if (!_factories.TryGetValue(key, out currentFactory))
             {
-                currentFactory = new Lazy<object>(() => _baseLifetime.Create(container, registryKey, factory, instanceType, state));
+                currentFactory = new Lazy<object>(() => _baseLifetime.Create(ctx, factory));
                 _factories.Add(key, currentFactory);
             }
 
             return currentFactory.Value;
         }
 
-        public void Release(IContainer container, IKey registryKey)
+        public void Release(IReleasingContext ctx)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
-            if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
+            if (ctx == null) throw new ArgumentNullException(nameof(ctx));
 
-            _baseLifetime.Release(container, registryKey);
+            _baseLifetime.Release(ctx);
         }
-        
+
         private class Key : IEquatable<Key>
         {
-	        private readonly IKey _registryKey;
+	        private readonly IRegestryKey _registryRegestryKey;
             private readonly Type _instanceType;
             private readonly object _state;
 
-	        public Key(IKey registryKey, Type instanceType, object state)
+	        public Key(IRegestryKey registryRegestryKey, Type instanceType, object state)
 	        {
-		        if (registryKey == null) throw new ArgumentNullException(nameof(registryKey));
+		        if (registryRegestryKey == null) throw new ArgumentNullException(nameof(registryRegestryKey));
 	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 
-	            _registryKey = registryKey;
+	            _registryRegestryKey = registryRegestryKey;
 	            _instanceType = instanceType;
 	            _state = state;
 	        }
@@ -60,7 +58,7 @@
             {
                 if (ReferenceEquals(null, other)) return false;
                 if (ReferenceEquals(this, other)) return true;
-                return Equals(_registryKey, other._registryKey) && _instanceType == other._instanceType && Equals(_state, other._state);
+                return Equals(_registryRegestryKey, other._registryRegestryKey) && _instanceType == other._instanceType && Equals(_state, other._state);
             }
 
             public override bool Equals(object obj)
@@ -75,7 +73,7 @@
             {
                 unchecked
                 {
-                    var hashCode = _registryKey?.GetHashCode() ?? 0;
+                    var hashCode = _registryRegestryKey?.GetHashCode() ?? 0;
                     hashCode = (hashCode * 397) ^ (_instanceType?.GetHashCode() ?? 0);
                     hashCode = (hashCode * 397) ^ (_state?.GetHashCode() ?? 0);
                     return hashCode;

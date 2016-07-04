@@ -2,37 +2,26 @@ namespace DevTeam.Patterns.IoC
 {
     using System;
 
-    internal class GenericKey: IKey, IDisposable
+    internal class StrictRegestryKey: IRegestryKey, IDisposable
     {
-        private readonly KeyDescription _description;
+        private readonly KeyDescription _keyDescription;
         
-        public GenericKey(KeyDescription description)
+        public StrictRegestryKey(KeyDescription keyDescription)
         {
-            if (description == null) throw new ArgumentNullException(nameof(description));
+            if (keyDescription == null) throw new ArgumentNullException(nameof(keyDescription));
 
-            _description = description;
+            _keyDescription = keyDescription;
         }
 
-        public Type StateType => _description.StateType;
+        public Type StateType => _keyDescription.StateType;
 
-        public Type InstanceType
-        {
-            get
-            {
-                if (_description.InstanceType.GenericTypeArguments.Length == 0)
-                {
-                    return _description.InstanceType;
-                }
+        public Type InstanceType => _keyDescription.InstanceType;
 
-                return _description.InstanceType.GetGenericTypeDefinition();
-            }
-        }
-
-        public string Name => _description.Name;
+        public string Name => _keyDescription.Name;
 
         public void Dispose()
         {
-            _description.Resources.Dispose();
+            _keyDescription.Resources.Dispose();
         }
 
         public override string ToString()
@@ -40,7 +29,7 @@ namespace DevTeam.Patterns.IoC
             return $"{InstanceType.FullName}({StateType.FullName}, \"{Name}\")";
         }
 
-        public bool Equals(IKey other)
+        public bool Equals(IRegestryKey other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -52,7 +41,7 @@ namespace DevTeam.Patterns.IoC
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((StrictKey)obj);
+            return Equals((StrictRegestryKey)obj);
         }
 
         public override int GetHashCode()

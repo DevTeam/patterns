@@ -9,7 +9,7 @@
     public class Container: IContainer
 	{
         private static readonly IConfiguration Configuration = new IoCContainerConfiguration();
-        private readonly Dictionary<IKey, Func<Type, object, object>> _factories = new Dictionary<IKey, Func<Type, object, object>>();
+        private readonly Dictionary<IRegestryKey, Func<IResolvingContext, object>> _factories = new Dictionary<IRegestryKey, Func<IResolvingContext, object>>();
 		private readonly IContainer _parentContainer;
         
         /// <summary>
@@ -34,9 +34,9 @@
 
         public string Name { get; }
 
-	    public IEnumerable<IKey> Keys => _factories.Keys.Union(_parentContainer != null ? _parentContainer.Keys : Enumerable.Empty<IKey>());
+	    public IEnumerable<IRegestryKey> Keys => _factories.Keys.Union(_parentContainer != null ? _parentContainer.Keys : Enumerable.Empty<IRegestryKey>());
 
-	    public IDisposable Register(Type stateType, Type instanceType, Func<Type, object, object> factoryMethod, string name = "")
+	    public IDisposable Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, string name = "")
 		{
 		    if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
@@ -46,14 +46,14 @@
             var registration = new CompositeDisposable();
             var resources = new CompositeDisposable();
             var keyDescription = new KeyDescription(stateType, instanceType, name, resources);
-	        var key = new StrictKey(keyDescription);
+	        var key = new StrictRegestryKey(keyDescription);
             try
 	        {
 	            if (instanceType != typeof(ILifetime))
 	            {
 	                var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
-	                _factories.Add(key, (type, state) => lifetime.Create(this, key, factoryMethod, type, state));
-	                resources.Add(Disposable.Create(() => Unregister(key, lifetime)));
+                    _factories.Add(key, ctx => lifetime.Create(ctx, factoryMethod));
+                    resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(this, key, name), lifetime)));
 	            }
 	            else
 	            {
@@ -77,18 +77,13 @@
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
             if (name == null) throw new ArgumentNullException(nameof(name));
 
-            if (instanceType == typeof(IContainer) && stateType == typeof(EmptyState))
-            {
-                return (IContainer)Resolve(typeof(ContainerDescription), typeof(IContainer), new ContainerDescription(this, name));
-            }
-
             var keyDescription = new KeyDescription(stateType, instanceType, name, Disposable.Empty());
 	        foreach (var key in GetResolverKeys(keyDescription))
 	        {
-	            Func<Type, object, object> factory;
+	            Func<IResolvingContext, object> factory;
 	            if (_factories.TryGetValue(key, out factory))
                 {
-                    return factory(instanceType, state);
+                    return factory(new ResolvingContext(this, key, instanceType, state));
                 }
 	        }
 
@@ -129,18 +124,18 @@
 	        return Name;
 	    }
 
-	    internal IEnumerable<IKey> Registrations => _factories.Keys;
+	    internal IEnumerable<IRegestryKey> Registrations => _factories.Keys;
 
-	    private bool Unregister(IKey key)
+	    private bool Unregister(IRegestryKey regestryKey)
         {
-            return _factories.Remove(key);
+            return _factories.Remove(regestryKey);
         }
 
-        private bool Unregister(IKey key, ILifetime factory)
+        private bool Unregister(IReleasingContext ctx, ILifetime factory)
         {
-            if (Unregister(key))
+            if (Unregister(ctx.RegestryKey))
             {
-                factory?.Release(this, key);
+                factory?.Release(ctx);
                 return true;
             }
 
@@ -153,10 +148,10 @@
             return $"Container \"{Name}\". Registered entries: {details}";
 	    }
 
-        private static IEnumerable<IKey> GetResolverKeys(KeyDescription keyDescription)
+        private static IEnumerable<IRegestryKey> GetResolverKeys(KeyDescription keyDescription)
         {
-            yield return new StrictKey(keyDescription);
-            yield return new GenericKey(keyDescription);            
+            yield return new StrictRegestryKey(keyDescription);
+            yield return new GenericRegestryKey(keyDescription);            
         }
     }
 }

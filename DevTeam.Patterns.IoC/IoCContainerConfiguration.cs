@@ -20,20 +20,20 @@
             disposable.Add(container.Register(() => ControlledLifetime.Value, WellknownLifetime.Controlled));
 
             // Child container
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Controlled).Register<ContainerDescription, IContainer>(containerDescription => new Container(containerDescription)));
+            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(EmptyState), typeof(IContainer), ctx => new Container(new ContainerDescription(ctx.Container, ctx.RegestryKey.Name))));
 
             // Resolvers
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(typeof(EmptyState), typeof(IResolver<>),
-                (type, emptyState) =>
+                ctx =>
                     {
-                        var resolverType = typeof(Resolver<>).MakeGenericType(type.GenericTypeArguments[0]);
+                        var resolverType = typeof(Resolver<>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0]);
                         return Activator.CreateInstance(resolverType, container);
                     }));
 
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(typeof(EmptyState), typeof(IResolver<,>),
-                (type, emptyState) =>
+                ctx =>
                 {
-                    var resolverType = typeof(Resolver<,>).MakeGenericType(type.GenericTypeArguments[0], type.GenericTypeArguments[1]);
+                    var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0], ctx.ResolvingInstanceType.GenericTypeArguments[1]);
                     return Activator.CreateInstance(resolverType, container);
                 }));
 

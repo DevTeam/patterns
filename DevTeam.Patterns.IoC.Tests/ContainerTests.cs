@@ -33,7 +33,7 @@
 			var target = CreateTarget();
 
 			// When
-			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
 			// Then
 			target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService1) && i.Name == "myService1");				
@@ -44,7 +44,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			var registrationToken = target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
+			var registrationToken = target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
 			// When
 			registrationToken.Dispose();
@@ -60,7 +60,7 @@
 			var target = CreateTarget();
 
 			// When
-			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 			
 			// Then
 			var resolvedInstance = target.Resolve(typeof(Service1State), typeof(IService1), _service1State, "myService1");
@@ -98,7 +98,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
 			// When
 			var instance = target.Resolve(typeof(Service1State), typeof(IService1), new Service1State(), "myService1");
@@ -112,7 +112,7 @@
         {
             // Given
             var target = CreateTarget();
-            target.Register(typeof(Service1State), typeof(IService2<>), (type, state) => _service3.Object, "myService2");
+            target.Register(typeof(Service1State), typeof(IService2<>), ctx => _service3.Object, "myService2");
 
             // When
             var instance = target.Resolve(typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
@@ -126,7 +126,7 @@
         {
             // Given
             var target = CreateTarget();
-            target.Register(typeof(Service1State), typeof(IService2<>), (type, state) => _service3.Object, "myService2");
+            target.Register(typeof(Service1State), typeof(IService2<>), ctx => _service3.Object, "myService2");
 
             // When
             var instance = target.Resolve(typeof(Service1State), typeof(IService2<>), new Service1State(), "myService2");
@@ -139,7 +139,7 @@
         {
             // Given
             var target = CreateTarget();
-            target.Register(typeof(Service1State), typeof(IService2<int>), (type, state) => _service3.Object, "myService2");
+            target.Register(typeof(Service1State), typeof(IService2<int>), ctx => _service3.Object, "myService2");
 
             // When
             var instance = target.Resolve(typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
@@ -153,7 +153,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new");
@@ -168,7 +168,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
@@ -183,8 +183,8 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
-            target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service2.Object, "myService2");
+			target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
+            target.Register(typeof(Service1State), typeof(IService1), ctx => _service2.Object, "myService2");
 
             // When
             var instances = target.ResolveAll<Service1State, IService1>(name => new Service1State()).ToList();
@@ -200,7 +200,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new");
@@ -216,7 +216,7 @@
 		{
 			// Given
 			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService1), (type, state) => _service1.Object, "myService1");
+			target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
@@ -296,7 +296,7 @@
             var target = CreateTarget();
             var service3 = new Service2Int();
             var service4 = new Service2String();
-            target.Register(typeof(long), typeof(IService2<>), (type, o) => type == typeof(IService2<int>) ? (object)service3 : service4, "abc");
+            target.Register(typeof(long), typeof(IService2<>), ctx => ctx.ResolvingInstanceType == typeof(IService2<int>) ? (object)service3 : service4, "abc");
 
             // When
             var server3 = target.Resolve<long, IService2<int>>(1, "abc");
@@ -314,7 +314,7 @@
             var target = CreateTarget();
             var service3 = new Service2Int();
             long sum = 0;
-            target.Register(typeof(long), typeof(IService2<>), (type, o) => { sum+= (long)o; return service3; }, "abc");
+            target.Register(typeof(long), typeof(IService2<>), ctx => { sum+= (long)ctx.State; return service3; }, "abc");
 
             // When
             target.Resolve<long, IService2<int>>(3, "abc");
@@ -331,7 +331,7 @@
             var target = CreateTarget();
             var service3 = new Service2Int();
             var service4 = new Service2String();
-            target.Using<ILifetime>(WellknownLifetime.Singletone).Register(typeof(long), typeof(IService2<>), (type, o) => type == typeof(IService2<int>) ? (object)service3 : service4, "abc");
+            target.Using<ILifetime>(WellknownLifetime.Singletone).Register(typeof(long), typeof(IService2<>), ctx => ctx.ResolvingInstanceType == typeof(IService2<int>) ? (object)service3 : service4, "abc");
 
             // When
             var server3 = target.Resolve<long, IService2<int>>(1, "abc");

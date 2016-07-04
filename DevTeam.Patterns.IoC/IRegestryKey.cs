@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface IKey: IEquatable<IKey>
+    public interface IRegestryKey: IEquatable<IRegestryKey>
     {
         Type StateType { get; }
 

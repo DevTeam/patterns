@@ -32,12 +32,12 @@
             Equals(key1, key2).ShouldBe(expectedEqu);
         }
 
-        private static StrictKey CreateTarget(Type stateType, Type instanceType, string name, IDisposable resources)
+        private static StrictRegestryKey CreateTarget(Type stateType, Type instanceType, string name, IDisposable resources)
         {
-			return new StrictKey(new KeyDescription(stateType, instanceType, name, resources));
+			return new StrictRegestryKey(new KeyDescription(stateType, instanceType, name, resources));
 		}
 
-        private static StrictKey CreateTarget(Type stateType, Type instanceType, string name)
+        private static StrictRegestryKey CreateTarget(Type stateType, Type instanceType, string name)
         {
             return CreateTarget(stateType, instanceType, name, Disposable.Empty());
         }

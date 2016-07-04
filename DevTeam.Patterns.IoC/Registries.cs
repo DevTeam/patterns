@@ -11,7 +11,7 @@
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
             if (name == null) throw new ArgumentNullException(nameof(name));
 
-            return registry.Register(typeof(TState), typeof(T), (type, state) => factoryMethod((TState)state), name);
+            return registry.Register(typeof(TState), typeof(T), ctx => factoryMethod((TState)ctx.State), name);
         }
 
         public static IDisposable Register<T>(this IRegistry registry, Func<T> factoryMethod, string name = "")
@@ -58,9 +58,9 @@
 
             public string Name => _container.Name;
 
-            public IEnumerable<IKey> Keys => _container.Keys;
+            public IEnumerable<IRegestryKey> Keys => _container.Keys;
 
-            public IDisposable Register(Type stateType, Type instanceType, Func<Type, object, object> factoryMethod, string name = "")
+            public IDisposable Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, string name = "")
             {
 	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));

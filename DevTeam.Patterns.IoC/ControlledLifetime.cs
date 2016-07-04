@@ -5,15 +5,14 @@
 
     internal class ControlledLifetime: ILifetime
     {
-        private readonly Dictionary<IKey, HashSet<IDisposable>> _instances = new Dictionary<IKey, HashSet<IDisposable>>();
+        private readonly Dictionary<IRegestryKey, HashSet<IDisposable>> _instances = new Dictionary<IRegestryKey, HashSet<IDisposable>>();
 
-        public object Create(IContainer container, IKey key, Func<Type, object, object> factory, Type instanceType, object state)
+        public object Create(IResolvingContext ctx, Func<IResolvingContext, object> factory)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (ctx == null) throw new ArgumentNullException(nameof(ctx));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-            var instance = factory(instanceType, state);
+            var instance = factory(ctx);
             var disposable = instance as IDisposable;
             if (disposable == null)
             {
@@ -21,28 +20,25 @@
             }
 
             HashSet<IDisposable> instances;
-            if (!_instances.TryGetValue(key, out instances))
+            if (!_instances.TryGetValue(ctx.RegestryKey, out instances))
             {
                 instances = new HashSet<IDisposable>();
-                _instances.Add(key, instances);
+                _instances.Add(ctx.RegestryKey, instances);
             }
 
             instances.Add(disposable);
             return instance;
         }
 
-        public void Release(IContainer container, IKey key)
+        public void Release(IReleasingContext ctx)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
-            if (key == null) throw new ArgumentNullException(nameof(key));
-
             HashSet<IDisposable> instances;
-            if (!_instances.TryGetValue(key, out instances))
+            if (!_instances.TryGetValue(ctx.RegestryKey, out instances))
             {
                 return;
             }
 
-            _instances.Remove(key);
+            _instances.Remove(ctx.RegestryKey);
             foreach (var instance in instances)
             {
                 instance.Dispose();

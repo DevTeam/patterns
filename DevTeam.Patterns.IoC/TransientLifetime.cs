@@ -5,19 +5,17 @@
     internal class TransientLifetime : ILifetime
     {
     
-        public object Create(IContainer container, IKey key, Func<Type, object, object> factory, Type instanceType, object state)
+        public object Create(IResolvingContext ctx, Func<IResolvingContext, object> factory)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (ctx == null) throw new ArgumentNullException(nameof(ctx));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-            return factory(instanceType, state);
+            return factory(ctx);
         }
 
-        public void Release(IContainer container, IKey key)
+        public void Release(IReleasingContext ctx)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (ctx == null) throw new ArgumentNullException(nameof(ctx));
         }
     }
 }
