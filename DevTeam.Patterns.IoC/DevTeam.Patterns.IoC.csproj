@@ -46,11 +46,12 @@
   <ItemGroup>
     <Compile Include="ContainerDescription.cs" />
     <Compile Include="ControlledLifetime.cs" />
-    <Compile Include="IContext.cs" />
+    <Compile Include="IRegisteryContext.cs" />
     <Compile Include="IoCContainerConfiguration.cs" />
     <Compile Include="EmptyState.cs" />
     <Compile Include="ILifetime.cs" />
     <Compile Include="IRegestryKey.cs" />
+    <Compile Include="IRegistryKeyComparer.cs" />
     <Compile Include="IReleasingContext.cs" />
     <Compile Include="IResolver`2.cs" />
     <Compile Include="IResolver`1.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="GenericRegestryKey.cs" />
     <Compile Include="ReleasingContext.cs" />
     <Compile Include="ResolvingContext.cs" />
+    <Compile Include="RootContainerRegestryKeyComparer.cs" />
     <Compile Include="StrictRegestryKey.cs" />
     <Compile Include="Resolver%271.cs" />
     <Compile Include="Resolver%272.cs" />

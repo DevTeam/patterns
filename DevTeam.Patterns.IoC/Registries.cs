@@ -24,7 +24,7 @@
         }
 
         public static IContainer Using<TContext>(this IContainer container, string contextName)
-            where TContext: IContext
+            where TContext: IRegisteryContext
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (contextName == null) throw new ArgumentNullException(nameof(contextName));
@@ -33,7 +33,7 @@
         }
 
         private static IContainer Using<TContext>(this IContainer container, Func<TContext> factoryMethod)
-            where TContext : IContext
+            where TContext : IRegisteryContext
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
@@ -42,7 +42,7 @@
         }
 
         private class RegisterContainer<TContext> : IContainer
-            where TContext: IContext
+            where TContext: IRegisteryContext
         {
             private readonly IContainer _container;
             private readonly Func<TContext> _factoryMethod;

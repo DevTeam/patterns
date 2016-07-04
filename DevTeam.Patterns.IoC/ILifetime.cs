@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface ILifetime: IContext
+    public interface ILifetime: IRegisteryContext
     {
         object Create(IResolvingContext ctx, Func<IResolvingContext, object> factory);
 
