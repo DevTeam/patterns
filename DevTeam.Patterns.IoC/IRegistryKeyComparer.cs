@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public interface IRegistryKeyComparer: IEqualityComparer<IRegestryKey>, IRegisteryContext
+    public interface IRegistryKeyComparer: IEqualityComparer<IRegestryKey>, IConfigurationContext
     {
     }
 }

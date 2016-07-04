@@ -9,7 +9,7 @@
     public class Container: IContainer
 	{
         private static readonly IConfiguration Configuration = new IoCContainerConfiguration();
-        private readonly Dictionary<IRegestryKey, Func<IResolvingContext, object>> _factories = new Dictionary<IRegestryKey, Func<IResolvingContext, object>>(RootContainerRegestryKeyComparer.Shared);
+        private Dictionary<IRegestryKey, Func<IResolvingContext, object>> _factories;
 		private readonly IContainer _parentContainer;
         
         /// <summary>
@@ -21,6 +21,7 @@
             if (name == null) throw new ArgumentNullException(nameof(name));
 
             Name = name;
+            CreateFactories();
             Configuration.Apply(this);            
         }
 
@@ -30,7 +31,8 @@
 
             Name = containerDescription.Name;
             _parentContainer = containerDescription.ParentContainer;
-        }
+            CreateFactories();
+        }        
 
         public string Name { get; }
 
@@ -153,5 +155,36 @@
             yield return new StrictRegestryKey(keyDescription);
             yield return new GenericRegestryKey(keyDescription);            
         }
-	}
+
+        private void CreateFactories()
+        {
+            IEqualityComparer<IRegestryKey> comparer;
+            _factories = TryGetComparer(out comparer)
+                ? new Dictionary<IRegestryKey, Func<IResolvingContext, object>>(comparer)
+                : new Dictionary<IRegestryKey, Func<IResolvingContext, object>>();
+        }
+
+        private bool TryGetComparer(out IEqualityComparer<IRegestryKey> comparer)
+        {
+            if (_parentContainer == null)
+            {
+                comparer = IoCContainerConfiguration.RootContainerRegestryKeyComparer.Value;
+                return true;
+            }
+
+            var comparers = (
+                from key in _parentContainer.Keys
+                where key.InstanceType == typeof(IRegistryKeyComparer) && key.StateType == typeof(EmptyState) && key.Name == string.Empty
+                select (IRegistryKeyComparer)_parentContainer.Resolve(key.StateType, key.InstanceType, EmptyState.Shared, key.Name)).ToList();
+
+            if (comparers.Count == 1)
+            {
+                comparer = comparers[0];
+                return true;
+            }
+
+            comparer = default(IEqualityComparer<IRegestryKey>);
+            return true;
+        }
+    }
 }

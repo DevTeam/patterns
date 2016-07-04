@@ -24,7 +24,7 @@
         }
 
         public static IContainer Using<TContext>(this IContainer container, string contextName)
-            where TContext: IRegisteryContext
+            where TContext: IConfigurationContext
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (contextName == null) throw new ArgumentNullException(nameof(contextName));
@@ -32,8 +32,8 @@
             return container.Using(() => container.Resolve<TContext>(contextName));
         }
 
-        private static IContainer Using<TContext>(this IContainer container, Func<TContext> factoryMethod)
-            where TContext : IRegisteryContext
+        public static IContainer Using<TContext>(this IContainer container, Func<TContext> factoryMethod)
+            where TContext : IConfigurationContext
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
@@ -42,7 +42,7 @@
         }
 
         private class RegisterContainer<TContext> : IContainer
-            where TContext: IRegisteryContext
+            where TContext: IConfigurationContext
         {
             private readonly IContainer _container;
             private readonly Func<TContext> _factoryMethod;
@@ -80,7 +80,10 @@
 	            if (state == null) throw new ArgumentNullException(nameof(state));
 	            if (name == null) throw new ArgumentNullException(nameof(name));
 
-	            return _container.Resolve(stateType, instanceType, state, name);
+                using (_container.Register(_factoryMethod))
+                {
+                    return _container.Resolve(stateType, instanceType, state, name);
+                }
             }
 
 	        public void Dispose()

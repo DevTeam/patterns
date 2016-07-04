@@ -1,15 +1,7 @@
 namespace DevTeam.Patterns.IoC
 {
-    using System.Collections.Generic;
-
     internal class RootContainerRegestryKeyComparer: IRegistryKeyComparer
     {
-        public static readonly IEqualityComparer<IRegestryKey> Shared = new RootContainerRegestryKeyComparer();
-
-        private RootContainerRegestryKeyComparer()
-        {
-        }
-
         public bool Equals(IRegestryKey x, IRegestryKey y)
         {
             if (x.InstanceType == typeof(IContainer) && x.StateType == typeof(EmptyState)
