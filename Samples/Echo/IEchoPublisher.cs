@@ -2,7 +2,7 @@
 
 namespace Echo
 {
-    internal interface IEchoPublisher: IObserver<Echo>
+    internal interface IEchoPublisher: IObserver<IEcho>
     {
     }
 }

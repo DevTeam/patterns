@@ -4,7 +4,7 @@
 
     internal class ConsoleEchoPublisher: IEchoPublisher
     {
-        public void OnNext(Echo value)
+        public void OnNext(IEcho value)
         {
             Console.WriteLine(value.EchoMessage);
         }

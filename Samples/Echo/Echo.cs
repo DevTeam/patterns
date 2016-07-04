@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal class Echo
+    internal class Echo: IEcho
     {
         public Echo(string echoMessage)
         {
