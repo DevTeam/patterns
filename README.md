@@ -1,12 +1,12 @@
 # <img src="https://avatars0.githubusercontent.com/u/12184234?v=3&amp;s=200"/> Patterns <img src="http://win10nik.cloudapp.net/app/rest/builds/buildType:DevTeam_Patterns,branch:master/statusIcon"/>
 
-* _Dispose_ patterns [NuGet](https://www.nuget.org/packages/DevTeam.Patterns.Dispose)
+* [_Dispose_](https://github.com/DevTeam/patterns/wiki/Dispose) patterns [NuGet](https://www.nuget.org/packages/DevTeam.Patterns.Dispose)
 
-* _IoC_ patterns [NuGet](https://www.nuget.org/packages/DevTeam.Patterns.IoC)
+* [_IoC_](https://github.com/DevTeam/patterns/wiki/IoC) patterns [NuGet](https://www.nuget.org/packages/DevTeam.Patterns.IoC)
 
-* _Reactive_ patterns [NuGet](https://www.nuget.org/packages/DevTeam.Patterns.Reactive)
+* [_Reactive_](https://github.com/DevTeam/patterns/wiki/Reactive) patterns [NuGet](https://www.nuget.org/packages/DevTeam.Patterns.Reactive)
 
-* _EventAggregator_ patterns [NuGet](https://www.nuget.org/packages/DevTeam.Patterns.EventAggregator)
+* [_EventAggregator_](https://github.com/DevTeam/patterns/wiki/EventAggregator) patterns [NuGet](https://www.nuget.org/packages/DevTeam.Patterns.EventAggregator)
 
 How to use see [samples](https://github.com/DevTeam/patterns/tree/master/Samples)
 
