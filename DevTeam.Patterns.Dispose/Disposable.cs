@@ -2,8 +2,22 @@
 {
     using System;
 
+    /// <summary>
+    /// A set of extsnsions for disposables.
+    /// </summary>
+    /// <example>    
+    /// <code>
+    /// var disposable = Disposable.Create(() => System.Console.WriteLine("Disposed."));
+    /// disposable.Dispose();
+    /// </code>
+    /// </example>
     public static class Disposable
     {
+        /// <summary>
+        /// Creates disposable which does the action when disposing.
+        /// </summary>
+        /// <param name="disposeAction"></param>
+        /// <returns></returns>
         public static IDisposable Create(Action disposeAction)
         {
             if (disposeAction == null) throw new ArgumentNullException(nameof(disposeAction));
@@ -11,6 +25,10 @@
             return new DisposableCreate(disposeAction);
         }
 
+        /// <summary>
+        /// Creates disposable which does nothing.
+        /// </summary>
+        /// <returns></returns>
         public static IDisposable Empty()
         {
             return DisposableEmpty.Shared;
