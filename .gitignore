@@ -36,3 +36,5 @@ TestTool/DevTeam.TestTool.dotNetCore/obj/
 /Markdown/DevTeam.Markdown/bin/Debug
 /Samples/Perf/obj/Release
 /DevTeam.Patterns.EventAggregator/bin/Debug
+Markdown/DevTeam.Markdown/bin/
+Markdown/DevTeam.Markdown/obj/
