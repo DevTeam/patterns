@@ -8,7 +8,6 @@
 
     public class Container: IContainer
 	{
-        private static readonly IConfiguration Configuration = new IoCContainerConfiguration();
         private Dictionary<IRegestryKey, Func<IResolvingContext, object>> _factories;
 		private readonly IContainer _parentContainer;
         
@@ -22,7 +21,7 @@
 
             Name = name;
             CreateFactories();
-            Configuration.Apply(this);            
+            this.Apply(IoCContainerConfiguration.Shared);
         }
 
         internal Container(ContainerDescription containerDescription)

@@ -10,7 +10,7 @@
             // Create root IoC container
             using (var container = new Container())
             // Apply configuration
-            using (new ConsoleTimerConfiguration().Apply(container))
+            using (container.Apply(ConsoleTimerConfiguration.Shared))
             {
                 // Create console
                 var console = container.Resolve<IConsole>();

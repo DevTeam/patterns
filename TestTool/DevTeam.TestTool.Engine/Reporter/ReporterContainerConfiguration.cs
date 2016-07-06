@@ -1,29 +1,36 @@
 ﻿namespace DevTeam.TestTool.Engine.Reporter
 {
     using System;
+    using System.Collections.Generic;
 
-    using Patterns.Dispose;
     using Patterns.EventAggregator;
     using Patterns.IoC;
     using Contracts;
 
     public class ReporterContainerConfiguration: IConfiguration
     {
-        public IDisposable Apply(IContainer container)
+        public static readonly IConfiguration Shared = new ReporterContainerConfiguration();
+
+        private ReporterContainerConfiguration()
+        {
+        }
+
+        public IEnumerable<IConfiguration> GetDependencies()
+        {
+            yield return EventAggregatorContainerConfiguration.Shared;
+        }
+
+        public IEnumerable<IDisposable> Apply(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            var disposable = new CompositeDisposable();
-
-            disposable.Add(container
+            yield return container
                 .Register<ISession, ITool>(session => new ReporterTool(
                     session,
                     container.ResolveAll<ITestReporter>(),
-                    container.Resolve<IEventAggregator>())));
+                    container.Resolve<IEventAggregator>()));
 
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<ITestReporter>(() => new TextTestReporter(), "text"));
-
-            return disposable;
+            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register<ITestReporter>(() => new TextTestReporter(), "text");
         }
     }
 }

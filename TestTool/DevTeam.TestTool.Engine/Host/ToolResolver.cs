@@ -26,7 +26,7 @@
             if (toolName == null) throw new ArgumentNullException(nameof(toolName));
             var tooContainerConfiguration = _configurationResolver.Resolve(toolName);
             var tooContainer = _containerResolver.Resolve(toolName);
-            tooContainerConfiguration.Apply(tooContainer);
+            tooContainer.Apply(tooContainerConfiguration);
             return tooContainer.Resolve<ISession, ITool>(session);
         }
     }

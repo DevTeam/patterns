@@ -1,33 +1,40 @@
 ﻿namespace ConsoleTimer
 {
     using System;
+    using System.Collections.Generic;
 
-    using DevTeam.Patterns.Dispose;
     using DevTeam.Patterns.IoC;
 
     internal class ConsoleTimerConfiguration: IConfiguration
     {
-        public IDisposable Apply(IContainer container)
-        {
-            var disposable = new CompositeDisposable();
+        public static readonly IConfiguration Shared = new ConsoleTimerConfiguration();
 
+        private ConsoleTimerConfiguration()
+        {
+        }
+
+        public IEnumerable<IConfiguration> GetDependencies()
+        {
+            yield break;
+        }
+
+        public IEnumerable<IDisposable> Apply(IContainer container)
+        {
             // Register Console as Singletone
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConsole>(
-                () => new Console()));
+            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConsole>(
+                () => new Console());
 
             // Register Timer with state "period"
-            disposable.Add(container.Register<TimeSpan, ITimer>(
-                period => new Timer(period)));
+            yield return container.Register<TimeSpan, ITimer>(
+                period => new Timer(period));
 
             // Register Publisher and resolve 2 args:
             // Instance of IConsole
             // Instance of ITimer with state "period"
-            disposable.Add(container.Register<ITimePublisher>(
+            yield return container.Register<ITimePublisher>(
                 () => new TimePublisher(
                     container.Resolve<IConsole>(), 
-                    container.Resolve<TimeSpan, ITimer>(TimeSpan.FromSeconds(1)))));
-
-            return disposable;
+                    container.Resolve<TimeSpan, ITimer>(TimeSpan.FromSeconds(1))));
         }
     }
 }

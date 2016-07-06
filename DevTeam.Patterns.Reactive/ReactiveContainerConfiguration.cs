@@ -1,27 +1,34 @@
 ﻿namespace DevTeam.Patterns.Reactive
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Dispose;
-
     using IoC;
-
+    
     public class ReactiveContainerConfiguration: IConfiguration
     {
-        public IDisposable Apply(IContainer container)
+        public static readonly IConfiguration Shared = new ReactiveContainerConfiguration();
+
+        private ReactiveContainerConfiguration()
+        {
+        }
+
+        public IEnumerable<IConfiguration> GetDependencies()
+        {
+            yield break;
+        }
+
+        public IEnumerable<IDisposable> Apply(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            var disposable = new CompositeDisposable();
             var taskFactory = new TaskFactory();
 
-            disposable.Add(container.Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.PrivateSingleThread));
-            disposable.Add(container.Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.PrivateMultiThread));
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.SharedSingleThread));
-            disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.SharedMultiThread));
-
-            return disposable;
+            yield return container.Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.PrivateSingleThread);
+            yield return container.Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.PrivateMultiThread);
+            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.SharedSingleThread);
+            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.SharedMultiThread);
         }
 
         private static Scheduler CreateMultiThreadScheduler(TaskFactory taskFactory)
