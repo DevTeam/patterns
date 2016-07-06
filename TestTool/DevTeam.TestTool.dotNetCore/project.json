@@ -20,6 +20,12 @@
         "DevTeam.Patterns.IoC": {
           "target": "project"
         },
+        "DevTeam.Platform": {
+          "target": "project"
+        },
+        "DevTeam.Platform.Reflection": {
+          "target": "project"
+        },
         "DevTeam.TestTool.Engine": {
           "target": "project"
         },

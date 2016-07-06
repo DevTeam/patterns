@@ -18,6 +18,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj" />
     <ProjectReference Include="..\..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj" />
+    <ProjectReference Include="..\..\DevTeam.Platform.Reflection\DevTeam.Platform.Reflection.csproj" />
+    <ProjectReference Include="..\..\DevTeam.Platform\DevTeam.Platform.csproj" />
     <ProjectReference Include="..\DevTeam.TestTool.Engine.Contracts\DevTeam.TestTool.Engine.Contracts.csproj" />
     <ProjectReference Include="..\DevTeam.TestTool.Engine\DevTeam.TestTool.Engine.csproj" />
     <ProjectReference Include="..\DevTeam.TestTool.Test.Mocks\DevTeam.TestTool.Test.Mocks.csproj" />
