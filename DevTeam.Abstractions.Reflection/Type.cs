@@ -5,8 +5,6 @@
     using System.Linq;
     using System.Reflection;
 
-    using Abstractions;
-
     using Patterns.IoC;
 
     internal class Type: IType

@@ -4,8 +4,6 @@
     using System.Collections.Generic;
     using System.Reflection;
 
-    using Abstractions;
-
     internal class MethodInfo: IMethodInfo
     {
         private readonly System.Reflection.MethodInfo _methodInfo;

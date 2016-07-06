@@ -1,4 +1,4 @@
-﻿namespace DevTeam.Abstractions
+﻿namespace DevTeam.Abstractions.Reflection
 {
     public interface IReflection
     {

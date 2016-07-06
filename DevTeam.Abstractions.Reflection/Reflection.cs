@@ -3,8 +3,6 @@
     using System;
     using System.Reflection;
 
-    using Abstractions;
-
     using Patterns.IoC;
 
     public class Reflection : IReflection

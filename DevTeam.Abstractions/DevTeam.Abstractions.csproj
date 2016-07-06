@@ -39,11 +39,10 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
-    <Compile Include="IAssembly.cs" />
-    <Compile Include="IMethodInfo.cs" />
-    <Compile Include="IReflection.cs" />
-    <Compile Include="IType.cs" />
+    <Compile Include="Reflection\IAssembly.cs" />
+    <Compile Include="Reflection\IMethodInfo.cs" />
+    <Compile Include="Reflection\IReflection.cs" />
+    <Compile Include="Reflection\IType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

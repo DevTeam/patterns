@@ -2,8 +2,6 @@
 {
     using System;
 
-    using Abstractions;
-
     using Patterns.Dispose;
     using Patterns.IoC;
 

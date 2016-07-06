@@ -1,4 +1,4 @@
-﻿namespace DevTeam.Abstractions
+﻿namespace DevTeam.Abstractions.Reflection
 {
     using System;
     using System.Collections.Generic;

@@ -3,6 +3,7 @@
     using System;
 
     using Abstractions;
+    using Abstractions.Reflection;
 
     using Patterns.IoC;
     using Contracts;

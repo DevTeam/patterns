@@ -4,6 +4,7 @@
     using System.Linq;
 
     using Abstractions;
+    using Abstractions.Reflection;
 
     using Contracts;
 
