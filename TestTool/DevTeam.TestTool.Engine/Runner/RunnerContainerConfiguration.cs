@@ -22,7 +22,7 @@
             disposable.Add(container
                 .Register<ISession, ITool>(session => new RunnerTool(
                     session, 
-                    container.Resolve<ITestRunner>(),
+                    container.ResolveAll<ITestRunner>(),
                     container.Resolve<IEventAggregator>())));
 
             disposable.Add(container.Using<ILifetime>(WellknownLifetime.Singletone).Register<ITestRunner>(() => new TestRunner(container.Resolve<IReflection>())));

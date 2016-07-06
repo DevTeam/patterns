@@ -34,13 +34,13 @@
 
         public IDisposable Activate()
         {
-            return new CompositeDisposable(
-                _testReporters.Select(reporter => new []
-                    {
-                        _eventAggregator.RegisterProvider(reporter),
-                        _eventAggregator.RegisterConsumer(reporter)
-                    })
-                .SelectMany(i => i));            
+            return (
+                from reporter in _testReporters
+                select _eventAggregator.RegisterConsumer(reporter)).
+            Concat(
+                from reporter in _testReporters
+                select _eventAggregator.RegisterProvider(reporter))
+            .ToCompositeDisposable();
         }
     }
 }

@@ -1,15 +1,14 @@
-﻿namespace DevTeam.TestTool.Engine.Host
+﻿namespace DevTeam.TestTool.Engine.Publisher
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
 
     using Contracts;
+    using Host;
 
     internal class ReportPublisher : IReportPublisher
     {
-        private readonly IEnumerable<IOutput> _outputs;
-        private readonly ManualResetEvent _completedEvent = new ManualResetEvent(false);
+        private readonly IEnumerable<IOutput> _outputs;        
 
         public ReportPublisher(
             IEnumerable<IOutput> outputs)
@@ -28,18 +27,15 @@
         }
 
         public void OnError(Exception error)
-        {
-            _completedEvent.Set();
+        {            
         }
 
         public void OnCompleted()
-        {
-            _completedEvent.Set();
+        {         
         }
 
         public void Dispose()
-        {
-            _completedEvent.WaitOne();
+        {         
         }
     }
 }

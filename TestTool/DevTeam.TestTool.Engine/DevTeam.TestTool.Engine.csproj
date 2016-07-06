@@ -69,7 +69,9 @@
     <Compile Include="Host\IReportPublisher.cs" />
     <Compile Include="Host\PropertyValue.cs" />
     <Compile Include="Host\Reflection.cs" />
-    <Compile Include="Host\ReportPublisher.cs" />
+    <Compile Include="Publisher\PublisherTool.cs" />
+    <Compile Include="Publisher\PublisherContainerConfiguration.cs" />
+    <Compile Include="Publisher\ReportPublisher.cs" />
     <Compile Include="Host\PropertyFactory.cs" />
     <Compile Include="Host\ToolProperty.cs" />
     <Compile Include="Host\AssemblyProperty.cs" />

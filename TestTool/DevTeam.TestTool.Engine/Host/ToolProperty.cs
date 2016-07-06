@@ -7,7 +7,7 @@
         public static readonly IProperty Shared = new ToolProperty();
 
         private ToolProperty()
-            : base("tool", "Tool Name", "(-tool)", $"({WellknownTool.Explorer}|{WellknownTool.Runnner}|{WellknownTool.Reporter})")
+            : base("tool", "Tool Name", "(-tool)", $"({WellknownTool.Explorer}|{WellknownTool.Runnner}|{WellknownTool.Reporter}|{WellknownTool.Publisher})")
         {
         }
     }

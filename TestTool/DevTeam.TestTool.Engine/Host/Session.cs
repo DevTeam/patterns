@@ -7,32 +7,27 @@
 
     using Contracts;
 
-    using Patterns.EventAggregator;
-
     using Patterns.Dispose;
     using Patterns.IoC;
 
     internal class Session : ISession
     {
-        private readonly CompositeDisposable _disposable = new CompositeDisposable();
+        private readonly IDisposable _disposable;
 
         public Session(
             IResolver<ISession, ITool> toolResolver, 
-            IEventAggregator eventAggregator,
-            IReportPublisher reportPublisher,
             IEnumerable<IPropertyValue> properties)
         {
             if (toolResolver == null) throw new ArgumentNullException(nameof(toolResolver));
-            if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));
-            if (reportPublisher == null) throw new ArgumentNullException(nameof(reportPublisher));
             if (properties == null) throw new ArgumentNullException(nameof(properties));
 
             Properties = new ReadOnlyCollection<IPropertyValue>(new List<IPropertyValue>(properties));
-            _disposable.Add(eventAggregator.RegisterConsumer(reportPublisher));
-            foreach (var tool in GetToolNames().Select(toolName => toolResolver.Resolve(this, toolName)).OrderByDescending(tool => tool.ToolType))
-            {
-                _disposable.Add(tool.Activate());
-            }            
+            _disposable = (
+                from toolName in GetToolNames()
+                let tool = toolResolver.Resolve(this, toolName)
+                orderby tool.ToolType descending
+                select tool.Activate()
+            ).ToCompositeDisposable();            
         }
 
         public IEnumerable<IPropertyValue> Properties { get; }

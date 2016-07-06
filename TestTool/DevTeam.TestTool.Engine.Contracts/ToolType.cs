@@ -2,8 +2,9 @@
 {
     public enum ToolType
     {
-        Explorer = 0,
-        Runner = 1,
-        Reporter = 2
+        Explorer = 100,
+        Runner = 200,
+        Reporter = 300,
+        Publisher = 400
     }
 }
