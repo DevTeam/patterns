@@ -1,6 +1,7 @@
 ﻿namespace DevTeam.TestTool.Engine.Runner
 {
     using System;
+    using System.Linq;
 
     using Contracts;
 
@@ -25,13 +26,13 @@
             try
             {
                 var testAssembly = _reflection.LoadAssembly(test.Method.Fixture.Assembly.Name);
-                var testFixtureType = _reflection.LoadType(testAssembly, test.Method.Fixture.Name);
-                var methodInfo = _reflection.LoadMethod(testFixtureType, test.Method.Name);
-                var testInstance = _reflection.CreateInstance(testFixtureType);
+                var testFixtureType = testAssembly.GetType(test.Method.Fixture.Name);
+                var methodInfo = testFixtureType.Methods.SingleOrDefault(method => method.Name == test.Method.Name);
+                var testInstance = testFixtureType.CreateInstance();
                 try
                 {
                     _results.OnNext(new TestProgress(test, TestState.Starting));
-                    var result = methodInfo.Invoke(testInstance, null);
+                    var result = methodInfo.Invoke(testInstance);
                     _results.OnNext(new TestProgress(test, TestState.Finished, new TestResult(result)));
                 }
                 catch (Exception exception)

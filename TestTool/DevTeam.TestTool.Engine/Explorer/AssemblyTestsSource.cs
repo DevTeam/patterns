@@ -28,12 +28,12 @@
                 session.Properties.Where(p => Equals(p.Property, AssemblyProperty.Shared)).Select(p => p.Value)
                 let assembly = _reflection.LoadAssembly(assemblyFileName)
                 let testAssembly = new TestAssembly(assemblyFileName)
-                from type in _reflection.GetTypes(assembly)
-                let testFixtureAttribute = _reflection.GetCustomAttribute<TestFixtureAttribute>(type).SingleOrDefault()
+                from type in assembly.DefinedTypes
+                let testFixtureAttribute = type.GetCustomAttributes<TestFixtureAttribute>().SingleOrDefault()
                 where testFixtureAttribute != null
                 let testFixture = new TestFixture(testAssembly, type.FullName)
-                from method in _reflection.GetMethods(type)
-                let testAttribute = _reflection.GetCustomAttribute<TestAttribute>(method).SingleOrDefault()
+                from method in type.Methods
+                let testAttribute = method.GetCustomAttributes<TestAttribute>()
                 where testAttribute != null
                 let testMethod = new TestMethod(testFixture, method.Name)
                 select new Test(testMethod)).ToObservable();

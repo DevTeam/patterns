@@ -68,7 +68,9 @@
     <Compile Include="Host\IPropertyFactory.cs" />
     <Compile Include="Host\IReportPublisher.cs" />
     <Compile Include="Host\PropertyValue.cs" />
-    <Compile Include="Host\Reflection.cs" />
+    <Compile Include="Reflection\ReflectionContainerConfiguration.cs" />
+    <Compile Include="Reflection\MethodInfo.cs" />
+    <Compile Include="Reflection\Reflection.cs" />
     <Compile Include="Publisher\PublisherTool.cs" />
     <Compile Include="Publisher\PublisherContainerConfiguration.cs" />
     <Compile Include="Publisher\ReportPublisher.cs" />
@@ -80,6 +82,8 @@
     <Compile Include="Explorer\ExplorerTool.cs" />
     <Compile Include="Explorer\ExplorerContainerConfiguration.cs" />
     <Compile Include="Host\ToolResolver.cs" />
+    <Compile Include="Reflection\Assembly.cs" />
+    <Compile Include="Reflection\Type.cs" />
     <Compile Include="Reporter\ReporterTool.cs" />
     <Compile Include="Reporter\ReporterContainerConfiguration.cs" />
     <Compile Include="Reporter\TextTestReporter.cs" />
@@ -94,6 +98,7 @@
   <ItemGroup>
     <None Include="project.json" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
