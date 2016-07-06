@@ -62,9 +62,9 @@
     <Compile Include="ToolType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DevTeam.Abstractions\DevTeam.Abstractions.csproj">
-      <Project>{33bb2201-48f5-47a1-bac0-d9cc8a26d187}</Project>
-      <Name>DevTeam.Abstractions</Name>
+    <ProjectReference Include="..\..\DevTeam.Platform\DevTeam.Platform.csproj">
+      <Project>{ea937060-5dc7-4bb6-852a-c6397eb2370d}</Project>
+      <Name>DevTeam.Platform</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

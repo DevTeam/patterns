@@ -2,7 +2,7 @@
   "profiles": {
     "DevTeam.TestTool.dotNetCore": {
       "commandName": "Project",
-      "commandLineArgs": "-assembly=DevTeam.TestTool.Test.Mocks -tool=reporter -tool=runner -tool=explorer"
+      "commandLineArgs": "-assembly=DevTeam.TestTool.Test.Mocks -tool=reporter -tool=runner -tool=explorer -tool=publisher"
     }
   }
 }

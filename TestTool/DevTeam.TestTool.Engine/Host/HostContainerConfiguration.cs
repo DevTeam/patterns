@@ -3,14 +3,15 @@
     using System;
     using System.Collections.Generic;
 
-    using Abstractions.Reflection;
-
     using Patterns.IoC;
     using Contracts;
     using Explorer;
     using Patterns.Dispose;
     using Patterns.Reactive;
     using Patterns.EventAggregator;
+
+    using Platform.Reflection;
+
     using Publisher;
 
     using Reporter;

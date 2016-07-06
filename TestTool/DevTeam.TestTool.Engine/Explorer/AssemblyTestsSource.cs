@@ -3,14 +3,13 @@
     using System;
     using System.Linq;
 
-    using Abstractions;
-    using Abstractions.Reflection;
-
     using Contracts;
 
     using Patterns.Reactive;
 
     using Host;
+
+    using Platform.Reflection;
 
     using TestTool.Contracts;
 

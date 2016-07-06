@@ -38,14 +38,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\..\DevTeam.Abstractions.Reflection\DevTeam.Abstractions.Reflection.csproj">
-      <Project>{85ead77a-fb5a-4112-9efb-179a5d0a777b}</Project>
-      <Name>DevTeam.Abstractions.Reflection</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DevTeam.Abstractions\DevTeam.Abstractions.csproj">
-      <Project>{33BB2201-48F5-47A1-BAC0-D9CC8A26D187}</Project>
-      <Name>DevTeam.Abstractions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
       <Project>{fe61929a-6f78-40b6-8929-62cfb62e3be6}</Project>
       <Name>DevTeam.Patterns.Dispose</Name>
@@ -61,6 +53,14 @@
     <ProjectReference Include="..\..\DevTeam.Patterns.Reactive\DevTeam.Patterns.Reactive.csproj">
       <Project>{79f43401-ced2-46c1-a3c9-a8e9f94a1dea}</Project>
       <Name>DevTeam.Patterns.Reactive</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Platform.Reflection\DevTeam.Platform.Reflection.csproj">
+      <Project>{fa65d0e7-0eef-4193-8a2c-d9b9ef95be96}</Project>
+      <Name>DevTeam.Platform.Reflection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Platform\DevTeam.Platform.csproj">
+      <Project>{ea937060-5dc7-4bb6-852a-c6397eb2370d}</Project>
+      <Name>DevTeam.Platform</Name>
     </ProjectReference>
     <ProjectReference Include="..\DevTeam.TestTool.Contracts\DevTeam.TestTool.Contracts.csproj">
       <Project>{8591A4C5-3368-4D2D-98E5-E42FB2C8A3C3}</Project>

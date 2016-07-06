@@ -2,17 +2,13 @@
 {
     using System;
 
-    using Abstractions;
-    using Abstractions.Reflection;
-
     using Patterns.IoC;
     using Contracts;
 
     using Patterns.Dispose;
-
-    using Patterns.Reactive;
-
     using Patterns.EventAggregator;
+
+    using Platform.Reflection;
 
     public class RunnerContainerConfiguration: IConfiguration
     {

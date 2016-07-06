@@ -3,12 +3,11 @@
     using System;
     using System.Linq;
 
-    using Abstractions;
-    using Abstractions.Reflection;
-
     using Contracts;
 
     using Patterns.Reactive;
+
+    using Platform.Reflection;
 
     internal class TestRunner : ITestRunner
     {
