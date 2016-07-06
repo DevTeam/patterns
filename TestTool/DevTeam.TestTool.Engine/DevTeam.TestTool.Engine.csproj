@@ -38,6 +38,14 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <ProjectReference Include="..\..\DevTeam.Abstractions.Reflection\DevTeam.Abstractions.Reflection.csproj">
+      <Project>{85ead77a-fb5a-4112-9efb-179a5d0a777b}</Project>
+      <Name>DevTeam.Abstractions.Reflection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Abstractions\DevTeam.Abstractions.csproj">
+      <Project>{33BB2201-48F5-47A1-BAC0-D9CC8A26D187}</Project>
+      <Name>DevTeam.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
       <Project>{fe61929a-6f78-40b6-8929-62cfb62e3be6}</Project>
       <Name>DevTeam.Patterns.Dispose</Name>
@@ -68,9 +76,6 @@
     <Compile Include="Host\IPropertyFactory.cs" />
     <Compile Include="Host\IReportPublisher.cs" />
     <Compile Include="Host\PropertyValue.cs" />
-    <Compile Include="Reflection\ReflectionContainerConfiguration.cs" />
-    <Compile Include="Reflection\MethodInfo.cs" />
-    <Compile Include="Reflection\Reflection.cs" />
     <Compile Include="Publisher\PublisherTool.cs" />
     <Compile Include="Publisher\PublisherContainerConfiguration.cs" />
     <Compile Include="Publisher\ReportPublisher.cs" />
@@ -82,8 +87,6 @@
     <Compile Include="Explorer\ExplorerTool.cs" />
     <Compile Include="Explorer\ExplorerContainerConfiguration.cs" />
     <Compile Include="Host\ToolResolver.cs" />
-    <Compile Include="Reflection\Assembly.cs" />
-    <Compile Include="Reflection\Type.cs" />
     <Compile Include="Reporter\ReporterTool.cs" />
     <Compile Include="Reporter\ReporterContainerConfiguration.cs" />
     <Compile Include="Reporter\TextTestReporter.cs" />

@@ -2,6 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+
+    using Abstractions.Reflection;
+
     using Patterns.IoC;
     using Contracts;
     using Explorer;
@@ -9,8 +12,6 @@
     using Patterns.Reactive;
     using Patterns.EventAggregator;
     using Publisher;
-
-    using Reflection;
 
     using Reporter;
     using Runner;

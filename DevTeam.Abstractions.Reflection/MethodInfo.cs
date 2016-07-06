@@ -1,10 +1,10 @@
-﻿namespace DevTeam.TestTool.Engine.Reflection
+﻿namespace DevTeam.Abstractions.Reflection
 {
     using System;
     using System.Collections.Generic;
     using System.Reflection;
 
-    using Contracts;
+    using Abstractions;
 
     internal class MethodInfo: IMethodInfo
     {

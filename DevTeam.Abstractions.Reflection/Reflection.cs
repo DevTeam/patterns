@@ -1,9 +1,9 @@
-﻿namespace DevTeam.TestTool.Engine.Reflection
+﻿namespace DevTeam.Abstractions.Reflection
 {
     using System;
     using System.Reflection;
 
-    using Contracts;
+    using Abstractions;
 
     using Patterns.IoC;
 

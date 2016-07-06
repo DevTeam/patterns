@@ -1,4 +1,4 @@
-﻿namespace DevTeam.TestTool.Engine.Contracts
+﻿namespace DevTeam.Abstractions
 {
     using System.Collections.Generic;
 

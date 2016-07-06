@@ -3,6 +3,8 @@
     using System;
     using System.Linq;
 
+    using Abstractions;
+
     using Contracts;
 
     using Patterns.Reactive;

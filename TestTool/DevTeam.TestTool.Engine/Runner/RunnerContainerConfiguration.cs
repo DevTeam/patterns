@@ -2,6 +2,8 @@
 {
     using System;
 
+    using Abstractions;
+
     using Patterns.IoC;
     using Contracts;
 
