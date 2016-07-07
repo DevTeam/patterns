@@ -47,6 +47,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DevTeam.Patterns.Dispose.Tests\DevTeam.Patterns.Dispose.Tests.csproj">
+      <Project>{5e158da9-4d12-444d-bd45-ac8749187ee0}</Project>
+      <Name>DevTeam.Patterns.Dispose.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
       <Project>{FE61929A-6F78-40B6-8929-62CFB62E3BE6}</Project>
       <Name>DevTeam.Patterns.Dispose</Name>

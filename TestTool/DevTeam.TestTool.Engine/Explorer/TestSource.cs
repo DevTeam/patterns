@@ -39,8 +39,8 @@
                 where testFixtureAttribute != null
                 let testFixture = new TestFixture(testAssembly, type.FullName)
                 from method in type.Methods
-                let testAttribute = method.GetCustomAttributes<TestAttribute>()
-                where testAttribute != null
+                let testAttributes = method.GetCustomAttributes<TestAttribute>()
+                where testAttributes != null && testAttributes.Any()
                 let testMethod = new TestMethod(testFixture, method.Name)
                 select new Test(testMethod)).ToObservable();
         }
