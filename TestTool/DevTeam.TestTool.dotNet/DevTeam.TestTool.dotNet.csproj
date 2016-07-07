@@ -63,6 +63,10 @@
       <Project>{35529d33-dc72-4bd3-8e39-f964ae39ba6d}</Project>
       <Name>DevTeam.TestTool.Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DevTeam.TestTool.Test.Mocks2\DevTeam.TestTool.Test.Mocks2.csproj">
+      <Project>{3a6dc9e0-22ad-42f8-aa8d-9b7596a7875d}</Project>
+      <Name>DevTeam.TestTool.Test.Mocks2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DevTeam.TestTool.Test.Mocks\DevTeam.TestTool.Test.Mocks.csproj">
       <Project>{d85f55c6-3976-4633-8dd4-e6bad79e4570}</Project>
       <Name>DevTeam.TestTool.Test.Mocks</Name>
