@@ -7,10 +7,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DevTeam.Platform.Reflection")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Reflection implementation for platform.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DevTeam.Platform.Reflection")]
+[assembly: AssemblyCompany("NikolayP")]
+[assembly: AssemblyProduct("DevTeam.Platform")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

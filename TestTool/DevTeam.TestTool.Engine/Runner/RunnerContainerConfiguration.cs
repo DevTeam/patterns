@@ -10,14 +10,17 @@
 
     using Platform.Reflection;
 
-    public class RunnerContainerConfiguration: IConfiguration
+    /// <inheritdoc/>
+    internal class RunnerContainerConfiguration: IConfiguration
     {
+        /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
             yield return new EventAggregatorContainerConfiguration();
             yield return new ReflectionContainerConfiguration();
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));

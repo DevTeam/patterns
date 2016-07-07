@@ -5,13 +5,16 @@
     using DevTeam.Patterns.EventAggregator;
     using DevTeam.Patterns.IoC;
 
+    /// <inheritdoc/>
     internal class EchoConfiguration : IConfiguration
-    {        
+    {
+        /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
             yield return new EventAggregatorContainerConfiguration();
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             // Register echo request

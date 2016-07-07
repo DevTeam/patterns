@@ -6,15 +6,18 @@
     using Patterns.EventAggregator;
     using Patterns.IoC;
     using Contracts;
-    using Host;    
+    using Host;
 
-    public class PublisherContainerConfiguration : IConfiguration
+    /// <inheritdoc/>
+    internal class PublisherContainerConfiguration : IConfiguration
     {
+        /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
             yield return new EventAggregatorContainerConfiguration();
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));

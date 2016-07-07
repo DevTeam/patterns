@@ -12,8 +12,10 @@
 
     using Platform.Reflection;
 
-    public class ExplorerContainerConfiguration: IConfiguration
+    /// <inheritdoc/>
+    internal class ExplorerContainerConfiguration: IConfiguration
     {
+        /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
             yield return new ReactiveContainerConfiguration();
@@ -21,6 +23,7 @@
             yield return new ReflectionContainerConfiguration();
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));

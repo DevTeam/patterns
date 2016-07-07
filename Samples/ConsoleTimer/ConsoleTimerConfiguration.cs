@@ -5,13 +5,16 @@
 
     using DevTeam.Patterns.IoC;
 
+    /// <inheritdoc/>
     internal class ConsoleTimerConfiguration: IConfiguration
-    {        
+    {
+        /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
             yield break;
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             // Register Console as Singleton
