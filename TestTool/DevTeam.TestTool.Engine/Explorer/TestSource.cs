@@ -7,8 +7,6 @@
 
     using Patterns.Reactive;
 
-    using Host;
-
     using Platform.Reflection;
 
     using TestTool.Contracts;

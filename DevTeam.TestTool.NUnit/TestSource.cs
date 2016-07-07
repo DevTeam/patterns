@@ -1,12 +1,11 @@
-﻿using NUnit_TestAttribute = NUnit.Framework.TestAttribute;
-using NUnit_TestFixtureAttribute = NUnit.Framework.TestFixtureAttribute;
+﻿using TestAttribute = NUnit.Framework.TestAttribute;
+using TestFixtureAttribute = NUnit.Framework.TestFixtureAttribute;
 
 namespace DevTeam.TestTool.NUnit
 {
     using System;
     using System.Linq;
 
-    using Contracts;
     using Engine.Contracts;
 
     using Patterns.Reactive;
@@ -35,11 +34,11 @@ namespace DevTeam.TestTool.NUnit
                 let assembly = _reflection.LoadAssembly(assemblyFileName)
                 let testAssembly = new TestAssembly(assemblyFileName)
                 from type in assembly.DefinedTypes
-                let testFixtureAttribute = type.GetCustomAttributes<NUnit_TestFixtureAttribute>().SingleOrDefault()
+                let testFixtureAttribute = type.GetCustomAttributes<TestFixtureAttribute>().SingleOrDefault()
                 where testFixtureAttribute != null
                 let testFixture = new TestFixture(testAssembly, type.FullName)
                 from method in type.Methods
-                let testAttributes = method.GetCustomAttributes<NUnit_TestAttribute>()
+                let testAttributes = method.GetCustomAttributes<TestAttribute>()
                 where testAttributes != null && testAttributes.Any()
                 let testMethod = new TestMethod(testFixture, method.Name)
                 select new Test(testMethod)).ToObservable();
