@@ -5,7 +5,7 @@
 
     internal class ControlledLifetime: ILifetime
     {
-        private readonly Dictionary<IRegestryKey, HashSet<IDisposable>> _instances = new Dictionary<IRegestryKey, HashSet<IDisposable>>();
+        private readonly Dictionary<IRegistration, HashSet<IDisposable>> _instances = new Dictionary<IRegistration, HashSet<IDisposable>>();
 
         public object Create(IResolvingContext ctx, Func<IResolvingContext, object> factory)
         {
@@ -20,10 +20,10 @@
             }
 
             HashSet<IDisposable> instances;
-            if (!_instances.TryGetValue(ctx.RegestryKey, out instances))
+            if (!_instances.TryGetValue(ctx.Registration, out instances))
             {
                 instances = new HashSet<IDisposable>();
-                _instances.Add(ctx.RegestryKey, instances);
+                _instances.Add(ctx.Registration, instances);
             }
 
             instances.Add(disposable);
@@ -33,12 +33,12 @@
         public void Release(IReleasingContext ctx)
         {
             HashSet<IDisposable> instances;
-            if (!_instances.TryGetValue(ctx.RegestryKey, out instances))
+            if (!_instances.TryGetValue(ctx.Registration, out instances))
             {
                 return;
             }
 
-            _instances.Remove(ctx.RegestryKey);
+            _instances.Remove(ctx.Registration);
             foreach (var instance in instances)
             {
                 instance.Dispose();

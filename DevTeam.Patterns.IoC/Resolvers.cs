@@ -28,7 +28,7 @@
 			if (resolver == null) throw new ArgumentNullException(nameof(resolver));
             
 		    return 
-                from key in resolver.Keys
+                from key in resolver.Registrations
 		        where key.InstanceType == typeof(T) && key.StateType == typeof(EmptyState)
 		        select (T)resolver.Resolve(key.StateType, key.InstanceType, EmptyState.Shared, key.Name);
 		}
@@ -39,7 +39,7 @@
 			if (stateSelector == null) throw new ArgumentNullException(nameof(stateSelector));
 
 			return                
-                from key in resolver.Keys
+                from key in resolver.Registrations
                 where key.InstanceType == typeof(T) && key.StateType == typeof(TState)
                 select (T)resolver.Resolve(key.StateType, key.InstanceType, stateSelector(key.Name), key.Name);
 		}

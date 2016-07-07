@@ -2,23 +2,23 @@ namespace DevTeam.Patterns.IoC
 {
     using System;
 
-    internal class GenericRegestryKey: IRegestryKey, IDisposable
+    internal class GenericRegistration: IRegistration
     {
-        private readonly KeyDescription _description;
+        private readonly RegistrationDescription _description;
 
-        public static bool TryCreate(KeyDescription description, out IRegestryKey key)
+        public static bool TryCreate(RegistrationDescription description, out IRegistration registration)
         {
             if (description.InstanceType.GenericTypeArguments.Length > 0)
             {
-                key = new GenericRegestryKey(description);
+                registration = new GenericRegistration(description);
                 return true;
             }
 
-            key = null;
+            registration = null;
             return false;
         }
 
-        private GenericRegestryKey(KeyDescription description)
+        private GenericRegistration(RegistrationDescription description)
         {
             _description = description;            
         }
@@ -39,7 +39,7 @@ namespace DevTeam.Patterns.IoC
             return $"{InstanceType.FullName}({StateType.FullName}, \"{Name}\")";
         }
 
-        public bool Equals(IRegestryKey other)
+        public bool Equals(IRegistration other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -51,7 +51,7 @@ namespace DevTeam.Patterns.IoC
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((IRegestryKey)obj);
+            return Equals((IRegistration)obj);
         }
 
         public override int GetHashCode()

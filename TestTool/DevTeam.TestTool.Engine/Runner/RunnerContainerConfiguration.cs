@@ -18,7 +18,7 @@
             yield return new ReflectionContainerConfiguration();
         }
 
-        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
+        public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 

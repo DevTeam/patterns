@@ -1,8 +1,8 @@
 namespace DevTeam.Patterns.IoC
 {
-    internal class RootContainerRegestryKeyComparer: IRegistryKeyComparer
+    internal class RootContainerRegistrationComparer: IRegistrationComparer
     {
-        public bool Equals(IRegestryKey x, IRegestryKey y)
+        public bool Equals(IRegistration x, IRegistration y)
         {
             if (x.InstanceType == typeof(IContainer) && x.StateType == typeof(EmptyState)
                 && y.InstanceType == typeof(IContainer) && y.StateType == typeof(EmptyState))
@@ -13,7 +13,7 @@ namespace DevTeam.Patterns.IoC
             return x.Equals(y);
         }
 
-        public int GetHashCode(IRegestryKey obj)
+        public int GetHashCode(IRegistration obj)
         {
             if(obj.InstanceType == typeof(IContainer) && obj.StateType == typeof(EmptyState))
             {

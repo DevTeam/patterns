@@ -9,7 +9,7 @@
 	using Shouldly;
 
 	[TestFixture]
-	public class StrictKeyTests
+	public class StrictRegistrationTests
 	{
 		[Test]
         [TestCase(typeof(string), typeof(IService1), "abc", typeof(string), typeof(IService1), "abc", true)]
@@ -32,12 +32,12 @@
             Equals(key1, key2).ShouldBe(expectedEqu);
         }
 
-        private static StrictRegestryKey CreateTarget(Type stateType, Type instanceType, string name, IDisposable resources)
+        private static StrictRegistration CreateTarget(Type stateType, Type instanceType, string name, IDisposable resources)
         {
-			return new StrictRegestryKey(new KeyDescription(stateType, instanceType, name, resources));
+			return new StrictRegistration(new RegistrationDescription(stateType, instanceType, name, resources));
 		}
 
-        private static StrictRegestryKey CreateTarget(Type stateType, Type instanceType, string name)
+        private static StrictRegistration CreateTarget(Type stateType, Type instanceType, string name)
         {
             return CreateTarget(stateType, instanceType, name, Disposable.Empty());
         }

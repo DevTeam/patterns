@@ -2,9 +2,9 @@
 {
     using System.Text.RegularExpressions;
 
-    internal class NamePatternRegestryKeyComparer: IRegistryKeyComparer
+    internal class NamePatternRegistrationComparer: IRegistrationComparer
     {
-        public bool Equals(IRegestryKey x, IRegestryKey y)
+        public bool Equals(IRegistration x, IRegistration y)
         {
             var regexX = new Regex(x.Name);
             var regexY = new Regex(y.Name);
@@ -16,7 +16,7 @@
             return x.Equals(y);
         }
 
-        public int GetHashCode(IRegestryKey obj)
+        public int GetHashCode(IRegistration obj)
         {
             unchecked
             {

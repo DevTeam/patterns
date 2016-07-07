@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface IRegestryKey: IEquatable<IRegestryKey>
+    public interface IRegistration: IEquatable<IRegistration>, IDisposable
     {
         Type StateType { get; }
 

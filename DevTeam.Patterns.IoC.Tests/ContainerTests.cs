@@ -347,9 +347,9 @@
         {
             // Given
             var target = CreateTarget();
-            var comparer = new Mock<IRegistryKeyComparer>();
-            comparer.Setup(i => i.GetHashCode(It.IsAny<IRegestryKey>())).Returns<IRegestryKey>(key => key.GetHashCode());
-            comparer.Setup(i => i.Equals(It.IsAny<IRegestryKey>(), It.IsAny<IRegestryKey>())).Returns<IRegestryKey, IRegestryKey>((key1, key2) => key1.Equals(key2));            
+            var comparer = new Mock<IRegistrationComparer>();
+            comparer.Setup(i => i.GetHashCode(It.IsAny<IRegistration>())).Returns<IRegistration>(key => key.GetHashCode());
+            comparer.Setup(i => i.Equals(It.IsAny<IRegistration>(), It.IsAny<IRegistration>())).Returns<IRegistration, IRegistration>((key1, key2) => key1.Equals(key2));            
             var childContainer = target.Using(() => comparer.Object).CreateChildContainer();
             childContainer.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
@@ -358,8 +358,8 @@
 
             // Then
             instance.ShouldBe(_service1.Object);
-            comparer.Verify(i => i.GetHashCode(It.IsAny<IRegestryKey>()));
-            comparer.Verify(i => i.Equals(It.IsAny<IRegestryKey>(), It.IsAny<IRegestryKey>()));
+            comparer.Verify(i => i.GetHashCode(It.IsAny<IRegistration>()));
+            comparer.Verify(i => i.Equals(It.IsAny<IRegistration>(), It.IsAny<IRegistration>()));
         }
 
         [Test]
@@ -367,7 +367,7 @@
         {
             // Given
             var target = CreateTarget();
-            var childContainer = target.Using<IRegistryKeyComparer>(WellknownRegestryKeyComparer.NamePattern).CreateChildContainer();
+            var childContainer = target.Using<IRegistrationComparer>(WellknownRegistrationComparer.NamePattern).CreateChildContainer();
             childContainer.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "a+.");
 
             // When

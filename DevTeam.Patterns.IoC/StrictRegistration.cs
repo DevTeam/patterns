@@ -2,24 +2,24 @@ namespace DevTeam.Patterns.IoC
 {
     using System;
 
-    internal class StrictRegestryKey: IRegestryKey, IDisposable
+    internal class StrictRegistration: IRegistration
     {
-        private readonly KeyDescription _keyDescription;
+        private readonly RegistrationDescription _description;
         
-        public StrictRegestryKey(KeyDescription keyDescription)
+        public StrictRegistration(RegistrationDescription description)
         {
-            _keyDescription = keyDescription;
+            _description = description;
         }
 
-        public Type StateType => _keyDescription.StateType;
+        public Type StateType => _description.StateType;
 
-        public Type InstanceType => _keyDescription.InstanceType;
+        public Type InstanceType => _description.InstanceType;
 
-        public string Name => _keyDescription.Name;
+        public string Name => _description.Name;
 
         public void Dispose()
         {
-            _keyDescription.Resources.Dispose();
+            _description.Resources.Dispose();
         }
 
         public override string ToString()
@@ -27,7 +27,7 @@ namespace DevTeam.Patterns.IoC
             return $"{InstanceType.FullName}({StateType.FullName}, \"{Name}\")";
         }
 
-        public bool Equals(IRegestryKey other)
+        public bool Equals(IRegistration other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -39,7 +39,7 @@ namespace DevTeam.Patterns.IoC
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((IRegestryKey)obj);
+            return Equals((IRegistration)obj);
         }
 
         public override int GetHashCode()

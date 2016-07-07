@@ -1,6 +1,5 @@
 ﻿namespace Echo
 {
-    using System;
     using System.Collections.Generic;
 
     using DevTeam.Patterns.EventAggregator;
@@ -13,7 +12,7 @@
             yield return new EventAggregatorContainerConfiguration();
         }
 
-        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
+        public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             // Register echo request
             yield return container.Register<string, IEchoRequest>(

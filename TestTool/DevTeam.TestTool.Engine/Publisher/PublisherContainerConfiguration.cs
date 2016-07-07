@@ -15,11 +15,11 @@
             yield return new EventAggregatorContainerConfiguration();
         }
 
-        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
+        public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container
+            yield return container                
                 .Register<ISession, ITool>(session => new PublisherTool(
                     session,
                     container.ResolveAll<IReportPublisher>(),

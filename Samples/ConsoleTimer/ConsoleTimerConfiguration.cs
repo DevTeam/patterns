@@ -12,7 +12,7 @@
             yield break;
         }
 
-        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
+        public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             // Register Console as Singleton
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IConsole>(

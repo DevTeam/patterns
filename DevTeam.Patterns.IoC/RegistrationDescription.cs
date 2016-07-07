@@ -2,9 +2,9 @@
 {
     using System;
 
-    internal struct KeyDescription
+    internal struct RegistrationDescription
     {
-        public KeyDescription(Type stateType, Type instanceType, string name, IDisposable resources)
+        public RegistrationDescription(Type stateType, Type instanceType, string name, IDisposable resources)
         {
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));

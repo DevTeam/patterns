@@ -5,7 +5,7 @@ namespace DevTeam.Patterns.IoC
 
 	public interface IResolver
 	{
-	    IEnumerable<IRegestryKey> Keys { get; }
+	    IEnumerable<IRegistration> Registrations { get; }
 
 	    object Resolve(Type stateType, Type instanceType, object state, string name = "");
 	}

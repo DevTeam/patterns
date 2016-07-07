@@ -6,7 +6,7 @@
     {
         IContainer Container { get; }
 
-        IRegestryKey RegestryKey { get; }
+        IRegistration Registration { get; }
 
         Type ResolvingInstanceType { get; }
 

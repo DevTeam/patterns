@@ -5,7 +5,7 @@
 
 	public static class Registries
     {
-        public static IDisposable Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, string name = "")
+        public static IRegistration Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, string name = "")
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
@@ -14,7 +14,7 @@
             return registry.Register(typeof(TState), typeof(T), ctx => factoryMethod((TState)ctx.State), name);
         }
 
-        public static IDisposable Register<T>(this IRegistry registry, Func<T> factoryMethod, string name = "")
+        public static IRegistration Register<T>(this IRegistry registry, Func<T> factoryMethod, string name = "")
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
@@ -58,9 +58,9 @@
 
             public string Name => _container.Name;
 
-            public IEnumerable<IRegestryKey> Keys => _container.Keys;
+            public IEnumerable<IRegistration> Registrations => _container.Registrations;
 
-            public IDisposable Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, string name = "")
+            public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, string name = "")
             {
 	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));

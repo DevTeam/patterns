@@ -15,7 +15,7 @@
             yield return new HostContainerConfiguration();
         }
 
-        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
+        public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 

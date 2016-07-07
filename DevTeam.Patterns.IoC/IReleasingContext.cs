@@ -4,7 +4,7 @@
     {
         IContainer Container { get; }
 
-        IRegestryKey RegestryKey { get; }
+        IRegistration Registration { get; }
 
         string Name { get; }
     }
