@@ -4,11 +4,10 @@
 
     internal struct RegistrationDescription
     {
-        public RegistrationDescription(Type stateType, Type instanceType, string name, IDisposable resources)
+        public RegistrationDescription(Type stateType, Type instanceType, IComparable name, IDisposable resources)
         {
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
-            if (name == null) throw new ArgumentNullException(nameof(name));
             if (resources == null) throw new ArgumentNullException(nameof(resources));
 
             StateType = stateType;
@@ -21,7 +20,7 @@
 
         public Type InstanceType { get; }
 
-        public string Name { get; }
+        public IComparable Name { get; }
 
         public IDisposable Resources { get; }
     }

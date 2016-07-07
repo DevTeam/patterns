@@ -13,7 +13,7 @@
             _resolver = resolver;
         }
 
-        public T Resolve(string name = "")
+        public T Resolve(IComparable name = null)
         {
             return _resolver.Resolve<T>(name);
         }

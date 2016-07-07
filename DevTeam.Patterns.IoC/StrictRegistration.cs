@@ -15,7 +15,7 @@ namespace DevTeam.Patterns.IoC
 
         public Type InstanceType => _description.InstanceType;
 
-        public string Name => _description.Name;
+        public IComparable Name => _description.Name;
 
         public void Dispose()
         {
@@ -31,7 +31,7 @@ namespace DevTeam.Patterns.IoC
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return StateType == other.StateType && InstanceType == other.InstanceType && string.Equals(Name, other.Name);
+            return StateType == other.StateType && InstanceType == other.InstanceType && Equals(Name, other.Name);
         }
 
         public override bool Equals(object obj)
@@ -48,7 +48,7 @@ namespace DevTeam.Patterns.IoC
             {
                 var hashCode = StateType.GetHashCode();
                 hashCode = (hashCode * 397) ^ InstanceType.GetHashCode();
-                hashCode = (hashCode * 397) ^ Name.GetHashCode();
+                hashCode = (hashCode * 397) ^ Name?.GetHashCode() ?? 0;
                 return hashCode;
             }
         }

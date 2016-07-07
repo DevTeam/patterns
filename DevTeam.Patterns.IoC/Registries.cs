@@ -5,20 +5,18 @@
 
 	public static class Registries
     {
-        public static IRegistration Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, string name = "")
+        public static IRegistration Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, IComparable name = null)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
-            if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
-            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));            
 
             return registry.Register(typeof(TState), typeof(T), ctx => factoryMethod((TState)ctx.State), name);
         }
 
-        public static IRegistration Register<T>(this IRegistry registry, Func<T> factoryMethod, string name = "")
+        public static IRegistration Register<T>(this IRegistry registry, Func<T> factoryMethod, IComparable name = null)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
-            if (name == null) throw new ArgumentNullException(nameof(name));
 
             return registry.Register(new Func<EmptyState, T>(ignoredArg => factoryMethod()), name);
         }
@@ -56,16 +54,15 @@
                 _factoryMethod = factoryMethod;
             }
 
-            public string Name => _container.Name;
+            public IComparable Name => _container.Name;
 
             public IEnumerable<IRegistration> Registrations => _container.Registrations;
 
-            public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, string name = "")
+            public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, IComparable name = null)
             {
 	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 	            if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
-	            if (name == null) throw new ArgumentNullException(nameof(name));
 
 	            using (_container.Register(_factoryMethod))
                 {
@@ -73,12 +70,11 @@
                 }
             }
 
-            public object Resolve(Type stateType, Type instanceType, object state, string name = "")
+            public object Resolve(Type stateType, Type instanceType, object state, IComparable name = null)
             {
 	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 	            if (state == null) throw new ArgumentNullException(nameof(state));
-	            if (name == null) throw new ArgumentNullException(nameof(name));
 
                 using (_container.Register(_factoryMethod))
                 {

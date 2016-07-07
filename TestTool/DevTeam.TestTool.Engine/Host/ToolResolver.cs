@@ -21,7 +21,7 @@
             _configurationResolver = configurationResolver;
         }
 
-        public ITool Resolve(ISession session, string toolName = "")
+        public ITool Resolve(ISession session, IComparable toolName = null)
         {
             if (toolName == null) throw new ArgumentNullException(nameof(toolName));
             var tooContainerConfiguration = _configurationResolver.Resolve(toolName);

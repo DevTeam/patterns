@@ -8,6 +8,6 @@
 
         Type InstanceType { get; }
 
-        string Name { get; }
+        IComparable Name { get; }
     }
 }

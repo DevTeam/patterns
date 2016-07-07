@@ -6,9 +6,11 @@
     {
         public bool Equals(IRegistration x, IRegistration y)
         {
-            var regexX = new Regex(x.Name);
-            var regexY = new Regex(y.Name);
-            if (x.InstanceType == y.InstanceType && x.StateType == y.StateType && (regexX.IsMatch(y.Name) || regexY.IsMatch(x.Name)))
+            var xName = x.Name?.ToString() ?? string.Empty;
+            var yName = y.Name?.ToString() ?? string.Empty;
+            var regexX = new Regex(xName);
+            var regexY = new Regex(yName);
+            if (x.InstanceType == y.InstanceType && x.StateType == y.StateType && (regexX.IsMatch(yName) || regexY.IsMatch(xName)))
             {
                 return true;
             }

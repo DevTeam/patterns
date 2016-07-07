@@ -4,11 +4,10 @@
 
     internal struct ReleasingContext : IReleasingContext
     {
-        public ReleasingContext(IContainer container, IRegistration registration, string name)
+        public ReleasingContext(IContainer container, IRegistration registration, IComparable name)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (name == null) throw new ArgumentNullException(nameof(name));
 
             Container = container;
             Registration = registration;
@@ -19,6 +18,6 @@
 
         public IRegistration Registration { get; }
 
-        public string Name { get; }
+        public IComparable Name { get; }
     }
 }

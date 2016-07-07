@@ -14,7 +14,7 @@ namespace DevTeam.Patterns.IoC
         }
 
         
-        public T Resolve(TState state, string name = "")
+        public T Resolve(TState state, IComparable name = null)
         {
             return _resolver.Resolve<TState, T>(state, name);
         }

@@ -4,10 +4,9 @@
 
     public class ContainerDescription
     {
-        public ContainerDescription(IContainer parentContainer, string name)
+        public ContainerDescription(IContainer parentContainer, IComparable name)
         {
-            if (parentContainer == null) throw new ArgumentNullException(nameof(parentContainer));
-            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (parentContainer == null) throw new ArgumentNullException(nameof(parentContainer));            
 
             ParentContainer = parentContainer;
             Name = name;
@@ -15,6 +14,6 @@
 
         public IContainer ParentContainer { get; private set; }
 
-        public string Name { get; private set; }
+        public IComparable Name { get; private set; }
     }
 }

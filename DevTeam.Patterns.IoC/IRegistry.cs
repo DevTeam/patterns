@@ -4,6 +4,6 @@
 
     public interface IRegistry
 	{
-        IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, string name = "");
+        IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, IComparable name = null);
     }
 }

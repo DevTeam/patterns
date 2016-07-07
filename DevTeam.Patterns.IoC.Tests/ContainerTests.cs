@@ -1,6 +1,7 @@
 ﻿namespace DevTeam.Patterns.IoC.Tests
 {
-	using System.Linq;
+    using System;
+    using System.Linq;
 	using Moq;
 
 	using NUnit.Framework;
@@ -36,7 +37,7 @@
 			target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
 			// Then
-			target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService1) && i.Name == "myService1");				
+			target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService1) && "myService1".Equals(i.Name));
 		}
 
 		[Test]
@@ -50,7 +51,7 @@
 			registrationToken.Dispose();
 
 			// Then
-			target.Registrations.ShouldNotContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService1) && i.Name == "myService1");
+			target.Registrations.ShouldNotContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService1) && "myService1".Equals(i.Name));
 		}
 
 		[Test]
@@ -377,7 +378,7 @@
             instance.ShouldBe(_service1.Object);            
         }
 
-        private static Container CreateTarget(string name = "")
+        private static Container CreateTarget(IComparable name = null)
 		{
 			return new Container();
 		}
