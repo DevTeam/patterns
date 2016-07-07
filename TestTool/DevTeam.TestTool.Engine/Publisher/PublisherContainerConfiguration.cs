@@ -10,18 +10,12 @@
 
     public class PublisherContainerConfiguration : IConfiguration
     {
-        public static readonly IConfiguration Shared = new PublisherContainerConfiguration();
-
-        private PublisherContainerConfiguration()
-        {
-        }
-
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield return EventAggregatorContainerConfiguration.Shared;
+            yield return new EventAggregatorContainerConfiguration();
         }
 
-        public IEnumerable<IDisposable> Apply(IContainer container)
+        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
@@ -31,7 +25,7 @@
                     container.ResolveAll<IReportPublisher>(),
                     container.Resolve<IEventAggregator>()));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IReportPublisher>(() => new ReportPublisher(container.ResolveAll<IOutput>()));
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IReportPublisher>(() => new ReportPublisher(container.ResolveAll<IOutput>()));
         }
     }
 }

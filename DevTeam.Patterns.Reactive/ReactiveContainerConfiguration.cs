@@ -8,18 +8,12 @@
     
     public class ReactiveContainerConfiguration: IConfiguration
     {
-        public static readonly IConfiguration Shared = new ReactiveContainerConfiguration();
-
-        private ReactiveContainerConfiguration()
-        {
-        }
-
         public IEnumerable<IConfiguration> GetDependencies()
         {
             yield break;
         }
 
-        public IEnumerable<IDisposable> Apply(IContainer container)
+        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
@@ -27,9 +21,9 @@
 
             yield return container.Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.PrivateSingleThread);
             yield return container.Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.PrivateMultiThread);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.SharedSingleThread);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.SharedMultiThread);
-        }
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.SharedSingleThread);
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.SharedMultiThread);
+        }        
 
         private static Scheduler CreateMultiThreadScheduler(TaskFactory taskFactory)
         {

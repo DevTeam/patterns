@@ -7,6 +7,6 @@
     {
         IEnumerable<IConfiguration> GetDependencies();
 
-        IEnumerable<IDisposable> Apply(IContainer container);
+        IEnumerable<IDisposable> CreateRegistrations(IContainer container);
 	}
 }

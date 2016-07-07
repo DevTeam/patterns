@@ -11,7 +11,7 @@
         public static void Main(string[] args)
         {
             var container = new Container();
-            using (container.Apply(DotNetContainerConfiguration.Shared))
+            using (new DotNetContainerConfiguration().Apply(container))
             {
                 var commandLineArgsToPropertiesConverter = container.Resolve<IConverter<string[], IEnumerable<IPropertyValue>>>();
                 var properties = commandLineArgsToPropertiesConverter.Convert(args);

@@ -331,7 +331,7 @@
             var target = CreateTarget();
             var service3 = new Service2Int();
             var service4 = new Service2String();
-            target.Using<ILifetime>(WellknownLifetime.Singletone).Register(typeof(long), typeof(IService2<>), ctx => ctx.ResolvingInstanceType == typeof(IService2<int>) ? (object)service3 : service4, "abc");
+            target.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(long), typeof(IService2<>), ctx => ctx.ResolvingInstanceType == typeof(IService2<int>) ? (object)service3 : service4, "abc");
 
             // When
             var server3 = target.Resolve<long, IService2<int>>(1, "abc");

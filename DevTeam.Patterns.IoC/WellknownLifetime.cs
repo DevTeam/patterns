@@ -10,7 +10,7 @@
         /// <summary>
         /// Shared for all resolves
         /// </summary>
-        public static readonly string Singletone = "Singletone";
+        public static readonly string Singleton = "Singleton";
 
         /// <summary>
         /// Disposable instanced will be disposed if a regestry is removed or a container is destroed

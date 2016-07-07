@@ -3,12 +3,12 @@
     using System;
     using System.Collections.Generic;
   
-    internal class SingletoneLifetime : ILifetime
+    internal class SingletonLifetime : ILifetime
     {
         private readonly ILifetime _baseLifetime;
         private readonly Dictionary<Key, Lazy<object>> _factories = new Dictionary<Key, Lazy<object>>();
 
-        public SingletoneLifetime(ILifetime baseLifetime)
+        public SingletonLifetime(ILifetime baseLifetime)
         {
             if (baseLifetime == null) throw new ArgumentNullException(nameof(baseLifetime));
 

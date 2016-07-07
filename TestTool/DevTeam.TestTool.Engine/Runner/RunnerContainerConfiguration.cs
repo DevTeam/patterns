@@ -12,19 +12,13 @@
 
     public class RunnerContainerConfiguration: IConfiguration
     {
-        public static readonly IConfiguration Shared = new RunnerContainerConfiguration();
-
-        private RunnerContainerConfiguration()
-        {
-        }
-
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield return EventAggregatorContainerConfiguration.Shared;
-            yield return ReflectionContainerConfiguration.Shared;
+            yield return new EventAggregatorContainerConfiguration();
+            yield return new ReflectionContainerConfiguration();
         }
 
-        public IEnumerable<IDisposable> Apply(IContainer container)
+        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
@@ -34,7 +28,7 @@
                     container.ResolveAll<ITestRunner>(),
                     container.Resolve<IEventAggregator>()));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register<ITestRunner>(() => new TestRunner(container.Resolve<IReflection>()));
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ITestRunner>(() => new TestRunner(container.Resolve<IReflection>()));
         }
     }
 }

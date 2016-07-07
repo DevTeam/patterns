@@ -7,19 +7,13 @@
     using DevTeam.Patterns.IoC;
 
     internal class EchoConfiguration : IConfiguration
-    {
-        public static readonly IConfiguration Shared = new EchoConfiguration();
-
-        private EchoConfiguration()
-        {
-        }
-
+    {        
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield return EventAggregatorContainerConfiguration.Shared;
+            yield return new EventAggregatorContainerConfiguration();
         }
 
-        public IEnumerable<IDisposable> Apply(IContainer container)
+        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
         {
             // Register echo request
             yield return container.Register<string, IEchoRequest>(
@@ -33,12 +27,12 @@
             yield return container.Register<string, IEchoService>(
                 id => new EchoService(id, container.Resolve<IEventAggregator>(), container.Resolver<string, IEcho>()));
 
-            // Register ConsoleEchoPublisher as Singletone
-            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IEchoPublisher>(
+            // Register ConsoleEchoPublisher as Singleton
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEchoPublisher>(
                 () => new ConsoleEchoPublisher());
 
-            // Register ConsoleEchoRequestSource as Singletone
-            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IEchoRequestSource>(
+            // Register ConsoleEchoRequestSource as Singleton
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEchoRequestSource>(
                 () => new ConsoleEchoRequestSource(container.Resolver<string, IEchoRequest>()));
         }
     }

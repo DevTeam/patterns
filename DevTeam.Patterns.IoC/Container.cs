@@ -10,6 +10,7 @@
 	{
         private Dictionary<IRegestryKey, Func<IResolvingContext, object>> _factories;
 		private readonly IContainer _parentContainer;
+        private readonly IDisposable _disposable = Disposable.Empty();
         
         /// <summary>
         /// Creates root container.
@@ -21,7 +22,7 @@
 
             Name = name;
             CreateFactories();
-            this.Apply(IoCContainerConfiguration.Shared);
+            _disposable = IoCContainerConfiguration.Shared.CreateRegistrations(this).ToCompositeDisposable();
         }
 
         internal Container(ContainerDescription containerDescription)
@@ -113,12 +114,9 @@
         	
 		public void Dispose()
 	    {
-	        var disposableKeys = new List<IDisposable>(_factories.Keys.OfType<IDisposable>());
-            foreach (var disposableKey in disposableKeys)
-	        {
-                disposableKey.Dispose();           
-            }
-	    }
+            _factories.Keys.OfType<IDisposable>().ToCompositeDisposable().Dispose();
+            _disposable.Dispose();
+        }
 
 	    public override string ToString()
 	    {

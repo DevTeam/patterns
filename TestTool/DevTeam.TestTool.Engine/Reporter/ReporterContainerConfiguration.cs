@@ -9,18 +9,12 @@
 
     public class ReporterContainerConfiguration: IConfiguration
     {
-        public static readonly IConfiguration Shared = new ReporterContainerConfiguration();
-
-        private ReporterContainerConfiguration()
-        {
-        }
-
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield return EventAggregatorContainerConfiguration.Shared;
+            yield return new EventAggregatorContainerConfiguration();
         }
 
-        public IEnumerable<IDisposable> Apply(IContainer container)
+        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
@@ -30,7 +24,7 @@
                     container.ResolveAll<ITestReporter>(),
                     container.Resolve<IEventAggregator>()));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register<ITestReporter>(() => new TextTestReporter(), "text");
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ITestReporter>(() => new TextTestReporter(), "text");
         }
     }
 }

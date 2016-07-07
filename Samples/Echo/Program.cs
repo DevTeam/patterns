@@ -12,7 +12,7 @@
             // Create root IoC container
             using (var container = new Container())
             // Apply configuration
-            using (container.Apply(EchoConfiguration.Shared))
+            using (new EchoConfiguration().Apply(container))
             // Activate EchoService 1
             using (container.Resolve<string, IEchoService>("1").Activate())
             // Activate EchoService 2

@@ -6,22 +6,16 @@
     using DevTeam.Patterns.IoC;
 
     internal class ConsoleTimerConfiguration: IConfiguration
-    {
-        public static readonly IConfiguration Shared = new ConsoleTimerConfiguration();
-
-        private ConsoleTimerConfiguration()
-        {
-        }
-
+    {        
         public IEnumerable<IConfiguration> GetDependencies()
         {
             yield break;
         }
 
-        public IEnumerable<IDisposable> Apply(IContainer container)
+        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
         {
-            // Register Console as Singletone
-            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register<IConsole>(
+            // Register Console as Singleton
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IConsole>(
                 () => new Console());
 
             // Register Timer with state "period"

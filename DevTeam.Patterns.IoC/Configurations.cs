@@ -7,36 +7,35 @@
     using Dispose;
 
     public static class Configurations
-    {
-        public static IDisposable Apply(this IContainer container, params IConfiguration[] configurations)
+    {        
+        public static IDisposable Apply(this IConfiguration configuration, IContainer container, IEqualityComparer<IConfiguration> comparer = null)
         {
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
             if (container == null) throw new ArgumentNullException(nameof(container));
-            if (configurations == null) throw new ArgumentNullException(nameof(configurations));
-
-            return container.Apply((IEnumerable<IConfiguration>)configurations);
-        }
-
-        public static IDisposable Apply(this IContainer container, IEnumerable<IConfiguration> configurations)
-        {
-            if (container == null) throw new ArgumentNullException(nameof(container));
-            if (configurations == null) throw new ArgumentNullException(nameof(configurations));
 
             return (
-                from configuration in configurations
-                select Apply(container, configuration)
-            ).SelectMany(i => i).Distinct().ToCompositeDisposable();
+                from configurationItem in configuration.Merge(new HashSet<IConfiguration>(comparer ?? container.Resolve<IEqualityComparer<IConfiguration>>()))
+                select configurationItem.CreateRegistrations(container))
+                .SelectMany(i => i)
+                .ToCompositeDisposable();
         }
 
-        private static IEnumerable<IDisposable> Apply(IContainer container, IConfiguration configuration)
+        private static IEnumerable<IConfiguration> Merge(this IConfiguration configuration, HashSet<IConfiguration> configurations)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            if (configurations == null) throw new ArgumentNullException(nameof(configurations));
 
-            yield return container.Apply(configuration.GetDependencies());
-            foreach (var configurationToken in configuration.Apply(container))
+            if (!configurations.Add(configuration))
             {
-                yield return configurationToken;
-            }                       
-        }
+                return configurations;
+            }
+
+            foreach (var dependency in configuration.GetDependencies())
+            {
+                dependency.Merge(configurations);
+            }
+
+            return configurations;
+        }        
     }
 }

@@ -6,8 +6,6 @@
     using Patterns.IoC;
     using Contracts;
 
-    using Patterns.Dispose;
-
     using Patterns.Reactive;
 
     using Patterns.EventAggregator;
@@ -16,20 +14,14 @@
 
     public class ExplorerContainerConfiguration: IConfiguration
     {
-        public static readonly IConfiguration Shared = new ExplorerContainerConfiguration();
-
-        private ExplorerContainerConfiguration()
-        {
-        }
-
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield return ReactiveContainerConfiguration.Shared;
-            yield return EventAggregatorContainerConfiguration.Shared;
-            yield return ReflectionContainerConfiguration.Shared;
+            yield return new ReactiveContainerConfiguration();
+            yield return new EventAggregatorContainerConfiguration();
+            yield return new ReflectionContainerConfiguration();
         }
 
-        public IEnumerable<IDisposable> Apply(IContainer container)
+        public IEnumerable<IDisposable> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
@@ -41,7 +33,7 @@
                         container.Resolve<IEventAggregator>(), 
                         container.ResolveAll<ISession, ITestsSource>(name => session)));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singletone).Register<ISession, ITestsSource>(session => new AssemblyTestsSource(session , container.Resolve<IReflection>()));
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ISession, ITestsSource>(session => new AssemblyTestsSource(session , container.Resolve<IReflection>()));
         }
     }
 }

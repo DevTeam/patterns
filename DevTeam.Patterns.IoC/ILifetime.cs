@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface ILifetime: IConfigurationContext
+    public interface ILifetime: IContainerContext
     {
         object Create(IResolvingContext ctx, Func<IResolvingContext, object> factory);
 
