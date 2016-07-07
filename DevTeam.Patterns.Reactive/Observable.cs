@@ -11,8 +11,17 @@
 
     using Dispose;
 
+    /// <summary>
+    /// Observable extsnsions.
+    /// </summary>
     public static class Observable
     {
+        /// <summary>
+        /// Creates new Observable.
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="observable"></param>
+        /// <returns></returns>
         public static IObservable<TSource> Create<TSource>(
             Func<IObserver<TSource>, IDisposable> observable)
         {

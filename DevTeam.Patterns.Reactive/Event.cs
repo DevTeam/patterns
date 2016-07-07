@@ -78,7 +78,7 @@
         {
             get
             {
-                if (EventType != Type.OnNext)
+                if (EventType != Type.OnError)
                 {
                     throw new InvalidOperationException($"{nameof(Error)} is available only for a {nameof(Type.OnError)} event.");
                 }
@@ -96,8 +96,19 @@
         /// </summary>
         public enum Type
         {
+            /// <summary>
+            /// Indicates the source provides a new value.
+            /// </summary>
             OnNext,
+
+            /// <summary>
+            /// Indicates the source in the error state.
+            /// </summary>
             OnError,
+
+            /// <summary>
+            /// Indicates the source is completed.
+            /// </summary>
             OnComplete
         }
     }
