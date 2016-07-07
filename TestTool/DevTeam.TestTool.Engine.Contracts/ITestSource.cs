@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface ITestsSource: IObservable<Test>
+    public interface ITestSource: IObservable<Test>
     {    
     }
 }

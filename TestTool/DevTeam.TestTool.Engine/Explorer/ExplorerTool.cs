@@ -18,14 +18,14 @@
         private readonly IScheduler _scheduler;
         private readonly ISession _session;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IEnumerable<ITestsSource> _testsSources;
+        private readonly IEnumerable<ITestSource> _testsSources;
         private readonly IResolver<ISubject<Test>> _testSubjectResolver;
 
         public ExplorerTool(
             IScheduler scheduler,
             ISession session, 
             IEventAggregator eventAggregator,
-            IEnumerable<ITestsSource> testsSources,
+            IEnumerable<ITestSource> testsSources,
             IResolver<ISubject<Test>> testSubjectResolver)
         {
             if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));

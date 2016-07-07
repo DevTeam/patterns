@@ -13,12 +13,12 @@
 
     using TestTool.Contracts;
 
-    internal class AssemblyTestsSource : ITestsSource
+    internal class TestSource : ITestSource
     {
         private readonly IReflection _reflection;
         private readonly IObservable<Test> _testSource;
 
-        public AssemblyTestsSource(ISession session, IReflection reflection)
+        public TestSource(ISession session, IReflection reflection)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
             if (reflection == null) throw new ArgumentNullException(nameof(reflection));
