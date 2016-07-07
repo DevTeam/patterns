@@ -34,7 +34,8 @@
                         container.Resolve<IScheduler>(WellknownScheduler.PrivateSingleThread),
                         session, 
                         container.Resolve<IEventAggregator>(), 
-                        container.ResolveAll<ISession, ITestsSource>(name => session)));
+                        container.ResolveAll<ISession, ITestsSource>(name => session),
+                        container.Resolver<ISubject<Test>>()));
 
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ISession, ITestsSource>(session => new AssemblyTestsSource(session , container.Resolve<IReflection>()));
         }

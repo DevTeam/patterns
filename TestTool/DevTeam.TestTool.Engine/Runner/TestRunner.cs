@@ -5,20 +5,24 @@
 
     using Contracts;
 
+    using Patterns.IoC;
     using Patterns.Reactive;
 
     using Platform.Reflection;
 
     internal class TestRunner : ITestRunner
     {
-        private readonly Subject<TestProgress> _results = new Subject<TestProgress>();
+        private readonly ISubject<TestProgress> _results;
         private readonly IReflection _reflection;
 
-        public TestRunner(IReflection reflection)
+        public TestRunner(
+            IReflection reflection,
+            IResolver<ISubject<TestProgress>> subjectResolver)
         {
             if (reflection == null) throw new ArgumentNullException(nameof(reflection));
 
             _reflection = reflection;
+            _results = subjectResolver.Resolve(WellknownSubject.Simple);
         }
         
         public void OnNext(Test test)

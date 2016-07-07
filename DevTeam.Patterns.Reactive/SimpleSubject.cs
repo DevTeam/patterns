@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Dispose;
 
-    public class Subject<T>: ISubject<T>
+    internal class SimpleSubject<T>: ISubject<T>
     {
         private readonly List<IObserver<T>> _observers = new List<IObserver<T>>();
 

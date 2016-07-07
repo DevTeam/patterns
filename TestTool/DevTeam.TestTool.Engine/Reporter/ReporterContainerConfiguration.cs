@@ -7,6 +7,8 @@
     using Patterns.IoC;
     using Contracts;
 
+    using Patterns.Reactive;
+
     /// <inheritdoc/>
     internal class ReporterContainerConfiguration: IConfiguration
     {
@@ -27,7 +29,11 @@
                     container.ResolveAll<ITestReporter>(),
                     container.Resolve<IEventAggregator>()));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ITestReporter>(() => new TextTestReporter(), "text");
+            yield return container
+                .Using<ILifetime>(WellknownLifetime.Singleton)
+                .Register<ITestReporter>(() => new TextTestReporter(
+                    container.Resolver<ISubject<TestReport>>())
+                    , "text");
         }
     }
 }

@@ -44,8 +44,9 @@
     <Compile Include="Observable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReactiveContainerConfiguration.cs" />
-    <Compile Include="Subject.cs" />
+    <Compile Include="SimpleSubject.cs" />
     <Compile Include="Scheduler.cs" />
+    <Compile Include="WellknownSubject.cs" />
     <Compile Include="WellknownScheduler.cs" />
   </ItemGroup>
   <ItemGroup>

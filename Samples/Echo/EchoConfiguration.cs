@@ -4,6 +4,7 @@
 
     using DevTeam.Patterns.EventAggregator;
     using DevTeam.Patterns.IoC;
+    using DevTeam.Patterns.Reactive;
 
     /// <inheritdoc/>
     internal class EchoConfiguration : IConfiguration
@@ -27,7 +28,11 @@
 
             // Register EchoService
             yield return container.Register<string, IEchoService>(
-                id => new EchoService(id, container.Resolve<IEventAggregator>(), container.Resolver<string, IEcho>()));
+                id => new EchoService(
+                    id, 
+                    container.Resolve<IEventAggregator>(),
+                    container.Resolver<string, IEcho>(),
+                    container.Resolver<ISubject<IEcho>>()));
 
             // Register ConsoleEchoPublisher as Singleton
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEchoPublisher>(

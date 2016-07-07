@@ -19,7 +19,7 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEventAggregator>(() => new Aggregator());            
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEventAggregator>(() => new Aggregator(container));            
         }        
     }
 }

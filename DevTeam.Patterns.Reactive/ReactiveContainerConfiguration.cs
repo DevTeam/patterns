@@ -22,10 +22,20 @@
 
             var taskFactory = new TaskFactory();
 
+            // Schedulers
             yield return container.Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.PrivateSingleThread);
             yield return container.Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.PrivateMultiThread);
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(() => CreateSingleThreadScheduler(taskFactory), WellknownScheduler.SharedSingleThread);
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(() => CreateMultiThreadScheduler(taskFactory), WellknownScheduler.SharedMultiThread);
+
+            // Subjects
+            yield return container.Register(typeof(EmptyState), typeof(ISubject<>),
+                ctx =>
+                    {
+                        var subjecType = typeof(SimpleSubject<>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0]);
+                        return Activator.CreateInstance(subjecType);
+                    },
+                WellknownSubject.Simple);
         }        
 
         private static Scheduler CreateMultiThreadScheduler(TaskFactory taskFactory)

@@ -14,17 +14,20 @@
 
         private readonly IResolver<string, IEcho> _echoResolver;
 
-        private readonly Subject<IEcho> _echoSubject = new Subject<IEcho>();
+        private readonly ISubject<IEcho> _echoSubject;
 
         public EchoService(
             string id, 
             IEventAggregator eventAggregator,
-            IResolver<string, IEcho> echoResolver)
+            IResolver<string, IEcho> echoResolver,
+            IResolver<ISubject<IEcho>> echoSubjectResolver)
         {
             if (id == null) throw new ArgumentNullException(nameof(id));
             if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));
             if (echoResolver == null) throw new ArgumentNullException(nameof(echoResolver));
+            if (echoSubjectResolver == null) throw new ArgumentNullException(nameof(echoSubjectResolver));
 
+            _echoSubject = echoSubjectResolver.Resolve(WellknownSubject.Simple);
             _id = id;
             _eventAggregator = eventAggregator;
             _echoResolver = echoResolver;

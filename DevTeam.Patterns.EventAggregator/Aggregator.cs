@@ -6,11 +6,21 @@
 
     using Dispose;
 
+    using IoC;
+
     using Reactive;
 
     internal class Aggregator : IEventAggregator
     {
+        private readonly IResolver _resolver;
         private readonly Dictionary<Type, object> _subjects = new Dictionary<Type, object>();
+
+        public Aggregator(IResolver resolver)
+        {
+            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
+
+            _resolver = resolver;
+        }
 
         public IDisposable RegisterProvider<T>(IObservable<T> provider)
         {
@@ -36,17 +46,17 @@
                 Disposable.Create(() => { WriteLog($"Unregister consumer for {typeof(T).Name}"); }));
         }       
 
-        private Subject<T> GetSubject<T>()
+        private ISubject<T> GetSubject<T>()
         {
             object subject;
             if (!_subjects.TryGetValue(typeof(T), out subject))
             {
                 WriteLog($"Create subject for {typeof(T).Name}");
-                subject = new Subject<T>();
+                subject = _resolver.Resolve<ISubject<T>>(WellknownSubject.Simple);                    
                 _subjects.Add(typeof(T), subject);
             }
 
-            return (Subject<T>)subject;
+            return (ISubject<T>)subject;
         }
 
         [Conditional("DEBUG")]

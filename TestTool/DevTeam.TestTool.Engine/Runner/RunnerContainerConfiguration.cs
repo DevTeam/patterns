@@ -7,6 +7,7 @@
     using Contracts;
 
     using Patterns.EventAggregator;
+    using Patterns.Reactive;
 
     using Platform.Reflection;
 
@@ -31,7 +32,11 @@
                     container.ResolveAll<ITestRunner>(),
                     container.Resolve<IEventAggregator>()));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ITestRunner>(() => new TestRunner(container.Resolve<IReflection>()));
+            yield return container
+                .Using<ILifetime>(WellknownLifetime.Singleton)
+                .Register<ITestRunner>(() => new TestRunner(
+                    container.Resolve<IReflection>(),
+                    container.Resolver<ISubject<TestProgress>>()));
         }
     }
 }
