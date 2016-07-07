@@ -37,7 +37,7 @@
 			target.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
 			// Then
-			target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService1) && "myService1".Equals(i.Name));
+			target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService1) && "myService1".Equals(i.Key));
 		}
 
 		[Test]
@@ -51,7 +51,7 @@
 			registrationToken.Dispose();
 
 			// Then
-			target.Registrations.ShouldNotContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService1) && "myService1".Equals(i.Name));
+			target.Registrations.ShouldNotContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService1) && "myService1".Equals(i.Key));
 		}
 
 		[Test]
@@ -91,7 +91,7 @@
 			var childContainer = (IContainer)target.Resolve(typeof(EmptyState), typeof(IContainer), EmptyState.Shared, "child123");
 
 			// Then
-			childContainer.Name.ShouldBe("child123");
+			childContainer.Key.ShouldBe("child123");
 		}
 
 		[Test]
@@ -368,7 +368,7 @@
         {
             // Given
             var target = CreateTarget();
-            var childContainer = target.Using<IRegistrationComparer>(WellknownRegistrationComparer.NamePattern).CreateChildContainer();
+            var childContainer = target.Using<IRegistrationComparer>(WellknownRegistrationComparer.Pattern).CreateChildContainer();
             childContainer.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "a+.");
 
             // When

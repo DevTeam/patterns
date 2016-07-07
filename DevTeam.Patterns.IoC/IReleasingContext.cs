@@ -8,6 +8,6 @@
 
         IRegistration Registration { get; }
 
-        IComparable Name { get; }
+        IComparable Key { get; }
     }
 }

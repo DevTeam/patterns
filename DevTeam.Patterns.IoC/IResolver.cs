@@ -7,6 +7,6 @@ namespace DevTeam.Patterns.IoC
 	{
 	    IEnumerable<IRegistration> Registrations { get; }
 
-	    object Resolve(Type stateType, Type instanceType, object state, IComparable name = null);
+	    object Resolve(Type stateType, Type instanceType, object state, IComparable key = null);
 	}
 }

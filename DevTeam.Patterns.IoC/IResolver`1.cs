@@ -4,6 +4,6 @@
 
     public interface IResolver<out T>
     {
-        T Resolve(IComparable name = null);
+        T Resolve(IComparable key = null);
     }
 }

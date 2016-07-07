@@ -10,7 +10,7 @@
         private static readonly Lazy<ILifetime> SingletoneLifetime = new Lazy<ILifetime>(() => new SingletonLifetime(new ControlledLifetime()));
         private static readonly Lazy<ILifetime> ControlledLifetime = new Lazy<ILifetime>(() => new ControlledLifetime());
         internal static readonly Lazy<IRegistrationComparer> RootContainerRegestryKeyComparer = new Lazy<IRegistrationComparer>(() => new RootContainerRegistrationComparer());
-        private static readonly Lazy<IRegistrationComparer> NamePatternRegestryKeyComparer = new Lazy<IRegistrationComparer>(() => new NamePatternRegistrationComparer());
+        private static readonly Lazy<IRegistrationComparer> PatternRegistrationComparer = new Lazy<IRegistrationComparer>(() => new NamePatternRegistrationComparer());
 
         private IoCContainerConfiguration()
         {
@@ -31,10 +31,10 @@
             yield return container.Register(() => ControlledLifetime.Value, WellknownLifetime.Controlled);
 
             // Wellknown registration comparer
-            yield return container.Register(() => NamePatternRegestryKeyComparer.Value, WellknownRegistrationComparer.NamePattern);
+            yield return container.Register(() => PatternRegistrationComparer.Value, WellknownRegistrationComparer.Pattern);
 
             // Child container
-            yield return container.Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(EmptyState), typeof(IContainer), ctx => new Container(new ContainerDescription(ctx.Container, ctx.Registration.Name)));
+            yield return container.Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(EmptyState), typeof(IContainer), ctx => new Container(new ContainerDescription(ctx.Container, ctx.Registration.Key)));
 
             // Resolvers
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IResolver<>),

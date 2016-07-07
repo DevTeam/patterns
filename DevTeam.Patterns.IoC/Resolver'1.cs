@@ -13,9 +13,9 @@
             _resolver = resolver;
         }
 
-        public T Resolve(IComparable name = null)
+        public T Resolve(IComparable key = null)
         {
-            return _resolver.Resolve<T>(name);
+            return _resolver.Resolve<T>(key);
         }
     }
 }

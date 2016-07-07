@@ -15,10 +15,10 @@
         /// <summary>
         /// Creates root container.
         /// </summary>
-        /// <param name="name"></param>
-	    public Container(IComparable name = null)
+        /// <param key="key"></param>
+	    public Container(IComparable key = null)
         {
-            Name = name;
+            Key = key;
             CreateFactories();
             _disposable = IoCContainerConfiguration.Shared.CreateRegistrations(this).ToCompositeDisposable();
         }
@@ -27,58 +27,58 @@
         {
             if (containerDescription == null) throw new ArgumentNullException(nameof(containerDescription));
 
-            Name = containerDescription.Name;
+            Key = containerDescription.Key;
             _parentContainer = containerDescription.ParentContainer;
             CreateFactories();
         }        
 
-        public IComparable Name { get; }
+        public IComparable Key { get; }
 
 	    public IEnumerable<IRegistration> Registrations => _factories.Keys.Union(_parentContainer != null ? _parentContainer.Registrations : Enumerable.Empty<IRegistration>());
 
-	    public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, IComparable name = null)
+	    public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, IComparable key = null)
 		{
 		    if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 		    if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));		    
 
             var resources = new CompositeDisposable();
-            var keyDescription = new RegistrationDescription(stateType, instanceType, name, resources);
-	        var key = new StrictRegistration(keyDescription);
+            var registrationDescription = new RegistrationDescription(stateType, instanceType, key, resources);
+	        var registration = new StrictRegistration(registrationDescription);
             try
 	        {
 	            if (instanceType != typeof(ILifetime))
 	            {
 	                var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
-                    _factories.Add(key, ctx => lifetime.Create(ctx, factoryMethod));
-                    resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(this, key, name), lifetime)));
+                    _factories.Add(registration, ctx => lifetime.Create(ctx, factoryMethod));
+                    resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(this, registration, key), lifetime)));
 	            }
 	            else
 	            {
-	                _factories.Add(key, factoryMethod);
-	                resources.Add(Disposable.Create(() => Unregister(key)));
+	                _factories.Add(registration, factoryMethod);
+	                resources.Add(Disposable.Create(() => Unregister(registration)));
 	            }	            
 	        }
 	        catch (Exception ex)
 	        {
-	            throw new InvalidOperationException($"The entry {key} registration failed. Registered entries:\n{GetRegisteredInfo()}", ex);
+	            throw new InvalidOperationException($"The entry {registration} registration failed. Registered entries:\n{GetRegisteredInfo()}", ex);
 	        }
 	        
-	        return key;
+	        return registration;
 		}
 
-	    public object Resolve(Type stateType, Type instanceType, object state, IComparable name = null)
+	    public object Resolve(Type stateType, Type instanceType, object state, IComparable key = null)
         {
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 
-            var keyDescription = new RegistrationDescription(stateType, instanceType, name, Disposable.Empty());
-	        foreach (var key in GetResolverRegistrations(keyDescription))
+            var registrationDescription = new RegistrationDescription(stateType, instanceType, key, Disposable.Empty());
+	        foreach (var registration in GetResolverRegistrations(registrationDescription))
 	        {
 	            Func<IResolvingContext, object> factory;
-	            if (_factories.TryGetValue(key, out factory))
+	            if (_factories.TryGetValue(registration, out factory))
                 {
-                    return factory(new ResolvingContext(this, key, instanceType, state));
+                    return factory(new ResolvingContext(this, registration, instanceType, state));
                 }
 	        }
 
@@ -87,11 +87,11 @@
 		    {
 		        if (_parentContainer != null)
 		        {
-		            return _parentContainer.Resolve(stateType, instanceType, state, name);
+		            return _parentContainer.Resolve(stateType, instanceType, state, key);
 		        }
 		        
                 // Defaults		      
-		        if (instanceType == typeof(ILifetime) && stateType == typeof(EmptyState) && name == null)
+		        if (instanceType == typeof(ILifetime) && stateType == typeof(EmptyState) && key == null)
 		        {
                     return IoCContainerConfiguration.TransientLifetime.Value;
 		        }
@@ -101,7 +101,7 @@
 		        innerException = ex;                
             }
 
-	        var keys = string.Join(" or ", GetResolverRegistrations(keyDescription).Select(i => i.ToString()));
+	        var keys = string.Join(" or ", GetResolverRegistrations(registrationDescription).Select(i => i.ToString()));
             throw new InvalidOperationException($"The entries {keys} was not registered. {GetRegisteredInfo()}", innerException);
         }
         	
@@ -113,7 +113,7 @@
 
 	    public override string ToString()
 	    {
-	        return Name?.ToString() ?? string.Empty;
+	        return Key?.ToString() ?? string.Empty;
 	    }	    
 
 	    private bool Unregister(IRegistration registration)
@@ -135,7 +135,7 @@
         private string GetRegisteredInfo()
 	    {
 	        var details = _factories.Count == 0 ? "no entries" : string.Join(", ", _factories.Keys.Select(k => k.ToString()));
-            return $"Container \"{Name}\". Registered entries: {details}";
+            return $"Container \"{Key}\". Registered entries: {details}";
 	    }
 
         private static IEnumerable<IRegistration> GetResolverRegistrations(RegistrationDescription registrationDescription)
@@ -167,8 +167,8 @@
 
             var comparers = (
                 from registration in _parentContainer.Registrations
-                where registration.InstanceType == typeof(IRegistrationComparer) && registration.StateType == typeof(EmptyState) && registration.Name == null
-                select (IRegistrationComparer)_parentContainer.Resolve(registration.StateType, registration.InstanceType, EmptyState.Shared, registration.Name)).ToList();
+                where registration.InstanceType == typeof(IRegistrationComparer) && registration.StateType == typeof(EmptyState) && registration.Key == null
+                select (IRegistrationComparer)_parentContainer.Resolve(registration.StateType, registration.InstanceType, EmptyState.Shared, registration.Key)).ToList();
 
             if (comparers.Count == 1)
             {

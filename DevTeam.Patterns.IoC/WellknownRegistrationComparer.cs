@@ -1,7 +1,7 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    public static class WellknownRegistrationComparer
+    public enum WellknownRegistrationComparer
     {
-        public static readonly string NamePattern = "NamePattern";        
+        Pattern
     }
 }

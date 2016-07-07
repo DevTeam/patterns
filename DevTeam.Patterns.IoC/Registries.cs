@@ -5,29 +5,28 @@
 
 	public static class Registries
     {
-        public static IRegistration Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, IComparable name = null)
+        public static IRegistration Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, IComparable key = null)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));            
 
-            return registry.Register(typeof(TState), typeof(T), ctx => factoryMethod((TState)ctx.State), name);
+            return registry.Register(typeof(TState), typeof(T), ctx => factoryMethod((TState)ctx.State), key);
         }
 
-        public static IRegistration Register<T>(this IRegistry registry, Func<T> factoryMethod, IComparable name = null)
+        public static IRegistration Register<T>(this IRegistry registry, Func<T> factoryMethod, IComparable key = null)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
-            return registry.Register(new Func<EmptyState, T>(ignoredArg => factoryMethod()), name);
+            return registry.Register(new Func<EmptyState, T>(ignoredArg => factoryMethod()), key);
         }
 
-        public static IContainer Using<TContext>(this IContainer container, string contextName)
+        public static IContainer Using<TContext>(this IContainer container, IComparable contextKey = null)
             where TContext: IContainerContext
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
-            if (contextName == null) throw new ArgumentNullException(nameof(contextName));
+            if (container == null) throw new ArgumentNullException(nameof(container));            
 
-            return container.Using(() => container.Resolve<TContext>(contextName));
+            return container.Using(() => container.Resolve<TContext>(contextKey));
         }
 
         public static IContainer Using<TContext>(this IContainer container, Func<TContext> factoryMethod)
@@ -54,11 +53,11 @@
                 _factoryMethod = factoryMethod;
             }
 
-            public IComparable Name => _container.Name;
+            public IComparable Key => _container.Key;
 
             public IEnumerable<IRegistration> Registrations => _container.Registrations;
 
-            public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, IComparable name = null)
+            public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, IComparable key = null)
             {
 	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
@@ -66,11 +65,11 @@
 
 	            using (_container.Register(_factoryMethod))
                 {
-                    return _container.Register(stateType, instanceType, factoryMethod, name);
+                    return _container.Register(stateType, instanceType, factoryMethod, key);
                 }
             }
 
-            public object Resolve(Type stateType, Type instanceType, object state, IComparable name = null)
+            public object Resolve(Type stateType, Type instanceType, object state, IComparable key = null)
             {
 	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
@@ -78,7 +77,7 @@
 
                 using (_container.Register(_factoryMethod))
                 {
-                    return _container.Resolve(stateType, instanceType, state, name);
+                    return _container.Resolve(stateType, instanceType, state, key);
                 }
             }
 
