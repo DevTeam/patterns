@@ -12,7 +12,7 @@
 		<iconUrl>https://avatars0.githubusercontent.com/u/12184234?v=3&amp;s=200</iconUrl>
 		<!--requireLicenseAcceptance>false</requireLicenseAcceptance-->
 		<description>Implements "Reactive" patterns. Contains source code.</description>
-		<tags>DevTeam Pattern Reactive Observable Observer</tags>
+		<tags>.NETStandard NETCore Core Portable DevTeam Pattern Reactive Observable Observer Extensions Events Rx Event</tags>
 		<dependencies>
     		<dependency id="DevTeam.Patterns.Dispose" version="[$version$]" />
 			<dependency id="DevTeam.Patterns.IoC" version="[$version$]" />
