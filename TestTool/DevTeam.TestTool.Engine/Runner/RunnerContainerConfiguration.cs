@@ -36,7 +36,7 @@
                 .Using<ILifetime>(WellknownLifetime.Singleton)
                 .Register<ITestRunner>(() => new TestRunner(
                     container.Resolve<IReflection>(),
-                    container.Resolver<ISubject<TestProgress>>()));
+                    container.Resolve<ISubject<TestProgress>>(WellknownSubject.Simple)));
         }
     }
 }

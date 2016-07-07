@@ -5,13 +5,15 @@
 
     using IoC;
 
+    using Reactive;
+
     /// <inheritdoc/>
     public class EventAggregatorContainerConfiguration: IConfiguration
     {
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield break;
+            yield return new ReactiveContainerConfiguration();
         }
 
         /// <inheritdoc/>

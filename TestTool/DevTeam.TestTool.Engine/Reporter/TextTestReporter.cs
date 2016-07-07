@@ -4,7 +4,6 @@
 
     using Contracts;
 
-    using Patterns.IoC;
     using Patterns.Reactive;
 
     internal class TextTestReporter: ITestReporter
@@ -12,11 +11,11 @@
         private readonly ISubject<TestReport> _testReportSubject;
 
         public TextTestReporter(
-            IResolver<ISubject<TestReport>> subjectResolver)
+            ISubject<TestReport> subject)
         {
-            if (subjectResolver == null) throw new ArgumentNullException(nameof(subjectResolver));
+            if (subject == null) throw new ArgumentNullException(nameof(subject));
 
-            _testReportSubject = subjectResolver.Resolve(WellknownSubject.Simple);
+            _testReportSubject = subject;
         }
 
         public IDisposable Subscribe(IObserver<TestReport> observer)

@@ -5,7 +5,6 @@
 
     using Contracts;
 
-    using Patterns.IoC;
     using Patterns.Reactive;
 
     using Platform.Reflection;
@@ -17,12 +16,13 @@
 
         public TestRunner(
             IReflection reflection,
-            IResolver<ISubject<TestProgress>> subjectResolver)
+            ISubject<TestProgress> subject)
         {
             if (reflection == null) throw new ArgumentNullException(nameof(reflection));
+            if (subject == null) throw new ArgumentNullException(nameof(subject));
 
             _reflection = reflection;
-            _results = subjectResolver.Resolve(WellknownSubject.Simple);
+            _results = subject;
         }
         
         public void OnNext(Test test)

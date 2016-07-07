@@ -32,7 +32,7 @@
                     id, 
                     container.Resolve<IEventAggregator>(),
                     container.Resolver<string, IEcho>(),
-                    container.Resolver<ISubject<IEcho>>()));
+                    container.Resolve<ISubject<IEcho>>(WellknownSubject.Simple)));
 
             // Register ConsoleEchoPublisher as Singleton
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEchoPublisher>(

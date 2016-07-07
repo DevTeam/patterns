@@ -11,23 +11,21 @@
     {
         private readonly string _id;
         private readonly IEventAggregator _eventAggregator;
-
         private readonly IResolver<string, IEcho> _echoResolver;
-
         private readonly ISubject<IEcho> _echoSubject;
 
         public EchoService(
             string id, 
             IEventAggregator eventAggregator,
             IResolver<string, IEcho> echoResolver,
-            IResolver<ISubject<IEcho>> echoSubjectResolver)
+            ISubject<IEcho> echoSubject)
         {
             if (id == null) throw new ArgumentNullException(nameof(id));
             if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));
             if (echoResolver == null) throw new ArgumentNullException(nameof(echoResolver));
-            if (echoSubjectResolver == null) throw new ArgumentNullException(nameof(echoSubjectResolver));
+            if (echoSubject == null) throw new ArgumentNullException(nameof(echoSubject));
 
-            _echoSubject = echoSubjectResolver.Resolve(WellknownSubject.Simple);
+            _echoSubject = echoSubject;
             _id = id;
             _eventAggregator = eventAggregator;
             _echoResolver = echoResolver;

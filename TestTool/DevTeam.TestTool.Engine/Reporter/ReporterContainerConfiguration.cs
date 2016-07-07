@@ -32,7 +32,7 @@
             yield return container
                 .Using<ILifetime>(WellknownLifetime.Singleton)
                 .Register<ITestReporter>(() => new TextTestReporter(
-                    container.Resolver<ISubject<TestReport>>())
+                    container.Resolve<ISubject<TestReport>>(WellknownSubject.Simple))
                     , "text");
         }
     }
