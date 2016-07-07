@@ -1,23 +1,22 @@
-﻿namespace DevTeam.TestTool.dotNet
+﻿namespace DevTeam.TestTool.NUnit
 {
     using System;
     using System.Collections.Generic;
 
     using Engine.Contracts;
-    using Engine.Host;
-
-    using NUnit;
 
     using Patterns.IoC;
+    using Patterns.Reactive;
+
+    using Platform.Reflection;
 
     /// <inheritdoc/>
-    public class DotNetContainerConfiguration: IConfiguration
+    public class NUnitContainerConfiguration: IConfiguration
     {
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield return new HostContainerConfiguration();
-            yield return new NUnitContainerConfiguration();            
+            yield return new ReactiveContainerConfiguration();            
         }
 
         /// <inheritdoc/>
@@ -25,7 +24,7 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IOutput>(() => new Console(), nameof(Console));
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ISession, ITestSource>(session => new TestSource(session, container.Resolve<IReflection>(), container.Resolve<IProperty>(WellknownProperty.Assembly)));
         }
     }
 }

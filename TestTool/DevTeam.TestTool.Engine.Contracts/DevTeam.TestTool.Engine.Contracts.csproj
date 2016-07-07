@@ -60,6 +60,7 @@
     <Compile Include="TestProgress.cs" />
     <Compile Include="TestState.cs" />
     <Compile Include="ToolType.cs" />
+    <Compile Include="WellknownProperty.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DevTeam.Platform\DevTeam.Platform.csproj">

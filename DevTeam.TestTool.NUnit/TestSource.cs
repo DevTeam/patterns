@@ -1,17 +1,14 @@
-﻿namespace DevTeam.TestTool.Engine.Explorer
+﻿namespace DevTeam.TestTool.NUnit
 {
     using System;
     using System.Linq;
 
     using Contracts;
+    using Engine.Contracts;
 
     using Patterns.Reactive;
 
-    using Host;
-
     using Platform.Reflection;
-
-    using TestTool.Contracts;
 
     internal class TestSource : ITestSource
     {
@@ -27,7 +24,7 @@
             if (reflection == null) throw new ArgumentNullException(nameof(reflection));
             if (assemblyProperty == null) throw new ArgumentNullException(nameof(assemblyProperty));
 
-            _reflection = reflection;            
+            _reflection = reflection;
 
             _testSource = (
                 from assemblyFileName in

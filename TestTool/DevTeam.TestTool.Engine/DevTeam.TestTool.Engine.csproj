@@ -75,6 +75,7 @@
     <Compile Include="Host\CommandLineArgsToPropertiesConverter.cs" />
     <Compile Include="Host\IPropertyFactory.cs" />
     <Compile Include="Host\IReportPublisher.cs" />
+    <Compile Include="Host\PropertyValueDescription.cs" />
     <Compile Include="Host\PropertyValue.cs" />
     <Compile Include="Publisher\PublisherTool.cs" />
     <Compile Include="Publisher\PublisherContainerConfiguration.cs" />

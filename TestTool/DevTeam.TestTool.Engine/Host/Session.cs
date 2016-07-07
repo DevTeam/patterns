@@ -12,15 +12,20 @@
 
     internal class Session : ISession
     {
+        private readonly IProperty _toolProperty;
+
         private readonly IDisposable _disposable;
 
         public Session(
             IResolver<ISession, ITool> toolResolver, 
-            IEnumerable<IPropertyValue> properties)
-        {
+            IEnumerable<IPropertyValue> properties,
+            IProperty toolProperty)
+        {            
             if (toolResolver == null) throw new ArgumentNullException(nameof(toolResolver));
             if (properties == null) throw new ArgumentNullException(nameof(properties));
+            if (toolProperty == null) throw new ArgumentNullException(nameof(toolProperty));
 
+            _toolProperty = toolProperty;
             Properties = new ReadOnlyCollection<IPropertyValue>(new List<IPropertyValue>(properties));
             _disposable = (
                 from toolName in GetToolNames()
@@ -39,7 +44,7 @@
 
         private IEnumerable<string> GetToolNames()
         {
-            return Properties.Where(p => Equals(p.Property, ToolProperty.Shared)).Select(i => i.Value);            
+            return Properties.Where(p => Equals(p.Property, _toolProperty)).Select(i => i.Value);            
         }
     }
 }

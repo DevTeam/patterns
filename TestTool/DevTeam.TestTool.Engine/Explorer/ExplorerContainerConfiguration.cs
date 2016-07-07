@@ -37,7 +37,7 @@
                         container.ResolveAll<ISession, ITestSource>(name => session),
                         container.Resolver<ISubject<Test>>()));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ISession, ITestSource>(session => new TestSource(session , container.Resolve<IReflection>()));
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ISession, ITestSource>(session => new TestSource(session , container.Resolve<IReflection>(), container.Resolve<IProperty>(WellknownProperty.Assembly)));
         }
     }
 }

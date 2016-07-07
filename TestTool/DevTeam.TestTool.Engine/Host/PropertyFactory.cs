@@ -6,15 +6,24 @@
 
     using Contracts;
 
+    using Patterns.IoC;
+
     internal class PropertyFactory : IPropertyFactory
     {
+        private readonly IResolver<PropertyValueDescription, IPropertyValue> _propertyResolver;
         private readonly Dictionary<string, IProperty> _properties;
 
-        public PropertyFactory(IEnumerable<IProperty> properties)
-        {
+        public PropertyFactory(
+            IEnumerable<IProperty> properties,
+            IResolver<PropertyValueDescription, IPropertyValue> propertyResolver)
+        {            
+            if (properties == null) throw new ArgumentNullException(nameof(properties));
+            if (propertyResolver == null) throw new ArgumentNullException(nameof(propertyResolver));
+
+            _propertyResolver = propertyResolver;
             _properties = properties.ToDictionary(i => i.Id, i => i);
         }
-        
+
         public IPropertyValue CreatePropertyValue(string propertyId, string propertyValue)
         {
             IProperty property;
@@ -28,7 +37,7 @@
                 throw new InvalidOperationException($"Invalid value \"{propertyValue}\" for property {property}.");
             }
 
-            return new PropertyValue(property, propertyValue);
+            return _propertyResolver.Resolve(new PropertyValueDescription(property, propertyValue));
         }
     }
 }
