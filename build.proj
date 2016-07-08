@@ -79,7 +79,7 @@
 	</Target>
 
 	<Target Name="PushPackagesToMyGet">
-		<Exec Command="nuget.exe push $(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg -ApiKey $(MyGetApiKey) -Source https://www.myget.org/F/dev_team/api/v2/package"/>
+		<Exec Command="nuget2.exe push $(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg -ApiKey $(MyGetApiKey) -Source https://www.myget.org/F/dev_team/api/v2/package"/>
 	</Target>
 
 </Project>
