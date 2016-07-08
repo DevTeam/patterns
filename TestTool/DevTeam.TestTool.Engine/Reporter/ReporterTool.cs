@@ -32,14 +32,22 @@
 
         public ToolType ToolType => ToolType.Reporter;
 
+        public IEventAggregator EventAggregator
+        {
+            get
+            {
+                return _eventAggregator;
+            }
+        }
+
         public IDisposable Activate()
         {
             return (
                 from reporter in _testReporters
-                select _eventAggregator.RegisterConsumer(reporter)).
+                select EventAggregator.RegisterConsumer(reporter)).
             Concat(
                 from reporter in _testReporters
-                select _eventAggregator.RegisterProvider(reporter))
+                select EventAggregator.RegisterProvider(reporter))
             .ToCompositeDisposable();
         }
     }

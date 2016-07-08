@@ -62,12 +62,6 @@
     <Compile Include="ToolType.cs" />
     <Compile Include="WellknownProperty.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\DevTeam.Platform\DevTeam.Platform.csproj">
-      <Project>{ea937060-5dc7-4bb6-852a-c6397eb2370d}</Project>
-      <Name>DevTeam.Platform</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

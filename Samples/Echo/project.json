@@ -14,6 +14,9 @@
   "frameworks": {
     "netcoreapp1.0": {
       "dependencies": {
+        "DevTeam.Patterns": {
+          "target": "project"
+        },
         "DevTeam.Patterns.Dispose": {
           "target": "project"
         },

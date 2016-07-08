@@ -2,15 +2,20 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3A6DC9E0-22AD-42F8-AA8D-9B7596A7875D}</ProjectGuid>
+    <ProjectGuid>{188F7CD5-37A9-454C-AD07-FD5D93C0E0B2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DevTeam.TestTool.Test.Mocks2</RootNamespace>
-    <AssemblyName>DevTeam.TestTool.Test.Mocks2</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>DevTeam.Patterns</RootNamespace>
+    <AssemblyName>DevTeam.Patterns</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,21 +35,31 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventAggregator\IEventAggregator.cs" />
+    <Compile Include="IoC\EmptyState.cs" />
+    <Compile Include="IoC\IConfiguration.cs" />
+    <Compile Include="IoC\IContainer.cs" />
+    <Compile Include="IoC\IContainerContext.cs" />
+    <Compile Include="IoC\ILifetime.cs" />
+    <Compile Include="IoC\IRegistration.cs" />
+    <Compile Include="IoC\IRegistrationComparer.cs" />
+    <Compile Include="IoC\IRegistry.cs" />
+    <Compile Include="IoC\IReleasingContext.cs" />
+    <Compile Include="IoC\IResolver.cs" />
+    <Compile Include="IoC\IResolver`1.cs" />
+    <Compile Include="IoC\IResolver`2.cs" />
+    <Compile Include="IoC\IResolvingContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestFixtureFail.cs" />
-    <Compile Include="TestFixtureSuccess.cs" />
+    <Compile Include="Reactive\Event.cs" />
+    <Compile Include="Reactive\IScheduler.cs" />
+    <Compile Include="Reactive\ISubject.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DevTeam.TestTool.Contracts\DevTeam.TestTool.Contracts.csproj">
-      <Project>{8591a4c5-3368-4d2d-98e5-e42fb2c8a3c3}</Project>
-      <Name>DevTeam.TestTool.Contracts</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

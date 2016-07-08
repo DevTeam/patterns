@@ -13,7 +13,7 @@
         private readonly IDisposable _disposable = Disposable.Empty();
 
         /// <summary>
-        /// Creates root container.
+        /// Creates a default container with key/name. Returns a reference to the new container.
         /// </summary>
         /// <param name="key">Container's key. For example a name.</param>
         public Container(object key = null)
@@ -107,8 +107,11 @@
 	        var keys = string.Join(" or ", GetResolverRegistrations(registrationDescription).Select(i => i.ToString()));
             throw new InvalidOperationException($"The entries {keys} was not registered. {GetRegisteredInfo()}", innerException);
         }
-        	
-		public void Dispose()
+
+        /// <summary>
+        /// Disposes this container instance and any child containers. Also disposes any registered object instances whose lifetimes are managed by the container.
+        /// </summary>
+        public void Dispose()
 	    {
             _factories.Keys.ToCompositeDisposable().Dispose();
             _disposable.Dispose();

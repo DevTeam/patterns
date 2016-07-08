@@ -36,12 +36,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NUnitContainerConfiguration.cs" />
@@ -52,27 +46,31 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
+    <ProjectReference Include="..\..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
       <Project>{fe61929a-6f78-40b6-8929-62cfb62e3be6}</Project>
       <Name>DevTeam.Patterns.Dispose</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
+    <ProjectReference Include="..\..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
       <Project>{35055d77-822c-4d69-8df2-722b42cc405a}</Project>
       <Name>DevTeam.Patterns.IoC</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DevTeam.Patterns.Reactive\DevTeam.Patterns.Reactive.csproj">
+    <ProjectReference Include="..\..\DevTeam.Patterns.Reactive\DevTeam.Patterns.Reactive.csproj">
       <Project>{79f43401-ced2-46c1-a3c9-a8e9f94a1dea}</Project>
       <Name>DevTeam.Patterns.Reactive</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DevTeam.Platform\DevTeam.Platform.csproj">
+    <ProjectReference Include="..\..\DevTeam.Patterns\DevTeam.Patterns.csproj">
+      <Project>{188f7cd5-37a9-454c-ad07-fd5d93c0e0b2}</Project>
+      <Name>DevTeam.Patterns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Platform\DevTeam.Platform.csproj">
       <Project>{EA937060-5DC7-4BB6-852A-C6397EB2370D}</Project>
       <Name>DevTeam.Platform</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TestTool\DevTeam.TestTool.Contracts\DevTeam.TestTool.Contracts.csproj">
+    <ProjectReference Include="..\DevTeam.TestTool.Contracts\DevTeam.TestTool.Contracts.csproj">
       <Project>{8591a4c5-3368-4d2d-98e5-e42fb2c8a3c3}</Project>
       <Name>DevTeam.TestTool.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TestTool\DevTeam.TestTool.Engine.Contracts\DevTeam.TestTool.Engine.Contracts.csproj">
+    <ProjectReference Include="..\DevTeam.TestTool.Engine.Contracts\DevTeam.TestTool.Engine.Contracts.csproj">
       <Project>{E1FBA15F-0E8E-4AB1-97CD-E6F2A8EA2279}</Project>
       <Name>DevTeam.TestTool.Engine.Contracts</Name>
     </ProjectReference>

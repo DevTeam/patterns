@@ -13,9 +13,6 @@
 		<!--requireLicenseAcceptance>false</requireLicenseAcceptance-->
 		<description>Implements "Dispose" patterns. Contains source code.</description>
 		<tags>.NETStandard NETCore Core Portable DevTeam Pattern Dispose Disposable IDisposable</tags>
-		<!--dependencies>
-    		<dependency id="SampleDependency" version="1.0" />
-		</dependencies-->
 	</metadata>
 	<files>
   		<file src="bin\Release\DevTeam.Patterns.Dispose.*" target="lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp" />

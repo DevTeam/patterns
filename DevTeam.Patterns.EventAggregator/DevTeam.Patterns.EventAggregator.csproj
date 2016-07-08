@@ -52,11 +52,14 @@
       <Project>{79F43401-CED2-46C1-A3C9-A8E9F94A1DEA}</Project>
       <Name>DevTeam.Patterns.Reactive</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DevTeam.Patterns\DevTeam.Patterns.csproj">
+      <Project>{188f7cd5-37a9-454c-ad07-fd5d93c0e0b2}</Project>
+      <Name>DevTeam.Patterns</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aggregator.cs" />
     <Compile Include="EventAggregators.cs" />
-    <Compile Include="IEventAggregator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EventAggregatorContainerConfiguration.cs" />
   </ItemGroup>

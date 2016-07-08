@@ -14,6 +14,7 @@
 		<description>Implements "Reactive" patterns. Contains source code.</description>
 		<tags>.NETStandard NETCore Core Portable DevTeam Pattern Reactive Observable Observer Extensions Events Rx Event</tags>
 		<dependencies>
+			<dependency id="DevTeam.Patterns" version="[$version$]" />
     		<dependency id="DevTeam.Patterns.Dispose" version="[$version$]" />
 			<dependency id="DevTeam.Patterns.IoC" version="[$version$]" />
 		</dependencies>

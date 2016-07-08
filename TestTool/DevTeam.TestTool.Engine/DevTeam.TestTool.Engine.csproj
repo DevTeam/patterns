@@ -54,6 +54,10 @@
       <Project>{79f43401-ced2-46c1-a3c9-a8e9f94a1dea}</Project>
       <Name>DevTeam.Patterns.Reactive</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Patterns\DevTeam.Patterns.csproj">
+      <Project>{188F7CD5-37A9-454C-AD07-FD5D93C0E0B2}</Project>
+      <Name>DevTeam.Patterns</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Platform.Reflection\DevTeam.Platform.Reflection.csproj">
       <Project>{fa65d0e7-0eef-4193-8a2c-d9b9ef95be96}</Project>
       <Name>DevTeam.Platform.Reflection</Name>

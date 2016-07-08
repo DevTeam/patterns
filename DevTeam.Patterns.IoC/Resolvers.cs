@@ -56,6 +56,12 @@
             return await resolver.Resolve<TState, Task<T>>(state, key);
         }
 
+        /// <summary>
+        /// Creates a new nested Container as a child of the current container. The current container first applies its own settings, and then it checks the parent for additional settings. Returns a reference to the new container.
+        /// </summary>
+        /// <param name="resolver"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static IContainer CreateChildContainer(this IResolver resolver, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
