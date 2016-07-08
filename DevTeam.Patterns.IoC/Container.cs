@@ -51,7 +51,7 @@
 	            {
 	                var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
                     _factories.Add(registration, ctx => lifetime.Create(ctx, factoryMethod));
-                    resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(this, registration, key), lifetime)));
+                    resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(registration), lifetime)));
 	            }
 	            else
 	            {

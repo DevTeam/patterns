@@ -6,8 +6,8 @@
     internal abstract class KeyBasedLifetime: ILifetime
     {
         private readonly ILifetime _baseLifetime;
-        private readonly Dictionary<object, Lazy<object>> _factories = new Dictionary<object, Lazy<object>>();
-
+        private readonly Dictionary<IRegistration, IDictionary<object, Lazy<object>>> _factories = new Dictionary<IRegistration, IDictionary<object, Lazy<object>>>();
+        
         protected KeyBasedLifetime(ILifetime baseLifetime)
         {
             if (baseLifetime == null) throw new ArgumentNullException(nameof(baseLifetime));
@@ -20,14 +20,21 @@
             if (ctx == null) throw new ArgumentNullException(nameof(ctx));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-            var key = CreateKey(ctx);
-            Lazy<object> currentFactory;
-            if (!_factories.TryGetValue(key, out currentFactory))
+            IDictionary<object, Lazy<object>> registrationFactories;
+            if (!_factories.TryGetValue(ctx.Registration, out registrationFactories))
             {
-                currentFactory = new Lazy<object>(() => _baseLifetime.Create(ctx, factory));
-                _factories.Add(key, currentFactory);
+                registrationFactories = new Dictionary<object, Lazy<object>>();
+                _factories.Add(ctx.Registration, registrationFactories);                
             }
 
+            var key = CreateKey(ctx);
+            Lazy<object> currentFactory;
+            if (!registrationFactories.TryGetValue(key, out currentFactory))
+            {
+                currentFactory = new Lazy<object>(() => _baseLifetime.Create(ctx, factory));
+                registrationFactories.Add(key, currentFactory);
+            }
+                                                
             return currentFactory.Value;
         }
 
@@ -35,7 +42,10 @@
         {
             if (ctx == null) throw new ArgumentNullException(nameof(ctx));
 
-            _baseLifetime.Release(ctx);
+            if (_factories.Remove(ctx.Registration))
+            {
+                _baseLifetime.Release(ctx);
+            }            
         }
 
         protected abstract object CreateKey(IResolvingContext ctx);

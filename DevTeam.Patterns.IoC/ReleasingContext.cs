@@ -4,20 +4,13 @@
 
     internal struct ReleasingContext : IReleasingContext
     {
-        public ReleasingContext(IContainer container, IRegistration registration, object key)
+        public ReleasingContext(IRegistration registration)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
-            Container = container;
-            Registration = registration;
-            Key = key;
+            Registration = registration;            
         }
 
-        public IContainer Container { get; }
-
-        public IRegistration Registration { get; }
-
-        public object Key { get; }
+        public IRegistration Registration { get; }        
     }
 }
