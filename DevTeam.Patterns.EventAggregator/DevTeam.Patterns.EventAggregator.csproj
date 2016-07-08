@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aggregator.cs" />
+    <Compile Include="EventAggregators.cs" />
     <Compile Include="IEventAggregator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EventAggregatorContainerConfiguration.cs" />
