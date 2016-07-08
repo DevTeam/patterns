@@ -20,6 +20,6 @@
 	<files>
   		<file src="bin\Release\DevTeam.Platform.Reflection.*" target="lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp" />
 		<file src="**\*.*" target="src\Platform.Reflection" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
-		<file src="..\Platform.Reflection.Tests\**\*.*" target="src\Platform.Reflection.Tests" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
+		<!--file src="..\Platform.Reflection.Tests\**\*.*" target="src\Platform.Reflection.Tests" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/-->
 	</files>
 </package>
