@@ -1,10 +1,13 @@
 ﻿namespace DevTeam.TestTool.dotNet
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     using Engine.Contracts;
 
     using Patterns.IoC;
+
+    using Container = Patterns.IoC.Container;
 
     public static class Program
     {

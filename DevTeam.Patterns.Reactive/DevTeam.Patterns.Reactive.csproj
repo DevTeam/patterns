@@ -43,17 +43,11 @@
     <Compile Include="ReactiveContainerConfiguration.cs" />
     <Compile Include="SimpleSubject.cs" />
     <Compile Include="Scheduler.cs" />
-    <Compile Include="WellknownSubject.cs" />
-    <Compile Include="WellknownScheduler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
       <Project>{fe61929a-6f78-40b6-8929-62cfb62e3be6}</Project>
       <Name>DevTeam.Patterns.Dispose</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
-      <Project>{35055D77-822C-4D69-8DF2-722B42CC405A}</Project>
-      <Name>DevTeam.Patterns.IoC</Name>
     </ProjectReference>
     <ProjectReference Include="..\DevTeam.Patterns\DevTeam.Patterns.csproj">
       <Project>{188F7CD5-37A9-454C-AD07-FD5D93C0E0B2}</Project>

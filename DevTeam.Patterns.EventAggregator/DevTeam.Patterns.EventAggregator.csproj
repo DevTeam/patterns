@@ -44,12 +44,8 @@
       <Project>{FE61929A-6F78-40B6-8929-62CFB62E3BE6}</Project>
       <Name>DevTeam.Patterns.Dispose</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
-      <Project>{35055D77-822C-4D69-8DF2-722B42CC405A}</Project>
-      <Name>DevTeam.Patterns.IoC</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DevTeam.Patterns.Reactive\DevTeam.Patterns.Reactive.csproj">
-      <Project>{79F43401-CED2-46C1-A3C9-A8E9F94A1DEA}</Project>
+      <Project>{79f43401-ced2-46c1-a3c9-a8e9f94a1dea}</Project>
       <Name>DevTeam.Patterns.Reactive</Name>
     </ProjectReference>
     <ProjectReference Include="..\DevTeam.Patterns\DevTeam.Patterns.csproj">

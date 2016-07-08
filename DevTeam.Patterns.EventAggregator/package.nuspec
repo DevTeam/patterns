@@ -15,7 +15,6 @@
 		<tags>.NETStandard NETCore Core Portable DevTeam Pattern EventAggregator Events Event Aggregator</tags>
 		<dependencies>
 			<dependency id="DevTeam.Patterns" version="[$version$]" />
-    		<dependency id="DevTeam.Patterns.IoC" version="[$version$]" />
 			<dependency id="DevTeam.Patterns.Reactive" version="[$version$]" />
 		</dependencies>
 	</metadata>

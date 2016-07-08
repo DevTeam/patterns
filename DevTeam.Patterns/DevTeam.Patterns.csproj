@@ -63,6 +63,8 @@
     <Compile Include="Reactive\Event.cs" />
     <Compile Include="Reactive\IScheduler.cs" />
     <Compile Include="Reactive\ISubject.cs" />
+    <Compile Include="Reactive\WellknownScheduler.cs" />
+    <Compile Include="Reactive\WellknownSubject.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

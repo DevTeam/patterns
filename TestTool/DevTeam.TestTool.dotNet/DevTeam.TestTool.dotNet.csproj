@@ -56,7 +56,7 @@
       <Name>DevTeam.Patterns.Dispose</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
-      <Project>{35055D77-822C-4D69-8DF2-722B42CC405A}</Project>
+      <Project>{35055d77-822c-4d69-8df2-722b42cc405a}</Project>
       <Name>DevTeam.Patterns.IoC</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Patterns\DevTeam.Patterns.csproj">

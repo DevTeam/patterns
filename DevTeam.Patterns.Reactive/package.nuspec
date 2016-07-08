@@ -16,7 +16,6 @@
 		<dependencies>
 			<dependency id="DevTeam.Patterns" version="[$version$]" />
     		<dependency id="DevTeam.Patterns.Dispose" version="[$version$]" />
-			<dependency id="DevTeam.Patterns.IoC" version="[$version$]" />
 		</dependencies>
 	</metadata>
 	<files>
