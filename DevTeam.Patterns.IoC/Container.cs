@@ -11,12 +11,12 @@
         private Dictionary<IRegistration, Func<IResolvingContext, object>> _factories;
 		private readonly IContainer _parentContainer;
         private readonly IDisposable _disposable = Disposable.Empty();
-        
+
         /// <summary>
         /// Creates root container.
         /// </summary>
-        /// <param key="key"></param>
-	    public Container(object key = null)
+        /// <param name="key">Container's key. For example a name.</param>
+        public Container(object key = null)
         {
             Key = key;
             CreateFactories();
@@ -78,7 +78,10 @@
 	            Func<IResolvingContext, object> factory;
 	            if (_factories.TryGetValue(registration, out factory))
                 {
-                    return factory(new ResolvingContext(this, registration, instanceType, state));
+                    using (var ctx = new ResolvingContext(this, registration, instanceType, state))
+                    {
+                        return factory(ctx);
+                    }
                 }
 	        }
 
