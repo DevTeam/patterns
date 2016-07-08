@@ -4,7 +4,7 @@
 
     public class ContainerDescription
     {
-        public ContainerDescription(IContainer parentContainer, IComparable key)
+        public ContainerDescription(IContainer parentContainer, object key)
         {
             if (parentContainer == null) throw new ArgumentNullException(nameof(parentContainer));            
 
@@ -14,6 +14,6 @@
 
         public IContainer ParentContainer { get; private set; }
 
-        public IComparable Key { get; private set; }
+        public object Key { get; private set; }
     }
 }

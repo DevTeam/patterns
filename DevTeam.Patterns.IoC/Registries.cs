@@ -5,7 +5,7 @@
 
 	public static class Registries
     {
-        public static IRegistration Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, IComparable key = null)
+        public static IRegistration Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, object key = null)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));            
@@ -13,7 +13,7 @@
             return registry.Register(typeof(TState), typeof(T), ctx => factoryMethod((TState)ctx.State), key);
         }
 
-        public static IRegistration Register<T>(this IRegistry registry, Func<T> factoryMethod, IComparable key = null)
+        public static IRegistration Register<T>(this IRegistry registry, Func<T> factoryMethod, object key = null)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
@@ -21,7 +21,7 @@
             return registry.Register(new Func<EmptyState, T>(ignoredArg => factoryMethod()), key);
         }
 
-        public static IContainer Using<TContext>(this IContainer container, IComparable contextKey = null)
+        public static IContainer Using<TContext>(this IContainer container, object contextKey = null)
             where TContext: IContainerContext
         {
             if (container == null) throw new ArgumentNullException(nameof(container));            
@@ -53,11 +53,11 @@
                 _factoryMethod = factoryMethod;
             }
 
-            public IComparable Key => _container.Key;
+            public object Key => _container.Key;
 
             public IEnumerable<IRegistration> Registrations => _container.Registrations;
 
-            public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, IComparable key = null)
+            public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, object key = null)
             {
 	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
@@ -69,7 +69,7 @@
                 }
             }
 
-            public object Resolve(Type stateType, Type instanceType, object state, IComparable key = null)
+            public object Resolve(Type stateType, Type instanceType, object state, object key = null)
             {
 	            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));

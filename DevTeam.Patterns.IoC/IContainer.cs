@@ -4,6 +4,6 @@
 
     public interface IContainer : IResolver, IRegistry, IDisposable
     {
-        IComparable Key { get; }
+        object Key { get; }
     }
 }

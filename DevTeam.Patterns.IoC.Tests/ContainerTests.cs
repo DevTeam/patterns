@@ -378,7 +378,7 @@
             instance.ShouldBe(_service1.Object);            
         }
 
-        private static Container CreateTarget(IComparable name = null)
+        private static Container CreateTarget(object name = null)
 		{
 			return new Container();
 		}

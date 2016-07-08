@@ -8,6 +8,6 @@
 
         Type InstanceType { get; }
 
-        IComparable Key { get; }
+        object Key { get; }
     }
 }

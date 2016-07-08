@@ -4,6 +4,6 @@
 
     public interface IResolver<in TState, out T>
     {
-        T Resolve(TState state, IComparable key = null);
+        T Resolve(TState state, object key = null);
     }
 }

@@ -6,7 +6,7 @@
     internal class SingletonLifetime : ILifetime
     {
         private readonly ILifetime _baseLifetime;
-        private readonly Dictionary<Key, Lazy<object>> _factories = new Dictionary<Key, Lazy<object>>();
+        private readonly Dictionary<object, Lazy<object>> _factories = new Dictionary<object, Lazy<object>>();
 
         public SingletonLifetime(ILifetime baseLifetime)
         {
@@ -20,7 +20,7 @@
             if (ctx == null) throw new ArgumentNullException(nameof(ctx));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-            var key = new Key(ctx.Registration, ctx.ResolvingInstanceType, ctx.State);
+            var key = new Key(ctx);
             Lazy<object> currentFactory;
             if (!_factories.TryGetValue(key, out currentFactory))
             {
@@ -36,29 +36,22 @@
             if (ctx == null) throw new ArgumentNullException(nameof(ctx));
 
             _baseLifetime.Release(ctx);
-        }
+        }        
 
-        private class Key : IEquatable<Key>
+        private class Key
         {
-	        private readonly IRegistration _registration;
-            private readonly Type _instanceType;
-            private readonly object _state;
-
-	        public Key(IRegistration registration, Type instanceType, object state)
+            private readonly IResolvingContext _ctx;
+            
+	        public Key(IResolvingContext ctx)
 	        {
-		        if (registration == null) throw new ArgumentNullException(nameof(registration));
-	            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
-
-	            _registration = registration;
-	            _instanceType = instanceType;
-	            _state = state;
+	            _ctx = ctx;	            
 	        }
-
+            
             public bool Equals(Key other)
             {
                 if (ReferenceEquals(null, other)) return false;
                 if (ReferenceEquals(this, other)) return true;
-                return Equals(_registration, other._registration) && _instanceType == other._instanceType && Equals(_state, other._state);
+                return Equals(_ctx.Registration, other._ctx.Registration) && _ctx.ResolvingInstanceType == other._ctx.ResolvingInstanceType && Equals(_ctx.State, other._ctx.State);
             }
 
             public override bool Equals(object obj)
@@ -73,9 +66,9 @@
             {
                 unchecked
                 {
-                    var hashCode = _registration?.GetHashCode() ?? 0;
-                    hashCode = (hashCode * 397) ^ (_instanceType?.GetHashCode() ?? 0);
-                    hashCode = (hashCode * 397) ^ (_state?.GetHashCode() ?? 0);
+                    var hashCode = _ctx.Registration?.GetHashCode() ?? 0;
+                    hashCode = (hashCode * 397) ^ (_ctx.ResolvingInstanceType?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_ctx.State?.GetHashCode() ?? 0);
                     return hashCode;
                 }
             }

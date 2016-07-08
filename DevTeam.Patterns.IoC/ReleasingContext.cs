@@ -4,7 +4,7 @@
 
     internal struct ReleasingContext : IReleasingContext
     {
-        public ReleasingContext(IContainer container, IRegistration registration, IComparable key)
+        public ReleasingContext(IContainer container, IRegistration registration, object key)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (registration == null) throw new ArgumentNullException(nameof(registration));
@@ -18,6 +18,6 @@
 
         public IRegistration Registration { get; }
 
-        public IComparable Key { get; }
+        public object Key { get; }
     }
 }

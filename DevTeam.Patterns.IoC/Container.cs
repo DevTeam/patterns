@@ -16,7 +16,7 @@
         /// Creates root container.
         /// </summary>
         /// <param key="key"></param>
-	    public Container(IComparable key = null)
+	    public Container(object key = null)
         {
             Key = key;
             CreateFactories();
@@ -32,11 +32,11 @@
             CreateFactories();
         }        
 
-        public IComparable Key { get; }
+        public object Key { get; }
 
 	    public IEnumerable<IRegistration> Registrations => _factories.Keys.Union(_parentContainer != null ? _parentContainer.Registrations : Enumerable.Empty<IRegistration>());
 
-	    public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, IComparable key = null)
+	    public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, object key = null)
 		{
 		    if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
@@ -67,7 +67,7 @@
 	        return registration;
 		}
 
-	    public object Resolve(Type stateType, Type instanceType, object state, IComparable key = null)
+	    public object Resolve(Type stateType, Type instanceType, object state, object key = null)
         {
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));

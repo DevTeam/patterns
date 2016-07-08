@@ -13,7 +13,7 @@
             _resolver = resolver;
         }
 
-        public T Resolve(IComparable key = null)
+        public T Resolve(object key = null)
         {
             return _resolver.Resolve<T>(key);
         }

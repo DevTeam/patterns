@@ -7,14 +7,14 @@
 
     public static class Resolvers
     {        
-        public static T Resolve<TState, T>(this IResolver resolver, TState state, IComparable key = null)
+        public static T Resolve<TState, T>(this IResolver resolver, TState state, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
             return (T)resolver.Resolve(typeof(TState), typeof(T), state, key);
         }
 
-        public static T Resolve<T>(this IResolver resolver, IComparable key = null)
+        public static T Resolve<T>(this IResolver resolver, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));            
 
@@ -31,7 +31,7 @@
 		        select (T)resolver.Resolve(key.StateType, key.InstanceType, EmptyState.Shared, key.Key);
 		}
 
-		public static IEnumerable<T> ResolveAll<TState, T>(this IResolver resolver, Func<IComparable, TState> stateSelector)
+		public static IEnumerable<T> ResolveAll<TState, T>(this IResolver resolver, Func<object, TState> stateSelector)
 		{
 			if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 			if (stateSelector == null) throw new ArgumentNullException(nameof(stateSelector));
@@ -42,35 +42,35 @@
                 select (T)resolver.Resolve(registration.StateType, registration.InstanceType, stateSelector(registration.Key), registration.Key);
 		}
 
-		public static async Task<T> ResolveAsync<T>(this IResolver resolver, IComparable key = null)
+		public static async Task<T> ResolveAsync<T>(this IResolver resolver, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));            
 
             return await resolver.Resolve<Task<T>>(key);
         }
 
-        public static async Task<T> ResolveAsync<TState, T>(this IResolver resolver, TState state, IComparable key = null)
+        public static async Task<T> ResolveAsync<TState, T>(this IResolver resolver, TState state, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));            
 
             return await resolver.Resolve<TState, Task<T>>(state, key);
         }
 
-        public static IContainer CreateChildContainer(this IResolver resolver, IComparable key = null)
+        public static IContainer CreateChildContainer(this IResolver resolver, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
             return resolver.Resolve<IContainer>(key);
         }
 
-        public static IResolver<T> Resolver<T>(this IResolver resolver, IComparable key = null)
+        public static IResolver<T> Resolver<T>(this IResolver resolver, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
             return resolver.Resolve<IResolver<T>>(key);
         }
 
-        public static IResolver<TState, T> Resolver<TState, T>(this IResolver resolver, IComparable key = null)
+        public static IResolver<TState, T> Resolver<TState, T>(this IResolver resolver, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 

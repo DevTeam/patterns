@@ -27,7 +27,7 @@ namespace DevTeam.Patterns.IoC
 
         public Type InstanceType => _description.InstanceType.GetGenericTypeDefinition();
 
-        public IComparable Key => _description.Key;
+        public object Key => _description.Key;
 
         public void Dispose()
         {
