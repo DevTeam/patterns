@@ -47,6 +47,8 @@
     <Compile Include="ConfigurationEqualityComparer.cs" />
     <Compile Include="Configurations.cs" />
     <Compile Include="ContainerDescription.cs" />
+    <Compile Include="PerThreadLifetime.cs" />
+    <Compile Include="PerResolveLifetime.cs" />
     <Compile Include="ControlledLifetime.cs" />
     <Compile Include="IContainerContext.cs" />
     <Compile Include="IoCContainerConfiguration.cs" />
@@ -66,7 +68,7 @@
     <Compile Include="ResolvingContext.cs" />
     <Compile Include="RootContainerRegistrationComparer.cs" />
     <Compile Include="KeyBasedLifetime.cs" />
-    <Compile Include="ContainerSingletonLifetime.cs" />
+    <Compile Include="PerContainerLifetime.cs" />
     <Compile Include="StrictRegistration.cs" />
     <Compile Include="Resolver%271.cs" />
     <Compile Include="Resolver%272.cs" />
