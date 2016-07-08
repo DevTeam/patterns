@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>DevTeam.Platform.Reflection</id>
+		<title>DevTeam reflection.</title>
+		<language>en-us</language>
+		<version>$version$</version>
+		<authors>NikolayP</authors>
+		<owners>NikolayP</owners>
+		<licenseUrl>https://github.com/DevTeam/patterns/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/DevTeam/patterns</projectUrl>
+		<iconUrl>https://avatars0.githubusercontent.com/u/12184234?v=3&amp;s=200</iconUrl>
+		<!--requireLicenseAcceptance>false</requireLicenseAcceptance-->
+		<description>Implements "IoC" patterns. Contains source code.</description>
+		<tags>.NETStandard NETCore Core Portable DevTeam Pattern IoC Container DI dependencyinjection Inversion Control</tags>
+		<dependencies>
+			<dependency id="DevTeam.Platform" version="[$version$]" />
+		</dependencies>
+	</metadata>
+	<files>
+  		<file src="bin\Release\DevTeam.Platform.Reflection.*" target="lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp" />
+		<file src="**\*.*" target="src\Platform.Reflection" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
+		<file src="..\Platform.Reflection.Tests\**\*.*" target="src\Platform.Reflection.Tests" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
+	</files>
+</package>

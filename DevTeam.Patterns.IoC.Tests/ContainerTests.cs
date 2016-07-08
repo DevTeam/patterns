@@ -69,19 +69,34 @@
 		}
 
 		[Test]
-		public void ShouldCreateChildContainer()
+		public void ShouldCreateChildContainerViaKey()
 		{
 			// Given
 			var target = CreateTarget();
 
 			// When
-			var childContainer = target.Resolve(typeof(EmptyState), typeof(IContainer), "child");
+			var childContainer = (IContainer)target.Resolve(typeof(EmptyState), typeof(IContainer), EmptyState.Shared, "child");
 
 			// Then
 			childContainer.ShouldBeAssignableTo<IContainer>();
-		}
+            childContainer.Key.ShouldBe("child");
+        }
 
-		[Test]
+        [Test]
+        public void ShouldCreateChildContainerViaState()
+        {
+            // Given
+            var target = CreateTarget();
+
+            // When
+            var childContainer = (IContainer)target.Resolve(typeof(object), typeof(IContainer), "child");
+
+            // Then
+            childContainer.ShouldBeAssignableTo<IContainer>();
+            childContainer.Key.ShouldBe("child");
+        }
+
+        [Test]
 		public void ChildContainerShouldHasNameFromResolve()
 		{
 			// Given

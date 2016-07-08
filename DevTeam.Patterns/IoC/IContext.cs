@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an abstraction for container's extension.
     /// </summary>
-    public interface IContainerContext
+    public interface IContext
     {
     }
 }

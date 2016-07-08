@@ -40,10 +40,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventAggregator\IEventAggregator.cs" />
+    <Compile Include="IoC\ContextContainerState.cs" />
     <Compile Include="IoC\EmptyState.cs" />
     <Compile Include="IoC\IConfiguration.cs" />
     <Compile Include="IoC\IContainer.cs" />
-    <Compile Include="IoC\IContainerContext.cs" />
+    <Compile Include="IoC\IContext.cs" />
+    <Compile Include="IoC\IContextContainer.cs" />
     <Compile Include="IoC\ILifetime.cs" />
     <Compile Include="IoC\IRegistration.cs" />
     <Compile Include="IoC\IRegistrationComparer.cs" />
@@ -53,6 +55,10 @@
     <Compile Include="IoC\IResolver`1.cs" />
     <Compile Include="IoC\IResolver`2.cs" />
     <Compile Include="IoC\IResolvingContext.cs" />
+    <Compile Include="IoC\Registries.cs" />
+    <Compile Include="IoC\Resolvers.cs" />
+    <Compile Include="IoC\WellknownLifetime.cs" />
+    <Compile Include="IoC\WellknownRegistrationComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reactive\Event.cs" />
     <Compile Include="Reactive\IScheduler.cs" />

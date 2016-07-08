@@ -49,8 +49,17 @@
             // Wellknown registration comparer
             yield return container.Register(() => PatternRegistrationComparer.Value, WellknownRegistrationComparer.Pattern);
 
+            // Context container
+            yield return container.Register(typeof(ContextContainerState), typeof(IContextContainer<>),
+                ctx =>
+                {
+                    var resolverType = typeof(ContextContainer<>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0]);
+                    return Activator.CreateInstance(resolverType, ctx.State);
+                });
+
             // Child container
             yield return container.Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(EmptyState), typeof(IContainer), ctx => new Container(new ContainerDescription(ctx.ResolvingContainer, ctx.Registration.Key)));
+            yield return container.Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(object), typeof(IContainer), ctx => new Container(new ContainerDescription(ctx.ResolvingContainer, ctx.State)));
 
             // Resolvers
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IResolver<>),
