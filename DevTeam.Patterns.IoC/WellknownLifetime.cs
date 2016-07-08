@@ -3,18 +3,33 @@
     public enum WellknownLifetime
     {
         /// <summary>
-        /// Self controlled
+        /// Self controlled.
         /// </summary>
         Transient,
 
         /// <summary>
-        /// Shared for all resolves
+        /// Shared for all resolves and self controlled.
         /// </summary>
         Singleton,
 
         /// <summary>
-        /// Disposable instanced will be disposed if a regestry is removed or a container is destroed
+        /// Disposable instances will be disposed if a regestry is removed or a container is destroed.
         /// </summary>
-        Controlled
+        Controlled,
+
+        /// <summary>
+        /// Shared for all resolves. Disposable instances will be disposed if a regestry is removed or a container is destroed.
+        /// </summary>
+        ControlledSingleton,
+
+        /// <summary>
+        /// Shared for all resolves within resolving container and self controlled.
+        /// </summary>
+        ContainerSingleton,
+
+        /// <summary>
+        /// Shared for all resolves within resolving container and self controlled. Disposable instances will be disposed if a regestry is removed or a container is destroed.
+        /// </summary>
+        ControlledContainerSingleton
     }
 }

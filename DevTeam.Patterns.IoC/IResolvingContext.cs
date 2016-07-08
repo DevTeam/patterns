@@ -4,9 +4,9 @@
 
     public interface IResolvingContext
     {
-        IContainer Container { get; }
-
         IRegistration Registration { get; }
+
+        IContainer ResolvingContainer { get; }
 
         Type ResolvingInstanceType { get; }
 

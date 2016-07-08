@@ -65,6 +65,8 @@
     <Compile Include="ReleasingContext.cs" />
     <Compile Include="ResolvingContext.cs" />
     <Compile Include="RootContainerRegistrationComparer.cs" />
+    <Compile Include="KeyBasedLifetime.cs" />
+    <Compile Include="ContainerSingletonLifetime.cs" />
     <Compile Include="StrictRegistration.cs" />
     <Compile Include="Resolver%271.cs" />
     <Compile Include="Resolver%272.cs" />

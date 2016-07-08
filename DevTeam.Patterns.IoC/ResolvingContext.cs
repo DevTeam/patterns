@@ -2,23 +2,23 @@
 {
     using System;
 
-    internal struct ResolvingContext : IResolvingContext
+    internal struct ResolvingContext: IResolvingContext
     {
-        public ResolvingContext(IContainer container, IRegistration registration, Type resolvingInstanceType, object state)
+        public ResolvingContext(IContainer resolvingContainer, IRegistration registration, Type resolvingInstanceType, object state)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (resolvingContainer == null) throw new ArgumentNullException(nameof(resolvingContainer));
             if (registration == null) throw new ArgumentNullException(nameof(registration));            
             if (resolvingInstanceType == null) throw new ArgumentNullException(nameof(resolvingInstanceType));
 
-            Container = container;
+            ResolvingContainer = resolvingContainer;
             Registration = registration;            
             ResolvingInstanceType = resolvingInstanceType;
             State = state;
         }
 
-        public IContainer Container { get; }
+        public IRegistration Registration { get; }
 
-        public IRegistration Registration { get; }        
+        public IContainer ResolvingContainer { get; }
 
         public Type ResolvingInstanceType { get; }
 

@@ -1,8 +1,8 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    internal class SingletonLifetime : KeyBasedLifetime
+    internal class ContainerSingletonLifetime: KeyBasedLifetime
     {
-        public SingletonLifetime(ILifetime baseLifetime)
+        public ContainerSingletonLifetime(ILifetime baseLifetime)
             :base(baseLifetime)
         {            
         }
@@ -25,7 +25,7 @@
             {
                 if (ReferenceEquals(null, other)) return false;
                 if (ReferenceEquals(this, other)) return true;
-                return Equals(_ctx.Registration, other._ctx.Registration) && _ctx.ResolvingInstanceType == other._ctx.ResolvingInstanceType && Equals(_ctx.State, other._ctx.State);
+                return Equals(_ctx.ResolvingContainer, other._ctx.ResolvingContainer) && Equals(_ctx.Registration, other._ctx.Registration) && _ctx.ResolvingInstanceType == other._ctx.ResolvingInstanceType && Equals(_ctx.State, other._ctx.State);
             }
 
             public override bool Equals(object obj)
@@ -40,7 +40,8 @@
             {
                 unchecked
                 {
-                    var hashCode = _ctx.Registration?.GetHashCode() ?? 0;
+                    var hashCode = _ctx.ResolvingContainer?.GetHashCode() ?? 0;
+                    hashCode = (hashCode * 397) ^ (_ctx.Registration?.GetHashCode() ?? 0);
                     hashCode = (hashCode * 397) ^ (_ctx.ResolvingInstanceType?.GetHashCode() ?? 0);
                     hashCode = (hashCode * 397) ^ (_ctx.State?.GetHashCode() ?? 0);
                     return hashCode;
