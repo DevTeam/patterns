@@ -366,7 +366,7 @@
             var comparer = new Mock<IRegistrationComparer>();
             comparer.Setup(i => i.GetHashCode(It.IsAny<IRegistration>())).Returns<IRegistration>(key => key.GetHashCode());
             comparer.Setup(i => i.Equals(It.IsAny<IRegistration>(), It.IsAny<IRegistration>())).Returns<IRegistration, IRegistration>((key1, key2) => key1.Equals(key2));            
-            var childContainer = target.Using(() => comparer.Object).CreateChildContainer();
+            var childContainer = target.Using(comparer.Object).CreateChildContainer();
             childContainer.Register(typeof(Service1State), typeof(IService1), ctx => _service1.Object, "myService1");
 
             // When

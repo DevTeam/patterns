@@ -25,16 +25,16 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            return container.Using(() => container.Resolve<TContext>(contextKey));
+            return container.Using(container.Resolve<TContext>(contextKey));
         }
 
-        public static IContainer Using<TContext>(this IContainer container, Func<TContext> contextFactory)
+        public static IContainer Using<TContext>(this IContainer container, TContext context)
             where TContext : IContext
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
-            if (contextFactory == null) throw new ArgumentNullException(nameof(contextFactory));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return (IContextContainer<TContext>)container.Resolve(typeof(ContextContainerState), typeof(IContextContainer<TContext>), new ContextContainerState(container, () => contextFactory() as IContext));
+            return (IContextContainer<TContext>)container.Resolve(typeof(ContextContainerState), typeof(IContextContainer<TContext>), new ContextContainerState(container, context));
         }
     }    
 }

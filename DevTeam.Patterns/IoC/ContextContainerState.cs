@@ -4,17 +4,17 @@
 
     public class ContextContainerState
     {        
-        public ContextContainerState(IContainer targetContainer, Func<IContext> contextFactory)
+        public ContextContainerState(IContainer targetContainer, IContext context)
         {
             if (targetContainer == null) throw new ArgumentNullException(nameof(targetContainer));
-            if (contextFactory == null) throw new ArgumentNullException(nameof(contextFactory));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             TargetContainer = targetContainer;
-            ContextFactory = contextFactory;
+            Context = context;
         }
 
         public IContainer TargetContainer { get; }
 
-        public Func<IContext> ContextFactory { get; }
+        public IContext Context { get; }
     }
 }

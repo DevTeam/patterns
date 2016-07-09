@@ -25,7 +25,7 @@
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
-            using (_state.TargetContainer.Register(() => (TContext)_state.ContextFactory()))
+            using (_state.TargetContainer.Register(() => (TContext)_state.Context))
             {
                 return _state.TargetContainer.Register(stateType, instanceType, factoryMethod, key);
             }
@@ -37,7 +37,7 @@
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
             if (state == null) throw new ArgumentNullException(nameof(state));
 
-            using (_state.TargetContainer.Register(() => (TContext)_state.ContextFactory()))
+            using (_state.TargetContainer.Register(() => (TContext)_state.Context))
             {
                 return _state.TargetContainer.Resolve(stateType, instanceType, state, key);
             }
