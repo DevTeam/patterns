@@ -17,6 +17,11 @@
 		<Package Include="DevTeam.Platform"/>
 		<Package Include="DevTeam.Platform.Reflection"/>
 		<Package Include="DevTeam.Platform.System"/>
+
+		<Package Include="TestTool\DevTeam.TestTool.Contracts"/>
+		<Package Include="TestTool\DevTeam.TestTool.Engine.Contracts"/>
+		<Package Include="TestTool\DevTeam.TestTool.Engine"/>
+		<Package Include="TestTool\DevTeam.TestTool"/>
 	</ItemGroup>
 
 	<UsingTask TaskName="DownloadFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
@@ -77,7 +82,8 @@
 		</Exec>
 	</Target>
 
-	<Target Name="CreatePackages" DependsOnTargets="RestorePackages">
+	<!--Target Name="CreatePackages" DependsOnTargets="RestorePackages"-->
+	<Target Name="CreatePackages">
 		<Exec Command="nuget2.exe pack %(Package.Identity)\package.nuspec -Version $(Version) -OutputDirectory $(PackagesDirectory)"/>
 		<Message Text="##teamcity[publishArtifacts '$(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg=>$(PackagesDirectory)\%(Package.FileName)%(Package.Extension).$(Version).nupkg']" />
 	</Target>

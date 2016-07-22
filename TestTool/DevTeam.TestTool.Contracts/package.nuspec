@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>DevTeam.TestTool.Contracts</id>
+		<title>DevTeam contracts for test tool.</title>
+		<language>en-us</language>
+		<version>$version$</version>
+		<authors>NikolayP</authors>
+		<owners>NikolayP</owners>
+		<licenseUrl>https://github.com/DevTeam/patterns/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/DevTeam/patterns</projectUrl>
+		<iconUrl>https://avatars0.githubusercontent.com/u/12184234?v=3&amp;s=200</iconUrl>
+		<!--requireLicenseAcceptance>false</requireLicenseAcceptance-->
+		<description>Contracts for DevTeam test tool.</description>
+		<tags>.NET NETCore Test Tool Contracts</tags>
+	</metadata>
+	<files>
+  		<file src="bin\Release\DevTeam.TestTool.Contracts.*" target="lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp" />
+	</files>
+</package>
