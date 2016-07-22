@@ -22,7 +22,7 @@
         {
             foreach (var output in _outputs)
             {
-                output.Write(value.Report);
+                output.WriteReport(value.Report);
             }
         }
 

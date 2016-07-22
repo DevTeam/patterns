@@ -1,8 +1,8 @@
-﻿namespace DevTeam.Platform.Reflection
-{
-    using System;
-    using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
+namespace DevTeam.Platform.Reflection
+{    
     using Patterns.IoC;
 
     /// <inheritdoc/>
@@ -19,10 +19,10 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IReflection>(() => new Reflection(container.Resolver<System.Reflection.Assembly, IAssembly>()));
-            yield return container.Register<System.Reflection.Assembly, IAssembly>(assembly => new Assembly(assembly, container.Resolver<System.Type, IType>()));
-            yield return container.Register<System.Type, IType>(type => new Type(type, container.Resolver<System.Reflection.MethodInfo, IMethodInfo>()));
-            yield return container.Register<System.Reflection.MethodInfo, IMethodInfo>(methodInfo => new MethodInfo(methodInfo));
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IReflection>(() => new Reflection(container.Resolver<global::System.Reflection.Assembly, IAssembly>()));
+            yield return container.Register<global::System.Reflection.Assembly, IAssembly>(assembly => new Assembly(assembly, container.Resolver<global::System.Type, IType>()));
+            yield return container.Register<global::System.Type, IType>(type => new Type(type, container.Resolver<global::System.Reflection.MethodInfo, IMethodInfo>()));
+            yield return container.Register<global::System.Reflection.MethodInfo, IMethodInfo>(methodInfo => new MethodInfo(methodInfo));
         }
     }
 }

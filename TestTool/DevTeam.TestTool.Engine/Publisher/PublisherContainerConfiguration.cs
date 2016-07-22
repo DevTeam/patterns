@@ -8,6 +8,8 @@
     using Contracts;
     using Host;
 
+    using Platform.System;
+
     /// <inheritdoc/>
     internal class PublisherContainerConfiguration : IConfiguration
     {
@@ -29,6 +31,7 @@
                     container.Resolve<IEventAggregator>()));
 
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IReportPublisher>(() => new ReportPublisher(container.ResolveAll<IOutput>()));
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IOutput>(() => new ConsoleOutput(container.Resolve<IConsole>()));            
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿namespace DevTeam.Platform.Reflection
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
+namespace DevTeam.Platform.Reflection
+{
     internal class MethodInfo: IMethodInfo
     {
-        private readonly System.Reflection.MethodInfo _methodInfo;
+        private readonly global::System.Reflection.MethodInfo _methodInfo;
 
-        public MethodInfo(System.Reflection.MethodInfo methodInfo)
+        public MethodInfo(global::System.Reflection.MethodInfo methodInfo)
         {
             if (methodInfo == null) throw new ArgumentNullException(nameof(methodInfo));
 

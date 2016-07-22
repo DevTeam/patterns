@@ -1,19 +1,19 @@
-﻿namespace ConsoleTimer
-{
-    using System;
+﻿using System;
 
-    internal class Console: IConsole
+namespace DevTeam.Platform.System
+{
+    public class Console: IConsole
     {
         public void WriteLine(string line)
         {
             if (line == null) throw new ArgumentNullException(nameof(line));
 
-            System.Console.WriteLine(line);
+            global::System.Console.WriteLine(line);
         }
 
         public string ReadLine()
         {
-            return System.Console.ReadLine();
+            return global::System.Console.ReadLine();
         }
     }
 }

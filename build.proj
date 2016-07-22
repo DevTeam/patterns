@@ -7,9 +7,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<TestAssembly Include="$([System.IO.Directory]::GetDirectories(&quot;$(MSBuildProjectDirectory)&quot;, &quot;*.Tests&quot;))"/>
-	    <Package Include="$([System.IO.Directory]::GetDirectories(&quot;$(MSBuildProjectDirectory)&quot;, &quot;DevTeam.Patterns*&quot;))" Exclude="$([System.IO.Directory]::GetDirectories(&quot;$(MSBuildProjectDirectory)&quot;, &quot;*.Tests&quot;))"/>
-		<Package Include="$([System.IO.Directory]::GetDirectories(&quot;$(MSBuildProjectDirectory)&quot;, &quot;DevTeam.Platform*&quot;))" Exclude="$([System.IO.Directory]::GetDirectories(&quot;$(MSBuildProjectDirectory)&quot;, &quot;*.Tests&quot;))"/>
+		<TestAssembly 
+			Include="$([System.IO.Directory]::GetDirectories(&quot;$(MSBuildProjectDirectory)&quot;, &quot;*.Tests&quot;))"/>
+
+	    <Package 
+			Include="$([System.IO.Directory]::GetDirectories(&quot;$(MSBuildProjectDirectory)&quot;, &quot;DevTeam.Patterns*&quot;))" 
+			Exclude="$([System.IO.Directory]::GetDirectories(&quot;$(MSBuildProjectDirectory)&quot;, &quot;*.Tests&quot;))"/>
+
+		<Package Include="DevTeam.Platform"/>
+		<Package Include="DevTeam.Platform.Reflection"/>
+		<Package Include="DevTeam.Platform.System"/>
 	</ItemGroup>
 
 	<UsingTask TaskName="DownloadFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">

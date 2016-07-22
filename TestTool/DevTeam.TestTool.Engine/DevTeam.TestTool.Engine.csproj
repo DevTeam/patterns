@@ -81,6 +81,7 @@
     <Compile Include="Host\IReportPublisher.cs" />
     <Compile Include="Host\PropertyValueDescription.cs" />
     <Compile Include="Host\PropertyValue.cs" />
+    <Compile Include="Publisher\ConsoleOutput.cs" />
     <Compile Include="Publisher\PublisherTool.cs" />
     <Compile Include="Publisher\PublisherContainerConfiguration.cs" />
     <Compile Include="Publisher\ReportPublisher.cs" />

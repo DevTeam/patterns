@@ -1,20 +1,20 @@
-﻿namespace DevTeam.Platform.Reflection
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
+namespace DevTeam.Platform.Reflection
+{
     using Patterns.IoC;
 
     internal class Type: IType
     {
-        private readonly System.Type _type;
-        private readonly IResolver<System.Reflection.MethodInfo, IMethodInfo> _methodInfoResolver;
+        private readonly global::System.Type _type;
+        private readonly IResolver<global::System.Reflection.MethodInfo, IMethodInfo> _methodInfoResolver;
 
         public Type(
-            System.Type type,
-            IResolver<System.Reflection.MethodInfo, IMethodInfo> methodInfoResolver)
+            global::System.Type type,
+            IResolver<global::System.Reflection.MethodInfo, IMethodInfo> methodInfoResolver)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
             if (methodInfoResolver == null) throw new ArgumentNullException(nameof(methodInfoResolver));

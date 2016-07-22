@@ -5,6 +5,7 @@
     using DevTeam.Patterns.EventAggregator;
     using DevTeam.Patterns.IoC;
     using DevTeam.Patterns.Reactive;
+    using DevTeam.Platform.System;
 
     /// <inheritdoc/>
     internal class EchoConfiguration : IConfiguration
@@ -12,6 +13,7 @@
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
+            yield return new SystemContainerConfiguration();
             yield return new EventAggregatorContainerConfiguration();
         }
 
@@ -36,7 +38,7 @@
 
             // Register ConsoleEchoPublisher as Singleton
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEchoPublisher>(
-                () => new ConsoleEchoPublisher());
+                () => new ConsoleEchoPublisher(container.Resolve<IConsole>()));
 
             // Register ConsoleEchoRequestSource as Singleton
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEchoRequestSource>(

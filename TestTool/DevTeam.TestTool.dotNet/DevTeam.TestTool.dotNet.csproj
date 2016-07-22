@@ -38,7 +38,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Console.cs" />
     <Compile Include="DotNetContainerConfiguration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -62,6 +61,10 @@
     <ProjectReference Include="..\..\DevTeam.Patterns\DevTeam.Patterns.csproj">
       <Project>{188f7cd5-37a9-454c-ad07-fd5d93c0e0b2}</Project>
       <Name>DevTeam.Patterns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Platform.System.dotNet\DevTeam.Platform.System.dotNet.csproj">
+      <Project>{954e39f3-e5e9-4cc1-8e08-6658dafd7a26}</Project>
+      <Name>DevTeam.Platform.System.dotNet</Name>
     </ProjectReference>
     <ProjectReference Include="..\DevTeam.TestTool.Engine.Contracts\DevTeam.TestTool.Engine.Contracts.csproj">
       <Project>{E1FBA15F-0E8E-4AB1-97CD-E6F2A8EA2279}</Project>

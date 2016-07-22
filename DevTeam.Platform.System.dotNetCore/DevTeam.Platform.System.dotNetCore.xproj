@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>626c45a9-4405-4fa7-9900-0b8e7270e5b0</ProjectGuid>
-    <RootNamespace>Echo</RootNamespace>
+    <ProjectGuid>17dbf041-0c59-4c95-896b-f08542c83644</ProjectGuid>
+    <RootNamespace>DevTeam.Platform.System</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -15,15 +15,9 @@
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
-  <PropertyGroup>
-    <SchemaVersion>2.0</SchemaVersion>
-  </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj" />
-    <ProjectReference Include="..\..\DevTeam.Patterns.EventAggregator\DevTeam.Patterns.EventAggregator.csproj" />
-    <ProjectReference Include="..\..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj" />
-    <ProjectReference Include="..\..\DevTeam.Patterns\DevTeam.Patterns.csproj" />
-    <ProjectReference Include="..\..\DevTeam.Platform\DevTeam.Platform.csproj" />
+    <ProjectReference Include="..\DevTeam.Patterns\DevTeam.Patterns.csproj" />
+    <ProjectReference Include="..\DevTeam.Platform\DevTeam.Platform.csproj" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

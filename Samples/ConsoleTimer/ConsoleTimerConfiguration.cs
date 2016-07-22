@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     
     using DevTeam.Patterns.IoC;
+    using DevTeam.Platform.System;
 
     /// <inheritdoc/>
     internal class ConsoleTimerConfiguration: IConfiguration
@@ -11,16 +12,12 @@
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield break;
+            yield return new SystemContainerConfiguration();
         }
 
         /// <inheritdoc/>
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
-            // Register Console as Singleton
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IConsole>(
-                () => new Console());
-
             // Register Timer with state "period"
             yield return container.Register<TimeSpan, ITimer>(
                 period => new Timer(period));

@@ -1,6 +1,6 @@
-﻿namespace ConsoleTimer
+﻿namespace DevTeam.Platform.System
 {
-    internal interface IConsole
+    public interface IConsole
     {
         void WriteLine(string line);
 

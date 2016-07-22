@@ -1,6 +1,7 @@
 ﻿namespace ConsoleTimer
 {
     using DevTeam.Patterns.IoC;
+    using DevTeam.Platform.System;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     public class Program
@@ -14,16 +15,14 @@
             {
                 // Create console
                 var console = container.Resolve<IConsole>();
+                console.WriteLine("Press Enter to exit");
 
                 // Create publisher
                 using (container.Resolve<ITimePublisher>())
                 {
                     // Wait for any key
                     console.ReadLine();                    
-                }
-
-                console.WriteLine("Press any key to exit");
-                console.ReadLine();
+                }                
             }
         }
     }

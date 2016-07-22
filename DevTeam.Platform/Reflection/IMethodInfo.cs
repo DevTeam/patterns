@@ -1,8 +1,8 @@
-﻿namespace DevTeam.Platform.Reflection
-{
-    using System;
-    using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
+namespace DevTeam.Platform.Reflection
+{
     public interface IMethodInfo
     {
         string Name { get; }

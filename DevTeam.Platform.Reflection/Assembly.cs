@@ -1,19 +1,19 @@
-﻿namespace DevTeam.Platform.Reflection
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
+namespace DevTeam.Platform.Reflection
+{
     using Patterns.IoC;
 
     internal class Assembly : IAssembly
     {
-        private readonly System.Reflection.Assembly _assembly;
-        private readonly IResolver<System.Type, IType> _typeResolver;
+        private readonly global::System.Reflection.Assembly _assembly;
+        private readonly IResolver<global::System.Type, IType> _typeResolver;
 
         public Assembly(
-            System.Reflection.Assembly assembly,
-            IResolver<System.Type, IType> typeResolver)
+            global::System.Reflection.Assembly assembly,
+            IResolver<global::System.Type, IType> typeResolver)
         {
             if (assembly == null) throw new ArgumentNullException(nameof(assembly));
             if (typeResolver == null) throw new ArgumentNullException(nameof(typeResolver));

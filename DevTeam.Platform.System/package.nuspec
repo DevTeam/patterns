@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
-		<id>DevTeam.Platform.Reflection</id>
-		<title>DevTeam reflection.</title>
+		<id>DevTeam.Platform.System</id>
+		<title>DevTeam system.</title>
 		<language>en-us</language>
 		<version>$version$</version>
 		<authors>NikolayP</authors>
@@ -11,15 +11,19 @@
 		<projectUrl>https://github.com/DevTeam/patterns</projectUrl>
 		<iconUrl>https://avatars0.githubusercontent.com/u/12184234?v=3&amp;s=200</iconUrl>
 		<!--requireLicenseAcceptance>false</requireLicenseAcceptance-->
-		<description>Implements Reflection platform. Contains source code.</description>
-		<tags>.NETStandard NETCore Core Portable DevTeam Reflection Platform</tags>
+		<description>Implements System platform. Contains source code.</description>
+		<tags>.NETStandard NETCore Core Portable DevTeam System Platform</tags>
 		<dependencies>
 			<dependency id="DevTeam.Platform" version="[$version$]" />
 		</dependencies>
 	</metadata>
 	<files>
-  		<file src="bin\Release\DevTeam.Platform.Reflection.*" target="lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp" />
-		<file src="**\*.*" target="src\Platform.Reflection" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
+  		<file src="..\DevTeam.Platform.System.dotNet\bin\Release\DevTeam.Platform.System.dotNet.*" target="lib\net45" />
+		<file src="..\DevTeam.Platform.System.dotNetCore\bin\Release\netstandard1.6\DevTeam.Platform.System.dotNetCore.*" target="lib\netstandard1.6+netcoreapp" />
+
+		<file src="..\DevTeam.Platform.System.dotNet\**\*.*" target="src\DevTeam.Platform.System.dotNet" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
+		<file src="..\DevTeam.Platform.System.dotNetCore\**\*.*" target="src\DevTeam.Platform.System.dotNetCore" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
+
 		<!--file src="..\Platform.Reflection.Tests\**\*.*" target="src\Platform.Reflection.Tests" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/-->
 	</files>
 </package>

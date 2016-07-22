@@ -1,7 +1,7 @@
-﻿namespace DevTeam.Platform.Reflection
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace DevTeam.Platform.Reflection
+{    
     public interface IAssembly
     {
         IEnumerable<IType> DefinedTypes { get; }

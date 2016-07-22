@@ -2,11 +2,23 @@
 {
     using System;
 
+    using DevTeam.Platform.System;
+
     internal class ConsoleEchoPublisher: IEchoPublisher
     {
+        private readonly IConsole _console;
+
+        public ConsoleEchoPublisher(
+            IConsole console)
+        {
+            if (console == null) throw new ArgumentNullException(nameof(console));
+
+            _console = console;
+        }
+
         public void OnNext(IEcho value)
         {
-            Console.WriteLine(value.EchoMessage);
+            _console.WriteLine(value.EchoMessage);
         }
 
         public void OnError(Exception error)
@@ -15,7 +27,7 @@
 
         public void OnCompleted()
         {
-            Console.WriteLine("Done.");
+            _console.WriteLine("Done.");
         }
     }
 }

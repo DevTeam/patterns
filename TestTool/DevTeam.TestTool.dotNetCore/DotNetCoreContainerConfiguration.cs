@@ -4,8 +4,10 @@
     using System.Collections.Generic;
 
     using Patterns.IoC;
-    using Engine.Contracts;
+
     using Engine.Host;
+
+    using Platform.System;
 
     /// <inheritdoc/>
     public class DotNetCoreContainerConfiguration: IConfiguration
@@ -13,6 +15,7 @@
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
+            yield return new SystemContainerConfiguration();
             yield return new HostContainerConfiguration();
         }
 
@@ -21,7 +24,7 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IOutput>(() => new Console(), nameof(Console));
+            yield break;
         }
     }
 }
