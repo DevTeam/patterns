@@ -21,6 +21,9 @@
         "DevTeam.Patterns.Dispose": {
           "target": "project"
         },
+        "DevTeam.Patterns.EventAggregator": {
+            "target": "project"
+        },
         "DevTeam.Patterns.IoC": {
           "target": "project"
         },
