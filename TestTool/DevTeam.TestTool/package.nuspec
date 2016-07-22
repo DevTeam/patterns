@@ -12,15 +12,36 @@
 		<iconUrl>https://avatars0.githubusercontent.com/u/12184234?v=3&amp;s=200</iconUrl>
 		<!--requireLicenseAcceptance>false</requireLicenseAcceptance-->
 		<description>Supports custom, NUnit tests.</description>
-		<tags>.NET NETCore Test Tool NUnit</tags>
-		<dependencies>
-			<dependency id="DevTeam.TestTool.Engine" version="[$version$]" />
-			<dependency id="DevTeam.Platform.System" version="[$version$]" />
-		</dependencies>
+		<tags>.NET NETCore Test Tool NUnit</tags>		
 	</metadata>
 	<files>
   		<file src="..\DevTeam.TestTool.dotNet\bin\Release\tt.exe*" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.Patterns.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.Patterns.Dispose.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.Patterns.EventAggregator.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.Patterns.IoC.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.Patterns.Reactive.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.Platform.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.Platform.Reflection.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.Platform.System.dotNet.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.TestTool.Contracts.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.TestTool.Engine.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.TestTool.Engine.Contracts.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\DevTeam.TestTool.NUnit.dll" target="tools\net45" />
+		<file src="..\DevTeam.TestTool.dotNet\bin\Release\nunit.framework.dll" target="tools\net45" />
+
 		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.TestTool.dotNetCore.dll" target="tools\netcoreapp" />
 		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.TestTool.dotNetCore.deps.json" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Patterns.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Patterns.Dispose.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Patterns.EventAggregator.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Patterns.IoC.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Patterns.Reactive.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Platform.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Platform.Reflection.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Platform.System.dotNetCore.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.TestTool.Contracts.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.TestTool.Engine.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.TestTool.Engine.Contracts.dll" target="tools\netcoreapp" />
 	</files>
 </package>
