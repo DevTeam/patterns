@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="EventAggregator\IEventAggregator.cs" />
     <Compile Include="IoC\ContextContainerState.cs" />
+    <Compile Include="IoC\DependencyAttribute.cs" />
     <Compile Include="IoC\EmptyState.cs" />
     <Compile Include="IoC\IConfiguration.cs" />
     <Compile Include="IoC\IContainer.cs" />
@@ -56,7 +57,9 @@
     <Compile Include="IoC\IResolver`2.cs" />
     <Compile Include="IoC\IResolvingContext.cs" />
     <Compile Include="IoC\Registries.cs" />
+    <Compile Include="IoC\ResolverAttribute.cs" />
     <Compile Include="IoC\Resolvers.cs" />
+    <Compile Include="IoC\StateAttribute.cs" />
     <Compile Include="IoC\WellknownLifetime.cs" />
     <Compile Include="IoC\WellknownRegistrationComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,7 +69,6 @@
     <Compile Include="Reactive\WellknownScheduler.cs" />
     <Compile Include="Reactive\WellknownSubject.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

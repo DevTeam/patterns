@@ -1,30 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace DevTeam.Platform.Reflection
 {
-    internal class MethodInfo: IMethodInfo
+    internal class MethodInfo: MemberInfo, IMethodInfo
     {
         private readonly global::System.Reflection.MethodInfo _methodInfo;
 
         public MethodInfo(global::System.Reflection.MethodInfo methodInfo)
+            : base(methodInfo)
         {
             if (methodInfo == null) throw new ArgumentNullException(nameof(methodInfo));
 
             _methodInfo = methodInfo;
-        }
+        }       
 
-        public string Name => _methodInfo.Name;
-
-        public IEnumerable<T> GetCustomAttributes<T>() where T : Attribute
+        public object Invoke(object instance, object[] parameters)
         {
-            return _methodInfo.GetCustomAttributes<T>();
-        }
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
-        public object Invoke(object instance)
-        {
-            return _methodInfo.Invoke(instance, null);
+            return _methodInfo.Invoke(instance, parameters);
         }
     }
 }

@@ -52,9 +52,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MapingsTests.cs" />
     <Compile Include="StrictRegistrationTests.cs" />
     <Compile Include="ContainerTests.cs" />
-    <Compile Include="IService1.cs" />
+    <Compile Include="Service.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service1State.cs" />
   </ItemGroup>

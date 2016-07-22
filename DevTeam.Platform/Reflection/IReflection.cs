@@ -2,6 +2,8 @@
 {
     public interface IReflection
     {
-        IAssembly LoadAssembly(string assemblyFileName);        
+        IAssembly LoadAssembly(string assemblyFileName);
+
+        IType GetType(string typeName, bool throwOnError);
     }
 }

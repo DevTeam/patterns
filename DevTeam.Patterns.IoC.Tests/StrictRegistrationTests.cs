@@ -12,10 +12,10 @@
 	public class StrictRegistrationTests
 	{
 		[Test]
-        [TestCase(typeof(string), typeof(IService1), "abc", typeof(string), typeof(IService1), "abc", true)]
-        [TestCase(typeof(string), typeof(IService1), "abc1", typeof(string), typeof(IService1), "abc2", false)]
-        [TestCase(typeof(int), typeof(IService1), "abc", typeof(string), typeof(IService1), "abc", false)]
-        [TestCase(typeof(string), typeof(Service1), "abc", typeof(string), typeof(IService1), "abc", false)]
+        [TestCase(typeof(string), typeof(IService), "abc", typeof(string), typeof(IService), "abc", true)]
+        [TestCase(typeof(string), typeof(IService), "abc1", typeof(string), typeof(IService), "abc2", false)]
+        [TestCase(typeof(int), typeof(IService), "abc", typeof(string), typeof(IService), "abc", false)]
+        [TestCase(typeof(string), typeof(Service1), "abc", typeof(string), typeof(IService), "abc", false)]
         [TestCase(typeof(string), typeof(IService2<>), "abc", typeof(string), typeof(IService2<>), "abc", true)]
         public void ShouldSupportEquAndHash(
             Type stateType1, Type instanceType1, string name1, 

@@ -19,10 +19,11 @@ namespace DevTeam.Platform.Reflection
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IReflection>(() => new Reflection(container.Resolver<global::System.Reflection.Assembly, IAssembly>()));
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IReflection>(() => new Reflection(container.Resolver<global::System.Reflection.Assembly, IAssembly>(), container.Resolver<global::System.Type, IType>()));
             yield return container.Register<global::System.Reflection.Assembly, IAssembly>(assembly => new Assembly(assembly, container.Resolver<global::System.Type, IType>()));
-            yield return container.Register<global::System.Type, IType>(type => new Type(type, container.Resolver<global::System.Reflection.MethodInfo, IMethodInfo>()));
+            yield return container.Register<global::System.Type, IType>(type => new Type(type, container.Resolver<global::System.Reflection.MethodInfo, IMethodInfo>(), container.Resolver<global::System.Reflection.ConstructorInfo, IConstructorInfo>()));
             yield return container.Register<global::System.Reflection.MethodInfo, IMethodInfo>(methodInfo => new MethodInfo(methodInfo));
+            yield return container.Register<global::System.Reflection.ConstructorInfo, IConstructorInfo>(constructorInfo => new ConstructorInfo(constructorInfo));
         }
     }
 }

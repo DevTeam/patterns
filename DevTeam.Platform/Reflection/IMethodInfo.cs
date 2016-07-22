@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DevTeam.Platform.Reflection
+﻿namespace DevTeam.Platform.Reflection
 {
-    public interface IMethodInfo
+    public interface IMethodInfo: IMemberInfo
     {
-        string Name { get; }
-
-        IEnumerable<T> GetCustomAttributes<T>() where T : Attribute;
-
-        object Invoke(object instance);
+        object Invoke(object instance, params object[] parameters);
     }
 }
