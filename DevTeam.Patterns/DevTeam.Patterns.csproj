@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventAggregator\IEventAggregator.cs" />
+    <Compile Include="IoC\Bindings.cs" />
     <Compile Include="IoC\ContextContainerState.cs" />
     <Compile Include="IoC\DependencyAttribute.cs" />
     <Compile Include="IoC\EmptyState.cs" />
