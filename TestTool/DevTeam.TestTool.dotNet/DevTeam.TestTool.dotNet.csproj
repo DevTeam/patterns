@@ -54,13 +54,25 @@
       <Project>{FE61929A-6F78-40B6-8929-62CFB62E3BE6}</Project>
       <Name>DevTeam.Patterns.Dispose</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Patterns.EventAggregator\DevTeam.Patterns.EventAggregator.csproj">
+      <Project>{e4897226-0ffd-46c5-a44f-c7ee91572856}</Project>
+      <Name>DevTeam.Patterns.EventAggregator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
       <Project>{35055d77-822c-4d69-8df2-722b42cc405a}</Project>
       <Name>DevTeam.Patterns.IoC</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Patterns.Reactive\DevTeam.Patterns.Reactive.csproj">
+      <Project>{79f43401-ced2-46c1-a3c9-a8e9f94a1dea}</Project>
+      <Name>DevTeam.Patterns.Reactive</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Patterns\DevTeam.Patterns.csproj">
       <Project>{188f7cd5-37a9-454c-ad07-fd5d93c0e0b2}</Project>
       <Name>DevTeam.Patterns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Platform.Reflection\DevTeam.Platform.Reflection.csproj">
+      <Project>{fa65d0e7-0eef-4193-8a2c-d9b9ef95be96}</Project>
+      <Name>DevTeam.Platform.Reflection</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Platform.System.dotNet\DevTeam.Platform.System.dotNet.csproj">
       <Project>{954e39f3-e5e9-4cc1-8e08-6658dafd7a26}</Project>

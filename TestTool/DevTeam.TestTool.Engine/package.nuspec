@@ -15,12 +15,10 @@
 		<tags>.NET NETCore Test Tool Engine</tags>
 		<dependencies>
 			<dependency id="DevTeam.Patterns" version="[$version$]" />
-			<dependency id="DevTeam.Dispose" version="[$version$]" />
-			<dependency id="DevTeam.EventAggregator" version="[$version$]" />
-			<dependency id="DevTeam.IoC" version="[$version$]" />
-			<dependency id="DevTeam.Reactive" version="[$version$]" />
+			<dependency id="DevTeam.Patterns.Dispose" version="[$version$]" />
+			<dependency id="DevTeam.Patterns.IoC" version="[$version$]" />
+			<dependency id="DevTeam.Patterns.Reactive" version="[$version$]" />
 			<dependency id="DevTeam.Platform" version="[$version$]" />
-			<dependency id="DevTeam.Reflection" version="[$version$]" />
 			<dependency id="DevTeam.TestTool.Contracts" version="[$version$]" />
 			<dependency id="DevTeam.TestTool.Engine.Contracts" version="[$version$]" />
 		</dependencies>

@@ -7,8 +7,11 @@
 
     using NUnit;
 
+    using Patterns.EventAggregator;
     using Patterns.IoC;
+    using Patterns.Reactive;
 
+    using Platform.Reflection;
     using Platform.System;
 
     /// <inheritdoc/>
@@ -17,6 +20,9 @@
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
+            yield return new ReactiveContainerConfiguration();
+            yield return new EventAggregatorContainerConfiguration();
+            yield return new ReflectionContainerConfiguration();
             yield return new SystemContainerConfiguration();
             yield return new HostContainerConfiguration();
             yield return new NUnitContainerConfiguration();            

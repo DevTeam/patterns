@@ -15,7 +15,7 @@
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield return new EventAggregatorContainerConfiguration();
+            yield break;
         }
 
         /// <inheritdoc/>

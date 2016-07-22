@@ -7,11 +7,6 @@
     using Contracts;
     using Explorer;
 
-    using Patterns.Reactive;
-    using Patterns.EventAggregator;
-
-    using Platform.Reflection;
-
     using Publisher;
 
     using Reporter;
@@ -23,9 +18,7 @@
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield return new ReactiveContainerConfiguration();
-            yield return new EventAggregatorContainerConfiguration();
-            yield return new ReflectionContainerConfiguration();
+            yield break;
         }
 
         /// <inheritdoc/>
