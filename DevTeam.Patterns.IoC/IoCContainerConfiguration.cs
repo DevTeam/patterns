@@ -20,6 +20,8 @@
         internal static readonly Lazy<IRegistrationComparer> RootContainerRegestryKeyComparer = new Lazy<IRegistrationComparer>(() => new RootContainerRegistrationComparer());
         private static readonly Lazy<IRegistrationComparer> PatternRegistrationComparer = new Lazy<IRegistrationComparer>(() => new NamePatternRegistrationComparer());
 
+        internal static readonly Lazy<IBinder> ReflectionBinder = new Lazy<IBinder>(() => new RefletionBinder());
+
         private IoCContainerConfiguration()
         {
         }
@@ -45,9 +47,12 @@
             yield return container.Register(() => PerThreadLifetime.Value, WellknownLifetime.PerThreadLifetime);
             yield return container.Register(() => ControlledPerThreadLifetime.Value, WellknownLifetime.ControlledPerThreadLifetime);
 
-
-            // Wellknown registration comparer
+            // Wellknown registration comparers
             yield return container.Register(() => PatternRegistrationComparer.Value, WellknownRegistrationComparer.Pattern);
+
+            // Wellknown binders
+            yield return container.Register(() => ReflectionBinder.Value);
+            yield return container.Register(() => ReflectionBinder.Value, WellknownBinder.Reflection);
 
             // Context container
             yield return container.Register(typeof(ContextContainerState), typeof(IContextContainer<>),

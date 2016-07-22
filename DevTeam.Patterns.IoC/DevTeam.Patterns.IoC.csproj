@@ -48,11 +48,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RefletionBinder.cs" />
     <Compile Include="ConfigurationEqualityComparer.cs" />
     <Compile Include="Configurations.cs" />
     <Compile Include="ContainerDescription.cs" />
     <Compile Include="ContextContainer.cs" />
-    <Compile Include="Mappings.cs" />
+    <Compile Include="Bindings.cs" />
     <Compile Include="PerThreadLifetime.cs" />
     <Compile Include="PerResolveLifetime.cs" />
     <Compile Include="ControlledLifetime.cs" />
