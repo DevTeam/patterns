@@ -10,7 +10,7 @@
         private readonly IResolver<string, IEchoRequest> _requestResolver;
 
         public ConsoleEchoRequestSource(
-            [Dependency] IResolver<string, IEchoRequest> requestResolver)
+            IResolver<string, IEchoRequest> requestResolver)
         {
             if (requestResolver == null) throw new ArgumentNullException(nameof(requestResolver));
 

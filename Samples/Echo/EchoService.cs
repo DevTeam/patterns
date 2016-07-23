@@ -16,8 +16,8 @@
 
         public EchoService(
             [State] string id, 
-            [Dependency] IEventAggregator eventAggregator,
-            [Dependency] IResolver<string, IEcho> echoResolver,
+            IEventAggregator eventAggregator,
+            IResolver<string, IEcho> echoResolver,
             [Dependency(Key = WellknownSubject.Simple)] ISubject<IEcho> echoSubject)
         {
             if (id == null) throw new ArgumentNullException(nameof(id));

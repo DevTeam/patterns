@@ -10,7 +10,7 @@
         private readonly IConsole _console;
 
         public ConsoleEchoPublisher(
-            [Dependency] IConsole console)
+            IConsole console)
         {
             if (console == null) throw new ArgumentNullException(nameof(console));
 

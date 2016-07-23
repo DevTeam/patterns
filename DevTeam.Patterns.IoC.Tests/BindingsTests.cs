@@ -69,6 +69,23 @@
             instance.Dependency.ShouldBeOfType<Service1>();
         }
 
+        [Test]
+        public void ShouldResolveWhenCtorHasStateAndNptMarkedDependency()
+        {
+            // Given
+            var target = CreateTarget();
+
+            // When
+            target.Register(() => 99);
+            target.Bind<string, IService, Service1WithStateAndNotMarkedDependency>("myService1");
+
+            // Then
+            var instance = target.Resolve<string, IService>("state", "myService1");
+            instance.ShouldBeOfType<Service1WithStateAndNotMarkedDependency>();
+            instance.State.ShouldBe("state");
+            instance.Dependency.ShouldBe(99);
+        }
+
 
         [Test]
         public void ShouldResolveWhenCtorHasStateAndDependencyWithStateFromDependencyAttr()

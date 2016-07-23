@@ -18,8 +18,8 @@
 
         public RunnerTool(
             [State] ISession session,
-            [Dependency] IEnumerable<ITestRunner> testRunners,
-            [Dependency] IEventAggregator eventAggregator)
+            IEnumerable<ITestRunner> testRunners,
+            IEventAggregator eventAggregator)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
             if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));

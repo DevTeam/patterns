@@ -42,12 +42,6 @@
             }
 
             var ctorParameters = resolvingConstructor.GetParameters().Select(parameter => new CtorParameter(parameter)).ToList();
-            var invalidParameters = ctorParameters.Where(i => !i.ResolverParameter).ToList();
-            if (invalidParameters.Any())
-            {
-                throw new InvalidOperationException($"Parameters {CreateParametersList(invalidParameters)} of resolving constructor has no attributes of types \"{typeof(DependencyAttribute).Name}\" or \"{typeof(StateAttribute).Name}\"");
-            }
-
             if (stateType != typeof(EmptyState))
             {
                 var stateParamaters = (
@@ -113,7 +107,7 @@
                 if (parameter == null) throw new ArgumentNullException(nameof(parameter));
 
                 Parameter = parameter;
-                Dependency = parameter.GetCustomAttribute<DependencyAttribute>();
+                Dependency = parameter.GetCustomAttribute<DependencyAttribute>() ?? new DependencyAttribute();
                 State = parameter.GetCustomAttribute<StateAttribute>();
             }
 
@@ -122,8 +116,6 @@
             public DependencyAttribute Dependency { get; }
 
             public StateAttribute State { get; }
-
-            public bool ResolverParameter => Dependency != null || State != null;
 
             public override string ToString()
             {

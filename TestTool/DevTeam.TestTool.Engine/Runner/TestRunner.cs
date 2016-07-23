@@ -16,7 +16,7 @@
         private readonly IReflection _reflection;
 
         public TestRunner(
-            [Dependency] IReflection reflection,
+            IReflection reflection,
             [Dependency(Key = WellknownSubject.Simple)] ISubject<TestProgress> subject)
         {
             if (reflection == null) throw new ArgumentNullException(nameof(reflection));

@@ -53,6 +53,23 @@
         public object Dependency => _dependency;
     }
 
+    class Service1WithStateAndNotMarkedDependency : IService
+    {
+        private readonly string _state;
+        private readonly int _dependency;
+
+        [Resolver]
+        public Service1WithStateAndNotMarkedDependency([State] string state, int dependency)
+        {
+            _state = state;
+            _dependency = dependency;
+        }
+
+        public object State => _state;
+
+        public object Dependency => _dependency;
+    } 
+
     class Service1WithStateAndDependencyFromAttr : IService
     {
         private readonly int _state;

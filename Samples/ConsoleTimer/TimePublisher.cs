@@ -11,8 +11,8 @@
         private readonly IDisposable _subscription;
 
         public TimePublisher(
-            [Dependency] IConsole console,
-            [Dependency] IResolver<TimeSpan, ITimer> timer)
+            IConsole console,
+            IResolver<TimeSpan, ITimer> timer)
         {
             if (console == null) throw new ArgumentNullException(nameof(console));
             if (timer == null) throw new ArgumentNullException(nameof(timer));
