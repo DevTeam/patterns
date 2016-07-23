@@ -1,11 +1,14 @@
-﻿namespace DevTeam.Patterns.IoC
+﻿using System.Collections;
+using System.Linq;
+
+namespace DevTeam.Patterns.IoC
 {
     using System;
     using System.Collections.Generic;
 
-    internal class IoCContainerConfiguration: IConfiguration
+    internal class ContainerConfiguration: IConfiguration
     {
-        internal static readonly IConfiguration Shared = new IoCContainerConfiguration();
+        internal static readonly IConfiguration Shared = new ContainerConfiguration();
         internal static readonly Lazy<ILifetime> TransientLifetime = new Lazy<ILifetime>(() => new TransientLifetime());        
         private static readonly Lazy<ILifetime> ControlledLifetime = new Lazy<ILifetime>(() => new ControlledLifetime());
         private static readonly Lazy<ILifetime> SingletonLifetime = new Lazy<ILifetime>(() => new SingletonLifetime(new TransientLifetime()));
@@ -19,11 +22,12 @@
 
         internal static readonly Lazy<IRegistrationComparer> RootContainerRegestryKeyComparer = new Lazy<IRegistrationComparer>(() => new RootContainerRegistrationComparer());
         private static readonly Lazy<IRegistrationComparer> PatternRegistrationComparer = new Lazy<IRegistrationComparer>(() => new PatternKeyRegistrationComparer());
+        private static readonly Lazy<IRegistrationComparer> AnyStateTypeAndKey = new Lazy<IRegistrationComparer>(() => new AnyStateTypeAndKeyRegistrationComparer());
         private static readonly Lazy<IRegistrationComparer> AnyRegistrationComparer = new Lazy<IRegistrationComparer>(() => new AnyKeyRegistrationComparer());
 
         internal static readonly Lazy<IBinder> ReflectionBinder = new Lazy<IBinder>(() => new ReflectionBinder());
 
-        private IoCContainerConfiguration()
+        private ContainerConfiguration()
         {
         }
 
@@ -50,6 +54,7 @@
 
             // Wellknown registration comparers
             yield return container.Register(() => PatternRegistrationComparer.Value, WellknownRegistrationComparer.PatternKey);
+            yield return container.Register(() => AnyStateTypeAndKey.Value, WellknownRegistrationComparer.AnyStateTypeAndKey);
             yield return container.Register(() => AnyRegistrationComparer.Value, WellknownRegistrationComparer.AnyKey);
 
             // Wellknown binders
@@ -91,6 +96,77 @@
 
             // Default configuration equality comparer
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IEqualityComparer<IConfiguration>), ctx => new ConfigurationEqualityComparer());
-        }        
+
+            // Resolve All as IEnumerable
+            yield return container
+                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyStateTypeAndKey)
+                .Register(
+                typeof(EmptyState),
+                typeof(IEnumerable<>),
+                ctx =>
+                {
+                    var enumItemType = ctx.ResolvingInstanceType.GenericTypeArguments[0];
+                    var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
+                    var source =
+                        from key in ctx.ResolvingContainer.Registrations
+                        where key.InstanceType == enumItemType && key.StateType == ctx.Registration.StateType
+                        select ctx.ResolvingContainer.Resolve(key.StateType, enumItemType, ctx.State, key.Key);
+                    return Activator.CreateInstance(enumType, source);
+                },
+                null);
+        }
+
+        private class Enumerable<T> : IEnumerable<T>
+        {
+            private readonly IEnumerable<object> _source;
+
+            public Enumerable(IEnumerable<object> source)
+            {
+                if (source == null) throw new ArgumentNullException(nameof(source));
+
+                _source = source;
+            }
+
+            public IEnumerator<T> GetEnumerator()
+            {
+                return new Enumerator<T>(_source.GetEnumerator());
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+        }
+
+        private class Enumerator<T>: IEnumerator<T>
+        {
+            private readonly IEnumerator<object> _source;
+
+            public Enumerator(IEnumerator<object> source)
+            {
+                if (source == null) throw new ArgumentNullException(nameof(source));
+
+                _source = source;
+            }
+
+            public T Current => (T) _source.Current;
+
+            object IEnumerator.Current => Current;
+
+            public bool MoveNext()
+            {
+                return _source.MoveNext();
+            }
+
+            public void Reset()
+            {
+                _source.Reset();
+            }
+
+            public void Dispose()
+            {
+                _source.Dispose();
+            }
+        }
     }
 }

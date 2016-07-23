@@ -1,6 +1,7 @@
-﻿namespace DevTeam.Patterns.IoC.Tests
+﻿using System.Collections.Generic;
+
+namespace DevTeam.Patterns.IoC.Tests
 {
-    using System;
     using System.Linq;
 	using Moq;
 
@@ -390,6 +391,27 @@
 
             // Then
             instance.ShouldBe(_service1.Object);            
+        }
+
+        [Test]
+        public void ShouldResolveAllInstancesbAsIEnumerableWhenKeyIsNull()
+        {
+            // Given
+            var target = CreateTarget();
+            var service1 = new Service1();
+            var service2 = new Service1();
+            var service3 = new Service1();
+            var service4 = new Service1();
+            target.Register(typeof(Service1State), typeof(IService), ctx => service1, "myService1");
+            target.Register(typeof(Service1State), typeof(IService), ctx => service2);
+            target.Register(typeof(Service1State), typeof(IService), ctx => service3, 10);
+            target.Register(typeof(EmptyState), typeof(IService), ctx => service4, "myService4");
+
+            // When
+            var resolvedInstance = ((IEnumerable<IService>)target.Resolve(typeof(Service1State), typeof(IEnumerable<IService>), _service1State, null)).ToList();
+
+            // Then
+            resolvedInstance.ShouldBeSubsetOf(new [] { service1, service2, service3 });
         }
 
         private static Container CreateTarget(object name = null)

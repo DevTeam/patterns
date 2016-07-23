@@ -6,6 +6,8 @@
 
         PatternKey,
 
-        AnyKey
+        AnyKey,
+
+        AnyStateTypeAndKey
     }
 }

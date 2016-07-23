@@ -22,7 +22,7 @@
         public Container(object key = null)
         {
             Key = key;
-            _disposable = IoCContainerConfiguration.Shared.CreateRegistrations(this).ToCompositeDisposable();
+            _disposable = ContainerConfiguration.Shared.CreateRegistrations(this).ToCompositeDisposable();
         }
 
         internal Container(ContainerDescription containerDescription)
@@ -46,7 +46,7 @@
             IRegistrationComparer comparer;
             if (!TryGetComparer(out comparer))
             {
-                comparer = IoCContainerConfiguration.RootContainerRegestryKeyComparer.Value;
+                comparer = ContainerConfiguration.RootContainerRegestryKeyComparer.Value;
             }
 
             Dictionary dictionary;
@@ -113,7 +113,7 @@
                 // Defaults		      
 		        if (instanceType == typeof(ILifetime) && stateType == typeof(EmptyState) && key == null)
 		        {
-                    return IoCContainerConfiguration.TransientLifetime.Value;
+                    return ContainerConfiguration.TransientLifetime.Value;
 		        }
             }
 		    catch (InvalidOperationException ex)
@@ -191,7 +191,7 @@
                 return true;
             }
 
-            comparer = IoCContainerConfiguration.RootContainerRegestryKeyComparer.Value;
+            comparer = ContainerConfiguration.RootContainerRegestryKeyComparer.Value;
             return true;
         }
     }
