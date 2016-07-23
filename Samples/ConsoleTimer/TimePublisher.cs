@@ -12,12 +12,12 @@
 
         public TimePublisher(
             [Dependency] IConsole console,
-            [Dependency] ITimer timer)
+            [Dependency] IResolver<TimeSpan, ITimer> timer)
         {
             if (console == null) throw new ArgumentNullException(nameof(console));
             if (timer == null) throw new ArgumentNullException(nameof(timer));
 
-            _subscription = timer.Subscribe(
+            _subscription = timer.Resolve(TimeSpan.FromSeconds(1)).Subscribe(
                 // Process a new item from timer
                 i => console.WriteLine(i.ToString()), 
                 // Process an error

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     using Dispose;
     using Dictionary = System.Collections.Generic.Dictionary<IRegistration, System.Func<IResolvingContext, object>>;
@@ -161,8 +162,8 @@
         }
 
         private string GetRegisteredInfo()
-	    {
-	        var details = _factories.Count == 0 ? "no entries" : string.Join(", ", _factories.Keys.Select(k => k.ToString()));
+        {
+            var details = _factories.Count == 0 ? "no entries" : string.Join(", ", _factories.SelectMany(i => i.Value.Keys).Distinct().Select(k => k.ToString()));
             return $"Container \"{Key}\". Registered entries: {details}";
 	    }
 
