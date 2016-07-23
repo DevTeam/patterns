@@ -2,9 +2,11 @@
 {
     using System;
 
+    using DevTeam.Patterns.IoC;
+
     internal class Echo: IEcho
     {
-        public Echo(string echoMessage)
+        public Echo([State] string echoMessage)
         {
             if (echoMessage == null) throw new ArgumentNullException(nameof(echoMessage));
 

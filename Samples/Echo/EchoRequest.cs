@@ -2,9 +2,11 @@
 {
     using System;
 
+    using DevTeam.Patterns.IoC;
+
     internal class EchoRequest : IEchoRequest
     {
-        public EchoRequest(string message)
+        public EchoRequest([State] string message)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
 

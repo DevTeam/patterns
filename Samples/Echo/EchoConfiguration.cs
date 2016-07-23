@@ -20,29 +20,20 @@
         /// <inheritdoc/>
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
-            // Register echo request
-            yield return container.Register<string, IEchoRequest>(
-                message => new EchoRequest(message));
+            // Register Echo Request
+            yield return container.Bind<string, IEchoRequest, EchoRequest>();
 
-            // Register echo
-            yield return container.Register<string, IEcho>(
-                message => new Echo(message));
+            // Register Echo
+            yield return container.Bind<string, IEcho, Echo>();
 
-            // Register EchoService
-            yield return container.Register<string, IEchoService>(
-                id => new EchoService(
-                    id, 
-                    container.Resolve<IEventAggregator>(),
-                    container.Resolver<string, IEcho>(),
-                    container.Resolve<ISubject<IEcho>>(WellknownSubject.Simple)));
+            // Register Echo Service
+            yield return container.Bind<string, IEchoService, EchoService>();
 
-            // Register ConsoleEchoPublisher as Singleton
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEchoPublisher>(
-                () => new ConsoleEchoPublisher(container.Resolve<IConsole>()));
+            // Register Console Echo Publisher as Singleton
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IEchoPublisher, ConsoleEchoPublisher>();
 
-            // Register ConsoleEchoRequestSource as Singleton
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEchoRequestSource>(
-                () => new ConsoleEchoRequestSource(container.Resolver<string, IEchoRequest>()));
+            // Register Console Echo Request bbSource as Singleton
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IEchoRequestSource, ConsoleEchoRequestSource>();
         }
     }
 }

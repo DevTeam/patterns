@@ -2,6 +2,7 @@
 {
     using System;
 
+    using DevTeam.Patterns.IoC;
     using DevTeam.Platform.System;
 
     internal class ConsoleEchoPublisher: IEchoPublisher
@@ -9,7 +10,7 @@
         private readonly IConsole _console;
 
         public ConsoleEchoPublisher(
-            IConsole console)
+            [Dependency] IConsole console)
         {
             if (console == null) throw new ArgumentNullException(nameof(console));
 

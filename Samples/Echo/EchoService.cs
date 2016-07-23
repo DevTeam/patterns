@@ -15,10 +15,10 @@
         private readonly ISubject<IEcho> _echoSubject;
 
         public EchoService(
-            string id, 
-            IEventAggregator eventAggregator,
-            IResolver<string, IEcho> echoResolver,
-            ISubject<IEcho> echoSubject)
+            [State] string id, 
+            [Dependency] IEventAggregator eventAggregator,
+            [Dependency] IResolver<string, IEcho> echoResolver,
+            [Dependency(Key = WellknownSubject.Simple)] ISubject<IEcho> echoSubject)
         {
             if (id == null) throw new ArgumentNullException(nameof(id));
             if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));
