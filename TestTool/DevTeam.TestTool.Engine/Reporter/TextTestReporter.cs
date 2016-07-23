@@ -4,6 +4,7 @@
 
     using Contracts;
 
+    using Patterns.IoC;
     using Patterns.Reactive;
 
     internal class TextTestReporter: ITestReporter
@@ -11,7 +12,7 @@
         private readonly ISubject<TestReport> _testReportSubject;
 
         public TextTestReporter(
-            ISubject<TestReport> subject)
+            [Dependency(Key = WellknownSubject.Simple)] ISubject<TestReport> subject)
         {
             if (subject == null) throw new ArgumentNullException(nameof(subject));
 

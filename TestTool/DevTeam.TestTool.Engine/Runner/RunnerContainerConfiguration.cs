@@ -21,10 +21,7 @@
             if (container == null) throw new ArgumentNullException(nameof(container));
 
             yield return container.Bind<ISession, ITool, RunnerTool>();
-
-            yield return container
-                .Using<ILifetime>(WellknownLifetime.Singleton)
-                .Bind<ITestRunner, TestRunner>();
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<ITestRunner, TestRunner>();
         }
     }
 }

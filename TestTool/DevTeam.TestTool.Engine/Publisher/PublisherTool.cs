@@ -10,6 +10,8 @@
 
     using Host;
 
+    using Patterns.IoC;
+
     internal class PublisherTool: ITool
     {
         private readonly ISession _session;
@@ -17,7 +19,7 @@
         private readonly IEventAggregator _eventAggregator;
 
         public PublisherTool(
-            ISession session,
+            [State] ISession session,
             IEnumerable<IReportPublisher> reportPublishers,
             IEventAggregator eventAggregator)
         {

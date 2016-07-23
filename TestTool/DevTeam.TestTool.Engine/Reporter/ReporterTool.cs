@@ -9,6 +9,7 @@
     using Patterns.EventAggregator;
 
     using Patterns.Dispose;
+    using Patterns.IoC;
 
     internal class ReporterTool: ITool
     {
@@ -17,7 +18,7 @@
         private readonly IEventAggregator _eventAggregator;
 
         public ReporterTool(
-            ISession session,
+            [State] ISession session,
             IEnumerable<ITestReporter> testReporters,
             IEventAggregator eventAggregator)
         {

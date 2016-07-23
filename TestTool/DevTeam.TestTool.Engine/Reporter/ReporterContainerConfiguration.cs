@@ -23,17 +23,8 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container
-                .Register<ISession, ITool>(session => new ReporterTool(
-                    session,
-                    container.ResolveAll<ITestReporter>(),
-                    container.Resolve<IEventAggregator>()));
-
-            yield return container
-                .Using<ILifetime>(WellknownLifetime.Singleton)
-                .Register<ITestReporter>(() => new TextTestReporter(
-                    container.Resolve<ISubject<TestReport>>(WellknownSubject.Simple))
-                    , "text");
+            yield return container.Bind<ISession, ITool, ReporterTool>();
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<ITestReporter, TextTestReporter>("text");
         }
     }
 }
