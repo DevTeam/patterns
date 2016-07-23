@@ -2,6 +2,8 @@ namespace DevTeam.Patterns.IoC
 {
     internal class RootContainerRegistrationComparer: IRegistrationComparer
     {
+        public WellknownRegistrationComparer Key => WellknownRegistrationComparer.Default;
+
         public bool Equals(IRegistration x, IRegistration y)
         {
             if (x.InstanceType == typeof(IContainer) && x.StateType == typeof(EmptyState)

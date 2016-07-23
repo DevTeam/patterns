@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    
+
     using DevTeam.Patterns.IoC;
     using DevTeam.Platform.System;
 
@@ -18,17 +18,11 @@
         /// <inheritdoc/>
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
-            // Register Timer with state "period"
-            yield return container.Register<TimeSpan, ITimer>(
-                period => new Timer(period));
+            // Bind to Timer
+            yield return container.Bind<TimeSpan, ITimer, Timer>();
 
-            // Register Publisher and resolve 2 args:
-            // Instance of IConsole
-            // Instance of ITimer with state "period"
-            yield return container.Register<ITimePublisher>(
-                () => new TimePublisher(
-                    container.Resolve<IConsole>(), 
-                    container.Resolve<TimeSpan, ITimer>(TimeSpan.FromSeconds(1))));
+            // Bind to Time Publisher
+            yield return container.Bind<ITimePublisher, TimePublisher>();
         }
     }
 }

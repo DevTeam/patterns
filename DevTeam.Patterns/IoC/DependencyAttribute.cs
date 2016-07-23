@@ -5,27 +5,12 @@
     [AttributeUsage(AttributeTargets.Parameter)]
     public class DependencyAttribute: Attribute
     {
-        public DependencyAttribute(Type stateType, Type instanceType, object key = null)
-        {
-            StateType = stateType ?? typeof(EmptyState);
-            InstanceType = instanceType;
-            Key = key;
-        }
+       public Type StateType { get; set; }
 
-        public DependencyAttribute(Type instanceType, object key = null)
-            :this(typeof(EmptyState), instanceType, key)
-        {            
-        }
+        public Type InstanceType { get; set; }
 
-        public DependencyAttribute(object key = null)
-            : this(null, key)
-        {
-        }
+        public object Key { get; set; }
 
-        public Type StateType { get; }
-
-        public Type InstanceType { get; }
-
-        public object Key { get; }
+        public object State { get; set; }
     }
 }

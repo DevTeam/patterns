@@ -4,5 +4,6 @@
 
     public interface IRegistrationComparer: IEqualityComparer<IRegistration>, IContext
     {
+        WellknownRegistrationComparer Key { get; }
     }
 }

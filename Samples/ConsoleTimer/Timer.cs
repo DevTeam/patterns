@@ -2,11 +2,13 @@
 {
     using System;
 
+    using DevTeam.Patterns.IoC;
+
     internal class Timer: ITimer
     {
         private readonly TimeSpan _period;
 
-        public Timer(TimeSpan period)
+        public Timer([State] TimeSpan period)
         {
             _period = period;
         }

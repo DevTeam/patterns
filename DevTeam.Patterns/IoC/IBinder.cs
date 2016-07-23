@@ -4,6 +4,6 @@
 
     public interface IBinder: IContext
     {
-        IDisposable Bind(IContainer container, Type stateType, Type instanceType, Type implementationType, object key = null);
+        IRegistration Bind(IContainer container, Type stateType, Type instanceType, Type implementationType, object key = null);
     }
 }

@@ -4,6 +4,6 @@
 
     [AttributeUsage(AttributeTargets.Parameter)]
     public class StateAttribute: Attribute
-    {        
+    {
     }
 }

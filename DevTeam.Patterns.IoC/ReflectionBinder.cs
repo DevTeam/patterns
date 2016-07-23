@@ -5,11 +5,16 @@
     using System.Linq;
     using System.Reflection;
 
-    public class RefletionBinder: IBinder
+    public class ReflectionBinder: IBinder
     {
-        public IDisposable Bind(IContainer container, Type stateType, Type instanceType, Type implementationType, object key = null)
+        public IRegistration Bind(IContainer container, Type stateType, Type instanceType, Type implementationType,  object key = null)
         {
-            ConstructorInfo resolvingConstructor = null;
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+            if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
+
+            ConstructorInfo resolvingConstructor;
             var ctors = implementationType.GetTypeInfo().DeclaredConstructors.ToList();
             if (ctors.Count == 1)
             {
@@ -48,11 +53,7 @@
                 var stateParamaters = (
                     from parameter in ctorParameters
                     where parameter.State != null
-                    select 
-                    
-                    
-                    
-                    parameter).ToList();
+                    select parameter).ToList();
 
                 if (stateParamaters.Count != 1)
                 {
@@ -89,9 +90,9 @@
             {
                 var dependency = parameter.Dependency;
                 return container.Resolve(
-                    dependency.StateType,
+                    dependency.StateType ?? typeof(EmptyState),
                     dependency.InstanceType ?? parameter.Parameter.ParameterType,
-                    null,
+                    dependency.State ?? EmptyState.Shared,
                     dependency.Key);
             }
 

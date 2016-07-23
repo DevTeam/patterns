@@ -2,8 +2,10 @@
 {
     using System.Text.RegularExpressions;
 
-    internal class NamePatternRegistrationComparer: IRegistrationComparer
+    internal class PatternKeyRegistrationComparer: IRegistrationComparer
     {
+        public WellknownRegistrationComparer Key => WellknownRegistrationComparer.PatternKey;
+
         public bool Equals(IRegistration x, IRegistration y)
         {
             var xKey = x.Key?.ToString() ?? string.Empty;

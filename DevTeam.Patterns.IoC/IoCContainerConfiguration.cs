@@ -18,9 +18,10 @@
         private static readonly Lazy<ILifetime> ControlledPerThreadLifetime = new Lazy<ILifetime>(() => new PerThreadLifetime(new ControlledLifetime()));
 
         internal static readonly Lazy<IRegistrationComparer> RootContainerRegestryKeyComparer = new Lazy<IRegistrationComparer>(() => new RootContainerRegistrationComparer());
-        private static readonly Lazy<IRegistrationComparer> PatternRegistrationComparer = new Lazy<IRegistrationComparer>(() => new NamePatternRegistrationComparer());
+        private static readonly Lazy<IRegistrationComparer> PatternRegistrationComparer = new Lazy<IRegistrationComparer>(() => new PatternKeyRegistrationComparer());
+        private static readonly Lazy<IRegistrationComparer> AnyRegistrationComparer = new Lazy<IRegistrationComparer>(() => new AnyKeyRegistrationComparer());
 
-        internal static readonly Lazy<IBinder> ReflectionBinder = new Lazy<IBinder>(() => new RefletionBinder());
+        internal static readonly Lazy<IBinder> ReflectionBinder = new Lazy<IBinder>(() => new ReflectionBinder());
 
         private IoCContainerConfiguration()
         {
@@ -48,7 +49,8 @@
             yield return container.Register(() => ControlledPerThreadLifetime.Value, WellknownLifetime.ControlledPerThreadLifetime);
 
             // Wellknown registration comparers
-            yield return container.Register(() => PatternRegistrationComparer.Value, WellknownRegistrationComparer.Pattern);
+            yield return container.Register(() => PatternRegistrationComparer.Value, WellknownRegistrationComparer.PatternKey);
+            yield return container.Register(() => AnyRegistrationComparer.Value, WellknownRegistrationComparer.AnyKey);
 
             // Wellknown binders
             yield return container.Register(() => ReflectionBinder.Value);
@@ -67,19 +69,25 @@
             yield return container.Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(object), typeof(IContainer), ctx => new Container(new ContainerDescription(ctx.ResolvingContainer, ctx.State)));
 
             // Resolvers
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IResolver<>),
+            yield return container
+                .Using<ILifetime>(WellknownLifetime.Singleton)
+                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
+                .Register(typeof(EmptyState), typeof(IResolver<>),
                 ctx =>
                     {
                         var resolverType = typeof(Resolver<>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0]);
-                        return Activator.CreateInstance(resolverType, container);
+                        return Activator.CreateInstance(resolverType, container, ctx.Registration.Key);
                     });
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IResolver<,>),
+            yield return container
+                .Using<ILifetime>(WellknownLifetime.Singleton)
+                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
+                .Register(typeof(EmptyState), typeof(IResolver<,>),
                 ctx =>
-                {
-                    var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0], ctx.ResolvingInstanceType.GenericTypeArguments[1]);
-                    return Activator.CreateInstance(resolverType, container);
-                });
+                    {
+                        var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0], ctx.ResolvingInstanceType.GenericTypeArguments[1]);
+                        return Activator.CreateInstance(resolverType, container, ctx.Registration.Key);
+                    });
 
             // Default configuration equality comparer
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IEqualityComparer<IConfiguration>), ctx => new ConfigurationEqualityComparer());

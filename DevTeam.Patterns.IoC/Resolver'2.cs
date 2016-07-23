@@ -5,18 +5,20 @@ namespace DevTeam.Patterns.IoC
     internal class Resolver<TState, T> : IResolver<TState, T>
     {
         private readonly IResolver _resolver;
+        private readonly object _defaultKey;
 
-        public Resolver(IResolver resolver)
+        public Resolver(IResolver resolver, object defaultKey)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
             _resolver = resolver;
+            _defaultKey = defaultKey;
         }
 
         
         public T Resolve(TState state, object key = null)
         {
-            return _resolver.Resolve<TState, T>(state, key);
+            return _resolver.Resolve<TState, T>(state, key ?? _defaultKey);
         }
     }
 }

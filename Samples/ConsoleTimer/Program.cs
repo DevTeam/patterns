@@ -1,5 +1,7 @@
 ﻿namespace ConsoleTimer
 {
+    using System;
+
     using DevTeam.Patterns.IoC;
     using DevTeam.Platform.System;
 
@@ -18,7 +20,7 @@
                 console.WriteLine("Press Enter to exit");
 
                 // Create publisher
-                using (container.Resolve<ITimePublisher>())
+                using (container.Resolve<TimeSpan, ITimePublisher>(TimeSpan.FromSeconds(1)))
                 {
                     // Wait for any key
                     console.ReadLine();                    

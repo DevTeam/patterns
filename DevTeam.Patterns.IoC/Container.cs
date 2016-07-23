@@ -5,10 +5,12 @@
     using System.Linq;
 
     using Dispose;
+    using Dictionary = System.Collections.Generic.Dictionary<IRegistration, System.Func<IResolvingContext, object>>;
 
     public class Container: IContainer
 	{
-        private Dictionary<IRegistration, Func<IResolvingContext, object>> _factories;
+        private static readonly ComparerForRegistrationComparer ComparerForRegistrationComparer = new ComparerForRegistrationComparer();
+        private readonly SortedDictionary<IRegistrationComparer, Dictionary> _factories = new SortedDictionary<IRegistrationComparer, Dictionary>(ComparerForRegistrationComparer);
 		private readonly IContainer _parentContainer;
         private readonly IDisposable _disposable = Disposable.Empty();
 
@@ -19,7 +21,6 @@
         public Container(object key = null)
         {
             Key = key;
-            CreateFactories();
             _disposable = IoCContainerConfiguration.Shared.CreateRegistrations(this).ToCompositeDisposable();
         }
 
@@ -29,33 +30,45 @@
 
             Key = containerDescription.Key;
             _parentContainer = containerDescription.ParentContainer;
-            CreateFactories();
         }        
 
         public object Key { get; }
 
-	    public IEnumerable<IRegistration> Registrations => _factories.Keys.Union(_parentContainer != null ? _parentContainer.Registrations : Enumerable.Empty<IRegistration>());
+	    public IEnumerable<IRegistration> Registrations => _factories.SelectMany(i => i.Value.Keys).Distinct().Union(_parentContainer != null ? _parentContainer.Registrations : Enumerable.Empty<IRegistration>());
 
 	    public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, object key = null)
 		{
 		    if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
-		    if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));		    
+		    if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
+
+            IRegistrationComparer comparer;
+            if (!TryGetComparer(out comparer))
+            {
+                comparer = IoCContainerConfiguration.RootContainerRegestryKeyComparer.Value;
+            }
+
+            Dictionary dictionary;
+            if (!_factories.TryGetValue(comparer, out dictionary))
+            {
+                dictionary = new Dictionary(comparer);
+                _factories.Add(comparer, dictionary);
+            }
 
             var resources = new CompositeDisposable();
             var registrationDescription = new RegistrationDescription(stateType, instanceType, key, resources);
 	        var registration = new StrictRegistration(registrationDescription);
             try
-	        {
-	            if (instanceType != typeof(ILifetime))
+            {
+                if (instanceType != typeof(ILifetime))
 	            {
 	                var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
-                    _factories.Add(registration, ctx => lifetime.Create(ctx, factoryMethod));
+                    dictionary.Add(registration, ctx => lifetime.Create(ctx, factoryMethod));
                     resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(registration), lifetime)));
 	            }
 	            else
 	            {
-	                _factories.Add(registration, factoryMethod);
+                    dictionary.Add(registration, factoryMethod);
 	                resources.Add(Disposable.Create(() => Unregister(registration)));
 	            }	            
 	        }
@@ -75,14 +88,17 @@
             var registrationDescription = new RegistrationDescription(stateType, instanceType, key, Disposable.Empty());
 	        foreach (var registration in GetResolverRegistrations(registrationDescription))
 	        {
-	            Func<IResolvingContext, object> factory;
-	            if (_factories.TryGetValue(registration, out factory))
-                {
-                    using (var ctx = new ResolvingContext(this, registration, instanceType, state))
+	            foreach (var dictionary in _factories)
+	            {
+	                Func<IResolvingContext, object> factory;
+	                if (dictionary.Value.TryGetValue(registration, out factory))
                     {
-                        return factory(ctx);
+                        using (var ctx = new ResolvingContext(this, registration, instanceType, state))
+                        {
+                            return factory(ctx);
+                        }
                     }
-                }
+	            }
 	        }
 
 	        Exception innerException = null;
@@ -113,7 +129,7 @@
         /// </summary>
         public void Dispose()
 	    {
-            _factories.Keys.ToCompositeDisposable().Dispose();
+            _factories.SelectMany(i => i.Value.Keys).Distinct().ToCompositeDisposable().Dispose();
             _disposable.Dispose();
         }
 
@@ -123,9 +139,15 @@
 	    }	    
 
 	    private bool Unregister(IRegistration registration)
-        {
-            return _factories.Remove(registration);
-        }
+	    {
+	        var removed = false;
+	        foreach (var dictionary in _factories)
+	        {
+                removed |= dictionary.Value.Remove(registration);
+            }
+
+	        return removed;
+	    }
 
         private bool Unregister(IReleasingContext ctx, ILifetime factory)
         {
@@ -155,26 +177,12 @@
             }
         }
 
-        private void CreateFactories()
+        private bool TryGetComparer(out IRegistrationComparer comparer)
         {
-            IEqualityComparer<IRegistration> comparer;
-            _factories = TryGetComparer(out comparer)
-                ? new Dictionary<IRegistration, Func<IResolvingContext, object>>(comparer)
-                : new Dictionary<IRegistration, Func<IResolvingContext, object>>();
-        }
-
-        private bool TryGetComparer(out IEqualityComparer<IRegistration> comparer)
-        {
-            if (_parentContainer == null)
-            {
-                comparer = IoCContainerConfiguration.RootContainerRegestryKeyComparer.Value;
-                return true;
-            }
-
             var comparers = (
-                from registration in _parentContainer.Registrations
+                from registration in Registrations
                 where registration.InstanceType == typeof(IRegistrationComparer) && registration.StateType == typeof(EmptyState) && registration.Key == null
-                select (IRegistrationComparer)_parentContainer.Resolve(registration.StateType, registration.InstanceType, EmptyState.Shared, registration.Key)).ToList();
+                select (IRegistrationComparer)Resolve(registration.StateType, registration.InstanceType, EmptyState.Shared, registration.Key)).ToList();
 
             if (comparers.Count == 1)
             {
@@ -182,7 +190,7 @@
                 return true;
             }
 
-            comparer = default(IEqualityComparer<IRegistration>);
+            comparer = IoCContainerConfiguration.RootContainerRegestryKeyComparer.Value;
             return true;
         }
     }

@@ -2,6 +2,7 @@
 {
     using System;
 
+    using DevTeam.Patterns.IoC;
     using DevTeam.Patterns.Reactive;
     using DevTeam.Platform.System;
 
@@ -10,8 +11,8 @@
         private readonly IDisposable _subscription;
 
         public TimePublisher(
-            IConsole console,
-            ITimer timer)
+            [Dependency] IConsole console,
+            [Dependency] ITimer timer)
         {
             if (console == null) throw new ArgumentNullException(nameof(console));
             if (timer == null) throw new ArgumentNullException(nameof(timer));

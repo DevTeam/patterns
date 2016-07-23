@@ -48,7 +48,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RefletionBinder.cs" />
+    <Compile Include="AnyKeyRegistrationComparer.cs" />
+    <Compile Include="ComparerForRegistrationComparer.cs" />
+    <Compile Include="ReflectionBinder.cs" />
     <Compile Include="ConfigurationEqualityComparer.cs" />
     <Compile Include="Configurations.cs" />
     <Compile Include="ContainerDescription.cs" />
@@ -58,7 +60,7 @@
     <Compile Include="ControlledLifetime.cs" />
     <Compile Include="IoCContainerConfiguration.cs" />
     <Compile Include="RegistrationDescription.cs" />
-    <Compile Include="NamePatternRegistrationComparer.cs" />
+    <Compile Include="PatternKeyRegistrationComparer.cs" />
     <Compile Include="GenericRegistration.cs" />
     <Compile Include="ReleasingContext.cs" />
     <Compile Include="ResolvingContext.cs" />

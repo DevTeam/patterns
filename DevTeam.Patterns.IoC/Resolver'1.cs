@@ -5,17 +5,19 @@
     internal class Resolver<T> : IResolver<T>
     {
         private readonly IResolver _resolver;
+        private readonly object _defaultKey;
 
-        public Resolver(IResolver resolver)
+        public Resolver(IResolver resolver, object defaultKey)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
             _resolver = resolver;
+            _defaultKey = defaultKey;
         }
 
         public T Resolve(object key = null)
         {
-            return _resolver.Resolve<T>(key);
+            return _resolver.Resolve<T>(key ?? _defaultKey);
         }
     }
 }

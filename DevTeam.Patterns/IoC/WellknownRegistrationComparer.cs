@@ -2,6 +2,10 @@
 {
     public enum WellknownRegistrationComparer
     {
-        Pattern
+        Default,
+
+        PatternKey,
+
+        AnyKey
     }
 }
