@@ -1,5 +1,8 @@
 ﻿namespace DevTeam.Patterns.IoC.Tests
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     using NUnit.Framework;
 
 	using Shouldly;
@@ -101,6 +104,44 @@
             instance.ShouldBeOfType<Service1WithStateAndDependencyViaResolver>();
             instance.State.ShouldBe(33);
             instance.Dependency.ShouldBeOfType<Service1WithStateAndDependency>();
+        }
+
+        [Test]
+        public void ShouldResolveWhenCtorbHasStateAndEnumerableDependency()
+        {
+            // Given
+            var target = CreateTarget();
+            
+            // When
+            target.Using<ILifetime>(WellknownLifetime.Singleton).Bind<int, Service1WithStateAndEnumerableDependency, Service1WithStateAndEnumerableDependency>("myService1");
+            target.Bind<IService, Service1>("dep");
+            target.Bind<IService, Service1>("dep2");
+
+            // Then
+            var instance = target.Resolve<int, Service1WithStateAndEnumerableDependency>(33, "myService1");
+            instance.ShouldBeOfType<Service1WithStateAndEnumerableDependency>();
+            instance.State.ShouldBe(33);
+            var dpendencies = (IEnumerable<IService>)instance.Dependency;
+            dpendencies.Count().ShouldBe(2);
+        }
+
+        [Test]
+        public void ShouldResolveWhenCtorbHasStateAndEnumerableDependencyAndChildContainer()
+        {
+            // Given
+            var target = CreateTarget().Resolve<IContainer>("child");
+
+            // When
+            target.Using<ILifetime>(WellknownLifetime.Singleton).Bind<int, Service1WithStateAndEnumerableDependency, Service1WithStateAndEnumerableDependency>("myService1");
+            target.Bind<IService, Service1>("dep");
+            target.Bind<IService, Service1>("dep2");
+
+            // Then
+            var instance = target.Resolve<int, Service1WithStateAndEnumerableDependency>(33, "myService1");
+            instance.ShouldBeOfType<Service1WithStateAndEnumerableDependency>();
+            instance.State.ShouldBe(33);
+            var dpendencies = (IEnumerable<IService>)instance.Dependency;
+            dpendencies.Count().ShouldBe(2);
         }
 
         private static Container CreateTarget(object key = null)

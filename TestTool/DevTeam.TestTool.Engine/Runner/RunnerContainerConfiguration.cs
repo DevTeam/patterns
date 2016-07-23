@@ -6,11 +6,6 @@
     using Patterns.IoC;
     using Contracts;
 
-    using Patterns.EventAggregator;
-    using Patterns.Reactive;
-
-    using Platform.Reflection;
-
     /// <inheritdoc/>
     internal class RunnerContainerConfiguration: IConfiguration
     {
@@ -25,17 +20,11 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container
-                .Register<ISession, ITool>(session => new RunnerTool(
-                    session, 
-                    container.ResolveAll<ITestRunner>(),
-                    container.Resolve<IEventAggregator>()));
+            yield return container.Bind<ISession, ITool, RunnerTool>();
 
             yield return container
                 .Using<ILifetime>(WellknownLifetime.Singleton)
-                .Register<ITestRunner>(() => new TestRunner(
-                    container.Resolve<IReflection>(),
-                    container.Resolve<ISubject<TestProgress>>(WellknownSubject.Simple)));
+                .Bind<ITestRunner, TestRunner>();
         }
     }
 }

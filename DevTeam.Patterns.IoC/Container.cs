@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
     using Dispose;
     using Dictionary = System.Collections.Generic.Dictionary<IRegistration, System.Func<IResolvingContext, object>>;
@@ -22,7 +21,10 @@
         public Container(object key = null)
         {
             Key = key;
-            _disposable = ContainerConfiguration.Shared.CreateRegistrations(this).ToCompositeDisposable();
+            _disposable = 
+                RootContainerConfiguration.Shared.CreateRegistrations(this)
+                .Concat(ContainerConfiguration.Shared.CreateRegistrations(this))
+                .ToCompositeDisposable();
         }
 
         internal Container(ContainerDescription containerDescription)
@@ -31,7 +33,8 @@
 
             Key = containerDescription.Key;
             _parentContainer = containerDescription.ParentContainer;
-        }        
+            _disposable = ContainerConfiguration.Shared.CreateRegistrations(this).ToCompositeDisposable();
+        }
 
         public object Key { get; }
 
@@ -46,7 +49,7 @@
             IRegistrationComparer comparer;
             if (!TryGetComparer(out comparer))
             {
-                comparer = ContainerConfiguration.RootContainerRegestryKeyComparer.Value;
+                comparer = RootContainerConfiguration.RootContainerRegestryKeyComparer.Value;
             }
 
             Dictionary dictionary;
@@ -113,7 +116,7 @@
                 // Defaults		      
 		        if (instanceType == typeof(ILifetime) && stateType == typeof(EmptyState) && key == null)
 		        {
-                    return ContainerConfiguration.TransientLifetime.Value;
+                    return RootContainerConfiguration.TransientLifetime.Value;
 		        }
             }
 		    catch (InvalidOperationException ex)
@@ -191,7 +194,7 @@
                 return true;
             }
 
-            comparer = ContainerConfiguration.RootContainerRegestryKeyComparer.Value;
+            comparer = RootContainerConfiguration.RootContainerRegestryKeyComparer.Value;
             return true;
         }
     }

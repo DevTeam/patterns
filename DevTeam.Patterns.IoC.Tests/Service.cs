@@ -1,10 +1,13 @@
 ﻿namespace DevTeam.Patterns.IoC.Tests
 {
-	public interface IService
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public interface IService
 	{
 	    object State { get; }
 
-        IService Dependency { get; }
+        object Dependency { get; }
     }
 
     public interface IService2<T>
@@ -15,7 +18,7 @@
     {
         public object State { get; }
 
-        public IService Dependency { get; }
+        public object Dependency { get; }
     }
 
     class Service1WithState : IService
@@ -30,7 +33,7 @@
 
         public object State => _state;
 
-        public IService Dependency { get; }
+        public object Dependency { get; }
     }
 
     class Service1WithStateAndDependency : IService
@@ -47,7 +50,7 @@
 
         public object State => _state;
 
-        public IService Dependency => _dependency;
+        public object Dependency => _dependency;
     }
 
     class Service1WithStateAndDependencyFromAttr : IService
@@ -64,7 +67,7 @@
 
         public object State => _state;
 
-        public IService Dependency => _dependency;
+        public object Dependency => _dependency;
     }
 
     class Service1WithStateAndDependencyViaResolver : IService
@@ -81,6 +84,23 @@
 
         public object State => _state;
 
-        public IService Dependency => _dependency;
+        public object Dependency => _dependency;
+    }
+
+    class Service1WithStateAndEnumerableDependency: IService
+    {
+        private readonly int _state;
+        private readonly IEnumerable<IService> _dependency;
+
+        [Resolver]
+        public Service1WithStateAndEnumerableDependency([State] int state, [Dependency] IEnumerable<IService> dependency)
+        {
+            _state = state;
+            _dependency = dependency.ToList();
+        }
+
+        public object State => _state;
+
+        public object Dependency => _dependency;
     }
 }

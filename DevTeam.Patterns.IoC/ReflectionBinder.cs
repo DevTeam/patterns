@@ -70,7 +70,7 @@
             return container.Register(stateType, instanceType,
                 ctx =>
                 {
-                    var parameters = ctorParameters.Select(i => ResolveParameter(container, ctx.State, i)).ToArray();
+                    var parameters = ctorParameters.Select(parameter => ResolveParameter(ctx.ResolvingContainer, ctx.State, parameter)).ToArray();
                     return resolvingConstructor.Invoke(parameters);
                 },
                 key);

@@ -5,6 +5,7 @@
 
     using Contracts;
 
+    using Patterns.IoC;
     using Patterns.Reactive;
 
     using Platform.Reflection;
@@ -15,8 +16,8 @@
         private readonly IReflection _reflection;
 
         public TestRunner(
-            IReflection reflection,
-            ISubject<TestProgress> subject)
+            [Dependency] IReflection reflection,
+            [Dependency(Key = WellknownSubject.Simple)] ISubject<TestProgress> subject)
         {
             if (reflection == null) throw new ArgumentNullException(nameof(reflection));
             if (subject == null) throw new ArgumentNullException(nameof(subject));

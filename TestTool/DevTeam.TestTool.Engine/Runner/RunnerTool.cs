@@ -8,6 +8,7 @@
     using Contracts;
 
     using Patterns.Dispose;
+    using Patterns.IoC;
 
     internal class RunnerTool: ITool
     {
@@ -16,16 +17,16 @@
         private readonly IEventAggregator _eventAggregator;        
 
         public RunnerTool(
-            ISession session,
-            IEnumerable<ITestRunner> testRunners,
-            IEventAggregator eventAggregator)
+            [State] ISession session,
+            [Dependency] IEnumerable<ITestRunner> testRunners,
+            [Dependency] IEventAggregator eventAggregator)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
             if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));
 
             _session = session;
-            _testRunners = testRunners;
-            _eventAggregator = eventAggregator;            
+            _testRunners = testRunners.ToList();
+            _eventAggregator = eventAggregator;
         }
 
         public ToolType ToolType => ToolType.Runner;
@@ -42,4 +43,4 @@
         }
        
     }
-}
+}   
