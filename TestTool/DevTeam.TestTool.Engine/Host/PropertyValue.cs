@@ -2,9 +2,11 @@
 {
     using Contracts;
 
+    using Patterns.IoC;
+
     internal class PropertyValue : PropertyValueDescription, IPropertyValue
     {
-        public PropertyValue(PropertyValueDescription description)
+        public PropertyValue([State] PropertyValueDescription description)
             :base(description.Property, description.Value)
         {            
         }        

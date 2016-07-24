@@ -7,11 +7,14 @@
 
     using Contracts;
 
+    using Patterns.IoC;
+
     internal class CommandLineArgsToPropertiesConverter: IConverter<string[], IEnumerable<IPropertyValue>>
     {
         private static readonly Regex PropertyRegex = new Regex("-(?<name>.+)=(?<value>.+)", RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.IgnoreCase);
         private readonly IPropertyFactory _propertyFactory;
 
+        [Resolver]
         public CommandLineArgsToPropertiesConverter(
             IPropertyFactory propertyFactory)
         {

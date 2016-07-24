@@ -84,10 +84,10 @@
 
 	    public object Resolve(IResolver resolver, Type stateType, Type instanceType, object state, object key = null)
         {
-	        if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 	        if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 
+            resolver = resolver ?? this;
             var registrationDescription = new RegistrationDescription(stateType, instanceType, key, Disposable.Empty());
 	        foreach (var registration in GetResolverRegistrations(registrationDescription))
 	        {

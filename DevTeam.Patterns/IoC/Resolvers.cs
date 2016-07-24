@@ -24,22 +24,16 @@
 		public static IEnumerable<T> ResolveAll<T>(this IResolver resolver)
 		{
 			if (resolver == null) throw new ArgumentNullException(nameof(resolver));
-            
-		    return 
-                from key in resolver.Registrations
-		        where key.InstanceType == typeof(T) && key.StateType == typeof(EmptyState)
-		        select (T)resolver.Resolve(resolver, key.StateType, key.InstanceType, EmptyState.Shared, key.Key);
-		}
+
+            return resolver.Resolve<IEnumerable<T>>();
+        }
 
 		public static IEnumerable<T> ResolveAll<TState, T>(this IResolver resolver, Func<object, TState> stateSelector)
 		{
 			if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 			if (stateSelector == null) throw new ArgumentNullException(nameof(stateSelector));
 
-			return                
-                from registration in resolver.Registrations
-                where registration.InstanceType == typeof(T) && registration.StateType == typeof(TState)
-                select (T)resolver.Resolve(resolver, registration.StateType, registration.InstanceType, stateSelector(registration.Key), registration.Key);
+            return resolver.Resolve<StateSelector, IEnumerable<T>>(ctx => stateSelector(ctx.Registration.Key) as object);
 		}
 
 		public static async Task<T> ResolveAsync<T>(this IResolver resolver, object key = null)

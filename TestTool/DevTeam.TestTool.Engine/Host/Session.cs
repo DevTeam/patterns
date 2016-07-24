@@ -18,8 +18,8 @@
 
         public Session(
             IResolver<ISession, ITool> toolResolver, 
-            IEnumerable<IPropertyValue> properties,
-            IProperty toolProperty)
+            [State] IEnumerable<IPropertyValue> properties,
+            [Dependency(Key = WellknownProperty.Tool)] IProperty toolProperty)
         {            
             if (toolResolver == null) throw new ArgumentNullException(nameof(toolResolver));
             if (properties == null) throw new ArgumentNullException(nameof(properties));

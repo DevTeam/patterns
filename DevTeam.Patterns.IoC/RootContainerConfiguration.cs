@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     internal class RootContainerConfiguration: IConfiguration
     {
@@ -100,7 +101,7 @@
             // Resolve All as IEnumerable
             yield return container
                 .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyStateTypeAndKey)
-               .Register(
+                .Register(
                 typeof(EmptyState),
                 typeof(IEnumerable<>),
                 ctx =>
@@ -111,6 +112,23 @@
                         from key in ctx.Resolver.Registrations
                         where key.InstanceType == enumItemType && key.StateType == ctx.Registration.StateType
                         select ctx.Resolver.Resolve(ctx.Resolver, key.StateType, enumItemType, ctx.State, key.Key);
+                    return Activator.CreateInstance(enumType, source);
+                });
+
+            yield return container
+                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
+                .Register(
+                typeof(StateSelector),
+                typeof(IEnumerable<>),
+                ctx =>
+                {
+                    var enumItemType = ctx.ResolvingInstanceType.GenericTypeArguments[0];
+                    var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
+                    var source =
+                        from key in ctx.Resolver.Registrations
+                        where key.InstanceType == enumItemType
+                        let state = ((StateSelector)ctx.State)(ctx)
+                        select ctx.Resolver.Resolve(ctx.Resolver, key.StateType, enumItemType, state, key.Key);
                     return Activator.CreateInstance(enumType, source);
                 });
         }

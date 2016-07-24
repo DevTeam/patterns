@@ -33,7 +33,6 @@
 
         public object Resolve(IResolver resolver, Type stateType, Type instanceType, object state, object key = null)
         {
-            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
             if (state == null) throw new ArgumentNullException(nameof(state));

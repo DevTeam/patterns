@@ -62,6 +62,7 @@
     <Compile Include="IoC\ResolverAttribute.cs" />
     <Compile Include="IoC\Resolvers.cs" />
     <Compile Include="IoC\StateAttribute.cs" />
+    <Compile Include="IoC\StateSelector.cs" />
     <Compile Include="IoC\WellknownLifetime.cs" />
     <Compile Include="IoC\WellknownBinder.cs" />
     <Compile Include="IoC\WellknownRegistrationComparer.cs" />
