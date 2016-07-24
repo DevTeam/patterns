@@ -7,9 +7,9 @@
 
     public class ReflectionBinder: IBinder
     {
-        public IRegistration Bind(IContainer container, Type stateType, Type instanceType, Type implementationType,  object key = null)
+        public IRegistration Bind(IRegistry registry, Type stateType, Type instanceType, Type implementationType, object key = null)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
@@ -61,7 +61,7 @@
                 }
             }
 
-            return container.Register(stateType, instanceType,
+            return registry.Register(stateType, instanceType,
                 ctx =>
                 {
                     var parameters = ctorParameters.Select(parameter => ResolveParameter(ctx.Resolver, ctx.State, parameter)).ToArray();

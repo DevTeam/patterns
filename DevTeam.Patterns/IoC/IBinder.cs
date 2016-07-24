@@ -4,6 +4,6 @@
 
     public interface IBinder: IContext
     {
-        IRegistration Bind(IContainer container, Type stateType, Type instanceType, Type implementationType, object key = null);
+        IRegistration Bind(IRegistry registry, Type stateType, Type instanceType, Type implementationType, object key = null);
     }
 }
