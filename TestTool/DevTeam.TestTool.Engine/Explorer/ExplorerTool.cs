@@ -22,10 +22,10 @@
         private readonly IResolver<ISubject<Test>> _testSubjectResolver;
 
         public ExplorerTool(
-            IScheduler scheduler,
-            ISession session, 
+            [Dependency(Key = WellknownScheduler.PrivateSingleThread)] IScheduler scheduler,
+            [State] ISession session, 
             IEventAggregator eventAggregator,
-            IEnumerable<ITestSource> testsSources,
+            IResolver<ISession, IEnumerable<ITestSource>> testsSources,
             IResolver<ISubject<Test>> testSubjectResolver)
         {
             if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
@@ -37,7 +37,7 @@
             _scheduler = scheduler;
             _session = session;
             _eventAggregator = eventAggregator;
-            _testsSources = testsSources;
+            _testsSources = testsSources.Resolve(session);
             _testSubjectResolver = testSubjectResolver;
         }
 

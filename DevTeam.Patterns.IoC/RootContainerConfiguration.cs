@@ -70,27 +70,6 @@
             yield return container.Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(EmptyState), typeof(IContainer), ctx => new Container(new ContainerDescription(ctx.ResolvingContainer, ctx.Registration.Key)));
             yield return container.Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(object), typeof(IContainer), ctx => new Container(new ContainerDescription(ctx.ResolvingContainer, ctx.State)));
 
-            // Resolvers
-            yield return container
-                .Using<ILifetime>(WellknownLifetime.Singleton)
-                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
-                .Register(typeof(EmptyState), typeof(IResolver<>),
-                ctx =>
-                    {
-                        var resolverType = typeof(Resolver<>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0]);
-                        return Activator.CreateInstance(resolverType, ctx.ResolvingContainer, ctx.Registration.Key);
-                    });
-
-            yield return container
-                .Using<ILifetime>(WellknownLifetime.Singleton)
-                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
-                .Register(typeof(EmptyState), typeof(IResolver<,>),
-                ctx =>
-                    {
-                        var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0], ctx.ResolvingInstanceType.GenericTypeArguments[1]);
-                        return Activator.CreateInstance(resolverType, ctx.ResolvingContainer, ctx.Registration.Key);
-                    });
-
             // Default configuration equality comparer
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IEqualityComparer<IConfiguration>), ctx => new ConfigurationEqualityComparer());
         }

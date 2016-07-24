@@ -26,16 +26,8 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return
-                container                    
-                    .Register<ISession, ITool>(session => new ExplorerTool(
-                        container.Resolve<IScheduler>(WellknownScheduler.PrivateSingleThread),
-                        session, 
-                        container.Resolve<IEventAggregator>(), 
-                        container.ResolveAll<ISession, ITestSource>(name => session),
-                        container.Resolver<ISubject<Test>>()));
-
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ISession, ITestSource>(session => new TestSource(session , container.Resolve<IReflection>(), container.Resolve<IProperty>(WellknownProperty.Assembly)));
+            yield return container.Bind<ISession, ITool, ExplorerTool>();
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<ISession, ITestSource, TestSource>();
         }
     }
 }

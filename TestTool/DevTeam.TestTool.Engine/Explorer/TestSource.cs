@@ -5,6 +5,7 @@
 
     using Contracts;
 
+    using Patterns.IoC;
     using Patterns.Reactive;
 
     using Platform.Reflection;
@@ -17,9 +18,9 @@
         private readonly IObservable<Test> _testSource;
 
         public TestSource(
-            ISession session, 
+            [State] ISession session, 
             IReflection reflection,
-            IProperty assemblyProperty)
+            [Dependency(Key = WellknownProperty.Assembly)] IProperty assemblyProperty)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
             if (reflection == null) throw new ArgumentNullException(nameof(reflection));
