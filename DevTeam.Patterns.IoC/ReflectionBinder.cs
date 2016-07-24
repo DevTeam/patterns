@@ -64,15 +64,15 @@
             return container.Register(stateType, instanceType,
                 ctx =>
                 {
-                    var parameters = ctorParameters.Select(parameter => ResolveParameter(ctx.ResolvingContainer, ctx.State, parameter)).ToArray();
+                    var parameters = ctorParameters.Select(parameter => ResolveParameter(ctx.Resolver, ctx.State, parameter)).ToArray();
                     return resolvingConstructor.Invoke(parameters);
                 },
                 key);
         }
 
-        private static object ResolveParameter(IContainer container, object state, CtorParameter parameter)
+        private static object ResolveParameter(IResolver resolver, object state, CtorParameter parameter)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
             if (parameter == null) throw new ArgumentNullException(nameof(parameter));
 
             if (parameter.State != null)
@@ -83,7 +83,8 @@
             if (parameter.Dependency != null)
             {
                 var dependency = parameter.Dependency;
-                return container.Resolve(
+                return resolver.Resolve(
+                    resolver,
                     dependency.StateType ?? typeof(EmptyState),
                     dependency.InstanceType ?? parameter.Parameter.ParameterType,
                     dependency.State ?? EmptyState.Shared,

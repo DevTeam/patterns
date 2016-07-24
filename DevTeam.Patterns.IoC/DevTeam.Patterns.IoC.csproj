@@ -59,7 +59,6 @@
     <Compile Include="PerThreadLifetime.cs" />
     <Compile Include="PerResolveLifetime.cs" />
     <Compile Include="ControlledLifetime.cs" />
-    <Compile Include="ContainerConfiguration.cs" />
     <Compile Include="RootContainerConfiguration.cs" />
     <Compile Include="RegistrationDescription.cs" />
     <Compile Include="PatternKeyRegistrationComparer.cs" />

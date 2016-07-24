@@ -11,7 +11,7 @@
 	{
         private static readonly ComparerForRegistrationComparer ComparerForRegistrationComparer = new ComparerForRegistrationComparer();
         private readonly SortedDictionary<IRegistrationComparer, Dictionary> _factories = new SortedDictionary<IRegistrationComparer, Dictionary>(ComparerForRegistrationComparer);
-		private readonly IContainer _parentContainer;
+		private readonly IResolver _parentResolver;
         private readonly IDisposable _disposable = Disposable.Empty();
 
         /// <summary>
@@ -23,7 +23,6 @@
             Key = key;
             _disposable = 
                 RootContainerConfiguration.Shared.CreateRegistrations(this)
-                .Concat(ContainerConfiguration.Shared.CreateRegistrations(this))
                 .ToCompositeDisposable();
         }
 
@@ -32,17 +31,16 @@
             if (containerDescription == null) throw new ArgumentNullException(nameof(containerDescription));
 
             Key = containerDescription.Key;
-            _parentContainer = containerDescription.ParentContainer;
-            _disposable = ContainerConfiguration.Shared.CreateRegistrations(this).ToCompositeDisposable();
+            _parentResolver = containerDescription.ParentResolver;
         }
 
         public object Key { get; }
 
-	    public IEnumerable<IRegistration> Registrations => _factories.SelectMany(i => i.Value.Keys).Distinct().Union(_parentContainer != null ? _parentContainer.Registrations : Enumerable.Empty<IRegistration>());
+	    public IEnumerable<IRegistration> Registrations => _factories.SelectMany(i => i.Value.Keys).Distinct().Union(_parentResolver != null ? _parentResolver.Registrations : Enumerable.Empty<IRegistration>());
 
 	    public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, object key = null)
 		{
-		    if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+	        if (stateType == null) throw new ArgumentNullException(nameof(stateType));
 		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 		    if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
@@ -66,7 +64,7 @@
             {
                 if (instanceType != typeof(ILifetime))
 	            {
-	                var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
+	                var lifetime = (ILifetime)Resolve(this, typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
                     dictionary.Add(registration, ctx => lifetime.Create(ctx, factoryMethod));
                     resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(registration), lifetime)));
 	            }
@@ -84,9 +82,10 @@
 	        return registration;
 		}
 
-	    public object Resolve(Type stateType, Type instanceType, object state, object key = null)
+	    public object Resolve(IResolver resolver, Type stateType, Type instanceType, object state, object key = null)
         {
-            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+	        if (resolver == null) throw new ArgumentNullException(nameof(resolver));
+	        if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 
             var registrationDescription = new RegistrationDescription(stateType, instanceType, key, Disposable.Empty());
@@ -97,7 +96,7 @@
 	                Func<IResolvingContext, object> factory;
 	                if (dictionary.Value.TryGetValue(registration, out factory))
                     {
-                        using (var ctx = new ResolvingContext(this, registration, instanceType, state))
+                        using (var ctx = new ResolvingContext(resolver, registration, instanceType, state))
                         {
                             return factory(ctx);
                         }
@@ -108,9 +107,9 @@
 	        Exception innerException = null;
 		    try
 		    {
-		        if (_parentContainer != null)
+		        if (_parentResolver != null)
 		        {
-		            return _parentContainer.Resolve(stateType, instanceType, state, key);
+		            return _parentResolver.Resolve(resolver, stateType, instanceType, state, key);
 		        }
 		        
                 // Defaults		      
@@ -186,7 +185,7 @@
             var comparers = (
                 from registration in Registrations
                 where registration.InstanceType == typeof(IRegistrationComparer) && registration.StateType == typeof(EmptyState) && registration.Key == null
-                select (IRegistrationComparer)Resolve(registration.StateType, registration.InstanceType, EmptyState.Shared, registration.Key)).ToList();
+                select (IRegistrationComparer)Resolve(this, registration.StateType, registration.InstanceType, EmptyState.Shared, registration.Key)).ToList();
 
             if (comparers.Count == 1)
             {

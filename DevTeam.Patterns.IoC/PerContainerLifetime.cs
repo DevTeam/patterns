@@ -25,7 +25,7 @@
             {
                 if (ReferenceEquals(null, other)) return false;
                 if (ReferenceEquals(this, other)) return true;
-                return Equals(_ctx.ResolvingContainer, other._ctx.ResolvingContainer) && Equals(_ctx.Registration, other._ctx.Registration) && _ctx.ResolvingInstanceType == other._ctx.ResolvingInstanceType && Equals(_ctx.State, other._ctx.State);
+                return Equals(_ctx.Resolver, other._ctx.Resolver) && Equals(_ctx.Registration, other._ctx.Registration) && _ctx.ResolvingInstanceType == other._ctx.ResolvingInstanceType && Equals(_ctx.State, other._ctx.State);
             }
 
             public override bool Equals(object obj)
@@ -40,7 +40,7 @@
             {
                 unchecked
                 {
-                    var hashCode = _ctx.ResolvingContainer.GetHashCode();
+                    var hashCode = _ctx.Resolver.GetHashCode();
                     hashCode = (hashCode * 397) ^ _ctx.Registration.GetHashCode();
                     hashCode = (hashCode * 397) ^ _ctx.ResolvingInstanceType.GetHashCode();
                     hashCode = (hashCode * 397) ^ (_ctx.State?.GetHashCode() ?? 0);

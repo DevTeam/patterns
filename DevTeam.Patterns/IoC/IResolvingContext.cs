@@ -10,7 +10,7 @@
 
         IRegistration Registration { get; }
 
-        IContainer ResolvingContainer { get; }
+        IResolver Resolver { get; }
 
         Type ResolvingInstanceType { get; }
 

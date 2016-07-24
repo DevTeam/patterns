@@ -65,7 +65,7 @@ namespace DevTeam.Patterns.IoC.Tests
 			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 			
 			// Then
-			var resolvedInstance = target.Resolve(typeof(Service1State), typeof(IService), _service1State, "myService1");
+			var resolvedInstance = target.Resolve(target, typeof(Service1State), typeof(IService), _service1State, "myService1");
 			resolvedInstance.ShouldBe(_service1.Object);
 		}
 
@@ -76,7 +76,7 @@ namespace DevTeam.Patterns.IoC.Tests
 			var target = CreateTarget();
 
 			// When
-			var childContainer = (IContainer)target.Resolve(typeof(EmptyState), typeof(IContainer), EmptyState.Shared, "child");
+			var childContainer = (IContainer)target.Resolve(target, typeof(EmptyState), typeof(IContainer), EmptyState.Shared, "child");
 
 			// Then
 			childContainer.ShouldBeAssignableTo<IContainer>();
@@ -90,7 +90,7 @@ namespace DevTeam.Patterns.IoC.Tests
             var target = CreateTarget();
 
             // When
-            var childContainer = (IContainer)target.Resolve(typeof(object), typeof(IContainer), "child");
+            var childContainer = (IContainer)target.Resolve(target, typeof(object), typeof(IContainer), "child");
 
             // Then
             childContainer.ShouldBeAssignableTo<IContainer>();
@@ -104,7 +104,7 @@ namespace DevTeam.Patterns.IoC.Tests
 			var target = CreateTarget();
 
 			// When
-			var childContainer = (IContainer)target.Resolve(typeof(EmptyState), typeof(IContainer), EmptyState.Shared, "child123");
+			var childContainer = (IContainer)target.Resolve(target, typeof(EmptyState), typeof(IContainer), EmptyState.Shared, "child123");
 
 			// Then
 			childContainer.Key.ShouldBe("child123");
@@ -118,7 +118,7 @@ namespace DevTeam.Patterns.IoC.Tests
 			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
 			// When
-			var instance = target.Resolve(typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+			var instance = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
 			// Then
 			instance.ShouldBe(_service1.Object);
@@ -132,7 +132,7 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Register(typeof(Service1State), typeof(IService2<>), ctx => _service3.Object, "myService2");
 
             // When
-            var instance = target.Resolve(typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
+            var instance = target.Resolve(target, typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
 
             // Then
             instance.ShouldBe(_service3.Object);
@@ -146,7 +146,7 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Register(typeof(Service1State), typeof(IService2<>), ctx => _service3.Object, "myService2");
 
             // When
-            var instance = target.Resolve(typeof(Service1State), typeof(IService2<>), new Service1State(), "myService2");
+            var instance = target.Resolve(target, typeof(Service1State), typeof(IService2<>), new Service1State(), "myService2");
 
             // Then
             instance.ShouldBe(_service3.Object);
@@ -159,7 +159,7 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Register(typeof(Service1State), typeof(IService2<int>), ctx => _service3.Object, "myService2");
 
             // When
-            var instance = target.Resolve(typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
+            var instance = target.Resolve(target, typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
 
             // Then
             instance.ShouldBe(_service3.Object);
@@ -174,7 +174,7 @@ namespace DevTeam.Patterns.IoC.Tests
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new");
-			var instance = childContainer.Resolve(typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+			var instance = childContainer.Resolve(childContainer, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
 			// Then
 			instance.ShouldBe(_service1.Object);
@@ -189,7 +189,7 @@ namespace DevTeam.Patterns.IoC.Tests
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
-			var instance = childContainer.Resolve(typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+			var instance = childContainer.Resolve(childContainer, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
 			// Then
 			instance.ShouldBe(_service1.Object);
@@ -371,7 +371,7 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Using(comparer.Object).Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
             // When
-            var instance = target.Resolve(typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+            var instance = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
             // Then
             instance.ShouldBe(_service1.Object);
@@ -387,7 +387,7 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Using<IRegistrationComparer>(WellknownRegistrationComparer.PatternKey).Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "a+.");
 
             // When
-            var instance = target.Resolve(typeof(Service1State), typeof(IService), new Service1State(), "abc");
+            var instance = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "abc");
 
             // Then
             instance.ShouldBe(_service1.Object);            
@@ -408,7 +408,7 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Register(typeof(EmptyState), typeof(IService), ctx => service4, "myService4");
 
             // When
-            var resolvedInstance = ((IEnumerable<IService>)target.Resolve(typeof(Service1State), typeof(IEnumerable<IService>), _service1State, null)).ToList();
+            var resolvedInstance = ((IEnumerable<IService>)target.Resolve(target, typeof(Service1State), typeof(IEnumerable<IService>), _service1State, null)).ToList();
 
             // Then
             resolvedInstance.ShouldBeSubsetOf(new [] { service1, service2, service3 });

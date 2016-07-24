@@ -34,7 +34,7 @@
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return (IContextContainer<TContext>)container.Resolve(typeof(ContextContainerState), typeof(IContextContainer<TContext>), new ContextContainerState(container, context));
+            return (IContextContainer<TContext>)container.Resolve(container, typeof(ContextContainerState), typeof(IContextContainer<TContext>), new ContextContainerState(container, context));
         }
     }    
 }

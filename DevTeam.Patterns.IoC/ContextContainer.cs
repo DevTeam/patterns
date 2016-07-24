@@ -31,15 +31,16 @@
             }
         }
 
-        public object Resolve(Type stateType, Type instanceType, object state, object key = null)
+        public object Resolve(IResolver resolver, Type stateType, Type instanceType, object state, object key = null)
         {
+            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
             if (state == null) throw new ArgumentNullException(nameof(state));
 
             using (_state.TargetContainer.Register(() => (TContext)_state.Context))
             {
-                return _state.TargetContainer.Resolve(stateType, instanceType, state, key);
+                return _state.TargetContainer.Resolve(resolver, stateType, instanceType, state, key);
             }
         }
 

@@ -11,14 +11,14 @@
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
-            return (T)resolver.Resolve(typeof(TState), typeof(T), state, key);
+            return (T)resolver.Resolve(resolver, typeof(TState), typeof(T), state, key);
         }
 
         public static T Resolve<T>(this IResolver resolver, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));            
 
-            return (T)resolver.Resolve(typeof(EmptyState), typeof(T), EmptyState.Shared, key);            
+            return (T)resolver.Resolve(resolver, typeof(EmptyState), typeof(T), EmptyState.Shared, key);            
         }
 
 		public static IEnumerable<T> ResolveAll<T>(this IResolver resolver)
@@ -28,7 +28,7 @@
 		    return 
                 from key in resolver.Registrations
 		        where key.InstanceType == typeof(T) && key.StateType == typeof(EmptyState)
-		        select (T)resolver.Resolve(key.StateType, key.InstanceType, EmptyState.Shared, key.Key);
+		        select (T)resolver.Resolve(resolver, key.StateType, key.InstanceType, EmptyState.Shared, key.Key);
 		}
 
 		public static IEnumerable<T> ResolveAll<TState, T>(this IResolver resolver, Func<object, TState> stateSelector)
@@ -39,7 +39,7 @@
 			return                
                 from registration in resolver.Registrations
                 where registration.InstanceType == typeof(T) && registration.StateType == typeof(TState)
-                select (T)resolver.Resolve(registration.StateType, registration.InstanceType, stateSelector(registration.Key), registration.Key);
+                select (T)resolver.Resolve(resolver, registration.StateType, registration.InstanceType, stateSelector(registration.Key), registration.Key);
 		}
 
 		public static async Task<T> ResolveAsync<T>(this IResolver resolver, object key = null)
