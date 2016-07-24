@@ -44,12 +44,7 @@
 		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
 		    if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
-            IRegistrationComparer comparer;
-            if (!TryGetComparer(out comparer))
-            {
-                comparer = RootContainerConfiguration.RootContainerRegestryKeyComparer.Value;
-            }
-
+            var comparer = GetComparer();
             Dictionary dictionary;
             if (!_factories.TryGetValue(comparer, out dictionary))
             {
@@ -117,6 +112,11 @@
 		        {
                     return RootContainerConfiguration.TransientLifetime.Value;
 		        }
+
+                if (instanceType == typeof(IRegistrationComparer) && stateType == typeof(EmptyState) && key == null)
+                {
+                    return RootContainerConfiguration.RootContainerRegestryKeyComparer.Value;
+                }                
             }
 		    catch (InvalidOperationException ex)
 		    {
@@ -180,21 +180,9 @@
             }
         }
 
-        private bool TryGetComparer(out IRegistrationComparer comparer)
+        private IRegistrationComparer GetComparer()
         {
-            var comparers = (
-                from registration in Registrations
-                where registration.InstanceType == typeof(IRegistrationComparer) && registration.StateType == typeof(EmptyState) && registration.Key == null
-                select (IRegistrationComparer)Resolve(this, registration.StateType, registration.InstanceType, EmptyState.Shared, registration.Key)).ToList();
-
-            if (comparers.Count == 1)
-            {
-                comparer = comparers[0];
-                return true;
-            }
-
-            comparer = RootContainerConfiguration.RootContainerRegestryKeyComparer.Value;
-            return true;
+            return (IRegistrationComparer)Resolve(this, typeof(EmptyState), typeof(IRegistrationComparer), EmptyState.Shared, null);            
         }
     }
 }
