@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     public static class Resolvers
@@ -21,7 +20,16 @@
             return (T)resolver.Resolve(resolver, typeof(EmptyState), typeof(T), EmptyState.Shared, key);            
         }
 
-		public static IEnumerable<T> ResolveAll<T>(this IResolver resolver)
+        public static object Resolve(this IResolver resolver, Type stateType, Type instanceType, object state, object key = null)
+        {
+            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
+            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+
+            return resolver.Resolve(null, stateType, instanceType, state, key);
+        }
+
+        public static IEnumerable<T> ResolveAll<T>(this IResolver resolver)
 		{
 			if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
