@@ -2,6 +2,7 @@
 
 namespace DevTeam.Patterns.IoC.Tests
 {
+    using System;
     using System.Linq;
 	using Moq;
 
@@ -412,6 +413,66 @@ namespace DevTeam.Patterns.IoC.Tests
 
             // Then
             resolvedInstance.ShouldBeSubsetOf(new [] { service1, service2, service3 });
+        }
+
+        [Test]
+        public void ShouldProvideContextWhenResolve()
+        {
+            // Given
+            var target = CreateTarget();
+            var child = target.CreateChildContainer();
+            var service = new Service2Int();
+            target.Register(typeof(int), typeof(IService2<>),
+                ctx =>
+                {
+                    ctx.ShouldNotBeNull();
+                    ctx.Registration.Key.ShouldBe("abc");
+                    ctx.Registration.InstanceType.ShouldBe(typeof(IService2<>));
+                    ctx.Registration.StateType.ShouldBe(typeof(int));
+                    ctx.PerThreadResolvingId.ShouldNotBe(Guid.Empty);
+                    ctx.ResolvingId.ShouldNotBe(Guid.Empty);
+                    ctx.ResolvingInstanceType.ShouldBe(typeof(IService2<int>));
+                    ctx.State.ShouldBe(1);
+                    ctx.Resolver.ShouldBe(child);
+                    return service;
+                },
+                "abc");
+
+            // When
+            child.Resolve<int, IService2<int>>(1, "abc");
+
+            // Then            
+        }
+
+        [Test]
+        public void ShouldProvideContextWhenResolveFromResolve()
+        {
+            // Given
+            var target = CreateTarget();
+            var child1 = target.CreateChildContainer("child1");
+            var child2 = child1.CreateChildContainer("child2");
+            var service = new Service1();
+            child1.Bind(typeof(string), typeof(IService), typeof(Service1WithStateAndDependency), "abc");
+            target.Register(typeof(EmptyState), typeof(IService),
+                ctx =>
+                {
+                    ctx.ShouldNotBeNull();
+                    ctx.Registration.Key.ShouldBe("dep");
+                    ctx.Registration.InstanceType.ShouldBe(typeof(IService));
+                    ctx.Registration.StateType.ShouldBe(typeof(EmptyState));
+                    ctx.PerThreadResolvingId.ShouldNotBe(Guid.Empty);
+                    ctx.ResolvingId.ShouldNotBe(Guid.Empty);
+                    ctx.ResolvingInstanceType.ShouldBe(typeof(IService));
+                    ctx.State.ShouldBe(EmptyState.Shared);
+                    ctx.Resolver.ShouldBe(child2);
+                    return service;
+                },
+                "dep");
+
+            // When
+            child2.Resolve<string, IService>("state", "abc");
+
+            // Then            
         }
 
         private static Container CreateTarget(object name = null)
