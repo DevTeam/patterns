@@ -369,7 +369,7 @@ namespace DevTeam.Patterns.IoC.Tests
             comparer.Setup(i => i.GetHashCode(It.IsAny<IRegistration>())).Returns<IRegistration>(key => key.GetHashCode());
             comparer.Setup(i => i.Equals(It.IsAny<IRegistration>(), It.IsAny<IRegistration>())).Returns<IRegistration, IRegistration>((key1, key2) => key1.Equals(key2));
             comparer.SetupGet(i => i.Key).Returns(WellknownRegistrationComparer.PatternKey);
-            target.Using(comparer.Object).Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
+            target.Using(comparer.Object, typeof(IRegistrationComparer)).Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
             // When
             var instance = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "myService1");

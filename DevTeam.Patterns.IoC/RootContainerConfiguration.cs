@@ -62,10 +62,11 @@
             yield return container.Register(() => ReflectionBinder.Value, WellknownBinder.Reflection);
 
             // Context container
-            yield return container.Register(typeof(ContextContainerState), typeof(IContextContainer<>),
+            yield return container.Register(typeof(ContextContainerState), typeof(IContextContainer),
                 ctx =>
                 {
-                    var resolverType = typeof(ContextContainer<>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0]);
+                    var state = (ContextContainerState)ctx.State;
+                    var resolverType = typeof(ContextContainer<>).MakeGenericType(state.ContextType);
                     return Activator.CreateInstance(resolverType, ctx.State);
                 });
 

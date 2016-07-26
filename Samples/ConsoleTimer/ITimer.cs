@@ -2,7 +2,7 @@ namespace ConsoleTimer
 {
     using System;
 
-    internal interface ITimer: IObservable<DateTimeOffset>
+    public interface ITimer: IObservable<DateTimeOffset>
     {
     }
 }

@@ -1,0 +1,21 @@
+﻿{
+    "Dependencies": [
+        { "Type": "DevTeam.Platform.System.SystemContainerConfiguration, DevTeam.Platform.System.dotNet" }        
+    ],
+
+    "Scopes": [
+        {
+            "Binds": [
+                {
+                    "State": "System.TimeSpan",
+                    "Instance": "ConsoleTimer.ITimer, ConsoleTimer",
+                    "Implementation": "ConsoleTimer.Timer, ConsoleTimer"
+                },
+                {
+                    "Instance": "ConsoleTimer.ITimePublisher, ConsoleTimer",
+                    "Implementation": "ConsoleTimer.TimePublisher, ConsoleTimer"
+                }
+            ]
+        }
+    ]
+}

@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal interface ITimePublisher: IDisposable
+    public interface ITimePublisher: IDisposable
     {        
     }
 }

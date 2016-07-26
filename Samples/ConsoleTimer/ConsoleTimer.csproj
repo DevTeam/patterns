@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -40,17 +44,24 @@
     <Compile Include="ITimer.cs" />
     <Compile Include="TimePublisher.cs" />
     <Compile Include="Timer.cs" />
-    <Compile Include="ConsoleTimerConfiguration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="ConsoleTimerContainerConfiguration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DevTeam.Patterns.Dispose\DevTeam.Patterns.Dispose.csproj">
       <Project>{fe61929a-6f78-40b6-8929-62cfb62e3be6}</Project>
       <Name>DevTeam.Patterns.Dispose</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Patterns.IoC.Configuration\DevTeam.Patterns.IoC.Configuration.csproj">
+      <Project>{38ce547c-7d03-4d51-9c0b-450917a7d0ca}</Project>
+      <Name>DevTeam.Patterns.IoC.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
       <Project>{35055d77-822c-4d69-8df2-722b42cc405a}</Project>

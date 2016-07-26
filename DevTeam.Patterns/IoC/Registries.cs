@@ -25,16 +25,25 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            return container.Using(container.Resolve<TContext>(contextKey));
+            return container.Using(container.Resolve<TContext>(contextKey), typeof(TContext));
         }
 
-        public static IContainer Using<TContext>(this IContainer container, TContext context)
-            where TContext : IContext
+        public static IContainer Using(this IContainer container, Type contextType, object contextKey = null)
+        {
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (contextType == null) throw new ArgumentNullException(nameof(contextType));
+
+            var context = (IContext)container.Resolve(typeof(EmptyState), contextType, contextKey);
+            return (IContainer)container.Resolve(container, typeof(ContextContainerState), typeof(IContextContainer), new ContextContainerState(container, context, contextType));
+        }
+
+        public static IContainer Using(this IContainer container, IContext context, Type contextType)            
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (context == null) throw new ArgumentNullException(nameof(context));
+            if (contextType == null) throw new ArgumentNullException(nameof(contextType));
 
-            return (IContextContainer<TContext>)container.Resolve(container, typeof(ContextContainerState), typeof(IContextContainer<TContext>), new ContextContainerState(container, context));
+            return (IContainer)container.Resolve(container, typeof(ContextContainerState), typeof(IContextContainer), new ContextContainerState(container, context, contextType));
         }
     }    
 }

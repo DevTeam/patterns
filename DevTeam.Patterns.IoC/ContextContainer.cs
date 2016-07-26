@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    internal class ContextContainer<TContext>: IContextContainer<TContext>
+    internal class ContextContainer<TContext>: IContextContainer
         where TContext: IContext
     {
         private readonly ContextContainerState _state;

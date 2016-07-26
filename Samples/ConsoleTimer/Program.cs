@@ -1,6 +1,9 @@
 ﻿namespace ConsoleTimer
 {
+    using System.IO;
+
     using DevTeam.Patterns.IoC;
+    using DevTeam.Patterns.IoC.Configuration;
     using DevTeam.Platform.System;
 
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -9,9 +12,10 @@
         public static void Main()
         {
             // Create root IoC container
-            using (var container = new Container())
+            using (var container = new Container())            
+            using (new ConfigurationsContainerConfiguration().Apply(container))
             // Apply configuration
-            using (new ConsoleTimerConfiguration().Apply(container))
+            using (container.Resolve<string, IConfiguration>(File.ReadAllText("ConsoleTimerContainerConfiguration.json"), WellknownConfigurations.Json).Apply(container))
             {
                 // Create console
                 var console = container.Resolve<IConsole>();
@@ -21,8 +25,8 @@
                 using (container.Resolve<ITimePublisher>())
                 {
                     // Wait for any key
-                    console.ReadLine();                    
-                }                
+                    console.ReadLine();
+                }
             }
         }
     }
