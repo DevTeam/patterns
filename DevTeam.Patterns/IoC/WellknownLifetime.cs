@@ -13,12 +13,12 @@
         Singleton,
 
         /// <summary>
-        /// Disposable instances will be disposed if a regestry is removed or a container is destroed.
+        /// Disposable contracts will be disposed if a regestry is removed or a container is destroed.
         /// </summary>
         Controlled,
 
         /// <summary>
-        /// Shared for all resolves. Disposable instances will be disposed if a regestry is removed or a container is destroed.
+        /// Shared for all resolves. Disposable contracts will be disposed if a regestry is removed or a container is destroed.
         /// </summary>
         ControlledSingleton,
 
@@ -28,7 +28,7 @@
         PerContainer,
 
         /// <summary>
-        /// Shared for all resolves for the one container and self controlled. Disposable instances will be disposed if a regestry is removed or a container is destroed.
+        /// Shared for all resolves for the one container and self controlled. Disposable contracts will be disposed if a regestry is removed or a container is destroed.
         /// </summary>
         ControlledPerContainer,
 
@@ -38,7 +38,7 @@
         PerResolveLifetime,
 
         /// <summary>
-        /// Shared for all resolves for the one resolving. Disposable instances will be disposed if a regestry is removed or a container is destroed.
+        /// Shared for all resolves for the one resolving. Disposable contracts will be disposed if a regestry is removed or a container is destroed.
         /// </summary>
         ControlledPerResolveLifetime,
 
@@ -48,7 +48,7 @@
         PerThreadLifetime,
 
         /// <summary>
-        /// Shared for all resolves for the one thread. Disposable instances will be disposed if a regestry is removed or a container is destroed.
+        /// Shared for all resolves for the one thread. Disposable contracts will be disposed if a regestry is removed or a container is destroed.
         /// </summary>
         ControlledPerThreadLifetime
     }

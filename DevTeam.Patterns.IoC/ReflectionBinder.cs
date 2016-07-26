@@ -7,11 +7,11 @@
 
     public class ReflectionBinder: IBinder
     {
-        public IRegistration Bind(IRegistry registry, Type stateType, Type instanceType, Type implementationType, object key = null)
+        public IRegistration Bind(IRegistry registry, Type stateType, Type contractType, Type implementationType, object key = null)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
 
             ConstructorInfo resolvingConstructor;
@@ -61,7 +61,7 @@
                 }
             }
 
-            return registry.Register(stateType, instanceType,
+            return registry.Register(stateType, contractType,
                 ctx =>
                 {
                     var parameters = ctorParameters.Select(parameter => ResolveParameter(ctx.Resolver, ctx.State, parameter)).ToArray();
@@ -86,7 +86,7 @@
                 return resolver.Resolve(
                     resolver,
                     dependency.StateType ?? typeof(EmptyState),
-                    dependency.InstanceType ?? parameter.Parameter.ParameterType,
+                    dependency.ContractType ?? parameter.Parameter.ParameterType,
                     dependency.State ?? EmptyState.Shared,
                     dependency.Key);
             }

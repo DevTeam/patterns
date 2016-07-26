@@ -6,8 +6,8 @@ namespace DevTeam.Patterns.IoC
 
         public bool Equals(IRegistration x, IRegistration y)
         {
-            if (x.InstanceType == typeof(IContainer) && x.StateType == typeof(EmptyState)
-                && y.InstanceType == typeof(IContainer) && y.StateType == typeof(EmptyState))
+            if (x.ContractType == typeof(IContainer) && x.StateType == typeof(EmptyState)
+                && y.ContractType == typeof(IContainer) && y.StateType == typeof(EmptyState))
             {
                 return true;
             }
@@ -17,12 +17,12 @@ namespace DevTeam.Patterns.IoC
 
         public int GetHashCode(IRegistration obj)
         {
-            if(obj.InstanceType == typeof(IContainer) && obj.StateType == typeof(EmptyState))
+            if(obj.ContractType == typeof(IContainer) && obj.StateType == typeof(EmptyState))
             {
                 unchecked
                 {
                     var hashCode = obj.StateType.GetHashCode();
-                    hashCode = (hashCode * 397) ^ obj.InstanceType.GetHashCode();                        
+                    hashCode = (hashCode * 397) ^ obj.ContractType.GetHashCode();                        
                     return hashCode;
                 }
             }

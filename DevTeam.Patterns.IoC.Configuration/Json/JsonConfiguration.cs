@@ -51,7 +51,7 @@
             return 
                 from bindElement in scopeElement?.Binds ?? Enumerable.Empty<BindElement>()
                 let stateType = bindElement.State != null ? Type.GetType(bindElement.State, true) : typeof(EmptyState)
-                let instanceType = Type.GetType(bindElement.Instance, true)
+                let contractType = Type.GetType(bindElement.Contract, true)
                 let implementationType = Type.GetType(bindElement.Implementation, true)
                 let key = GetKey(bindElement.Key)
                 let usingContainer = (
@@ -59,7 +59,7 @@
                     let usingType = Type.GetType(usingElement.Type, true)
                     let usingKey = GetKey(usingElement.Key)
                     select new { usingType, usingKey }).Aggregate(container, (usingContainer, usingInfo) => usingContainer.Using(usingInfo.usingType, usingInfo.usingKey))
-                select usingContainer.Bind(stateType, instanceType, implementationType, key);
+                select usingContainer.Bind(stateType, contractType, implementationType, key);
         }
 
         private object GetKey(KeyElement keyElement)

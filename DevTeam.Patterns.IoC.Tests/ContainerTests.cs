@@ -39,7 +39,7 @@ namespace DevTeam.Patterns.IoC.Tests
 			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
 			// Then
-			target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService) && "myService1".Equals(i.Key));
+			target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
 		}
 
 		[Test]
@@ -53,7 +53,7 @@ namespace DevTeam.Patterns.IoC.Tests
 			registrationToken.Dispose();
 
 			// Then
-			target.Registrations.ShouldNotContain(i => i.StateType == typeof(Service1State) && i.InstanceType == typeof(IService) && "myService1".Equals(i.Key));
+			target.Registrations.ShouldNotContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
 		}
 
 		[Test]
@@ -66,8 +66,8 @@ namespace DevTeam.Patterns.IoC.Tests
 			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 			
 			// Then
-			var resolvedInstance = target.Resolve(target, typeof(Service1State), typeof(IService), _service1State, "myService1");
-			resolvedInstance.ShouldBe(_service1.Object);
+			var resolvedContract = target.Resolve(target, typeof(Service1State), typeof(IService), _service1State, "myService1");
+			resolvedContract.ShouldBe(_service1.Object);
 		}
 
 		[Test]
@@ -119,10 +119,10 @@ namespace DevTeam.Patterns.IoC.Tests
 			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
 			// When
-			var instance = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+			var contract = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
 			// Then
-			instance.ShouldBe(_service1.Object);
+			contract.ShouldBe(_service1.Object);
 		}
 
         [Test]
@@ -133,10 +133,10 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Register(typeof(Service1State), typeof(IService2<>), ctx => _service3.Object, "myService2");
 
             // When
-            var instance = target.Resolve(target, typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
+            var contract = target.Resolve(target, typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
 
             // Then
-            instance.ShouldBe(_service3.Object);
+            contract.ShouldBe(_service3.Object);
         }
 
         [Test]
@@ -147,10 +147,10 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Register(typeof(Service1State), typeof(IService2<>), ctx => _service3.Object, "myService2");
 
             // When
-            var instance = target.Resolve(target, typeof(Service1State), typeof(IService2<>), new Service1State(), "myService2");
+            var contract = target.Resolve(target, typeof(Service1State), typeof(IService2<>), new Service1State(), "myService2");
 
             // Then
-            instance.ShouldBe(_service3.Object);
+            contract.ShouldBe(_service3.Object);
         }
 
         public void ShouldResolveGenericWhenDefGeneric()
@@ -160,10 +160,10 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Register(typeof(Service1State), typeof(IService2<int>), ctx => _service3.Object, "myService2");
 
             // When
-            var instance = target.Resolve(target, typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
+            var contract = target.Resolve(target, typeof(Service1State), typeof(IService2<int>), new Service1State(), "myService2");
 
             // Then
-            instance.ShouldBe(_service3.Object);
+            contract.ShouldBe(_service3.Object);
         }
 
         [Test]
@@ -175,10 +175,10 @@ namespace DevTeam.Patterns.IoC.Tests
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new");
-			var instance = childContainer.Resolve(childContainer, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+			var contract = childContainer.Resolve(childContainer, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
 			// Then
-			instance.ShouldBe(_service1.Object);
+			contract.ShouldBe(_service1.Object);
 		}
 
 		[Test]
@@ -190,10 +190,10 @@ namespace DevTeam.Patterns.IoC.Tests
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
-			var instance = childContainer.Resolve(childContainer, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+			var contract = childContainer.Resolve(childContainer, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
 			// Then
-			instance.ShouldBe(_service1.Object);
+			contract.ShouldBe(_service1.Object);
 		}
 
 		[Test]
@@ -205,12 +205,12 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Register(typeof(Service1State), typeof(IService), ctx => _service2.Object, "myService2");
 
             // When
-            var instances = target.ResolveAll<Service1State, IService>(name => new Service1State()).ToList();
+            var contracts = target.ResolveAll<Service1State, IService>(name => new Service1State()).ToList();
 
 			// Then
-			instances.Count.ShouldBe(2);
-			instances.ShouldContain(_service1.Object);
-            instances.ShouldContain(_service2.Object);
+			contracts.Count.ShouldBe(2);
+			contracts.ShouldContain(_service1.Object);
+            contracts.ShouldContain(_service2.Object);
         }
 
 		[Test]
@@ -222,11 +222,11 @@ namespace DevTeam.Patterns.IoC.Tests
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new");
-            var instances = childContainer.ResolveAll<Service1State, IService>(name => new Service1State()).ToList();
+            var contracts = childContainer.ResolveAll<Service1State, IService>(name => new Service1State()).ToList();
             
             // Then
-            instances.Count.ShouldBe(1);
-			instances[0].ShouldBe(_service1.Object);
+            contracts.Count.ShouldBe(1);
+			contracts[0].ShouldBe(_service1.Object);
 		}
 
 		[Test]
@@ -238,11 +238,11 @@ namespace DevTeam.Patterns.IoC.Tests
 
 			// When
 			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
-            var instances = childContainer.ResolveAll<Service1State, IService>(name => new Service1State()).ToList();
+            var contracts = childContainer.ResolveAll<Service1State, IService>(name => new Service1State()).ToList();
 
             // Then
-            instances.Count.ShouldBe(1);
-			instances[0].ShouldBe(_service1.Object);
+            contracts.Count.ShouldBe(1);
+			contracts[0].ShouldBe(_service1.Object);
 		}
 
         [Test]
@@ -314,7 +314,7 @@ namespace DevTeam.Patterns.IoC.Tests
             var target = CreateTarget();
             var service3 = new Service2Int();
             var service4 = new Service2String();
-            target.Register(typeof(long), typeof(IService2<>), ctx => ctx.ResolvingInstanceType == typeof(IService2<int>) ? (object)service3 : service4, "abc");
+            target.Register(typeof(long), typeof(IService2<>), ctx => ctx.ResolvingContractType == typeof(IService2<int>) ? (object)service3 : service4, "abc");
 
             // When
             var server3 = target.Resolve<long, IService2<int>>(1, "abc");
@@ -349,7 +349,7 @@ namespace DevTeam.Patterns.IoC.Tests
             var target = CreateTarget();
             var service3 = new Service2Int();
             var service4 = new Service2String();
-            target.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(long), typeof(IService2<>), ctx => ctx.ResolvingInstanceType == typeof(IService2<int>) ? (object)service3 : service4, "abc");
+            target.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(long), typeof(IService2<>), ctx => ctx.ResolvingContractType == typeof(IService2<int>) ? (object)service3 : service4, "abc");
 
             // When
             var server3 = target.Resolve<long, IService2<int>>(1, "abc");
@@ -372,10 +372,10 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Using(comparer.Object, typeof(IRegistrationComparer)).Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
             // When
-            var instance = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+            var contract = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
             // Then
-            instance.ShouldBe(_service1.Object);
+            contract.ShouldBe(_service1.Object);
             comparer.Verify(i => i.GetHashCode(It.IsAny<IRegistration>()));
             comparer.Verify(i => i.Equals(It.IsAny<IRegistration>(), It.IsAny<IRegistration>()));
         }
@@ -388,14 +388,14 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Using<IRegistrationComparer>(WellknownRegistrationComparer.PatternKey).Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "a+.");
 
             // When
-            var instance = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "abc");
+            var contract = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "abc");
 
             // Then
-            instance.ShouldBe(_service1.Object);            
+            contract.ShouldBe(_service1.Object);            
         }
 
         [Test]
-        public void ShouldResolveAllInstancesbAsIEnumerableWhenKeyIsNull()
+        public void ShouldResolveAllContractsbAsIEnumerableWhenKeyIsNull()
         {
             // Given
             var target = CreateTarget();
@@ -409,10 +409,10 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Register(typeof(EmptyState), typeof(IService), ctx => service4, "myService4");
 
             // When
-            var resolvedInstance = ((IEnumerable<IService>)target.Resolve(target, typeof(Service1State), typeof(IEnumerable<IService>), _service1State, null)).ToList();
+            var resolvedContract = ((IEnumerable<IService>)target.Resolve(target, typeof(Service1State), typeof(IEnumerable<IService>), _service1State, null)).ToList();
 
             // Then
-            resolvedInstance.ShouldBeSubsetOf(new [] { service1, service2, service3 });
+            resolvedContract.ShouldBeSubsetOf(new [] { service1, service2, service3 });
         }
 
         [Test]
@@ -427,11 +427,11 @@ namespace DevTeam.Patterns.IoC.Tests
                 {
                     ctx.ShouldNotBeNull();
                     ctx.Registration.Key.ShouldBe("abc");
-                    ctx.Registration.InstanceType.ShouldBe(typeof(IService2<>));
+                    ctx.Registration.ContractType.ShouldBe(typeof(IService2<>));
                     ctx.Registration.StateType.ShouldBe(typeof(int));
                     ctx.PerThreadResolvingId.ShouldNotBe(Guid.Empty);
                     ctx.ResolvingId.ShouldNotBe(Guid.Empty);
-                    ctx.ResolvingInstanceType.ShouldBe(typeof(IService2<int>));
+                    ctx.ResolvingContractType.ShouldBe(typeof(IService2<int>));
                     ctx.State.ShouldBe(1);
                     ctx.Resolver.ShouldBe(child);
                     return service;
@@ -458,11 +458,11 @@ namespace DevTeam.Patterns.IoC.Tests
                 {
                     ctx.ShouldNotBeNull();
                     ctx.Registration.Key.ShouldBe("dep");
-                    ctx.Registration.InstanceType.ShouldBe(typeof(IService));
+                    ctx.Registration.ContractType.ShouldBe(typeof(IService));
                     ctx.Registration.StateType.ShouldBe(typeof(EmptyState));
                     ctx.PerThreadResolvingId.ShouldNotBe(Guid.Empty);
                     ctx.ResolvingId.ShouldNotBe(Guid.Empty);
-                    ctx.ResolvingInstanceType.ShouldBe(typeof(IService));
+                    ctx.ResolvingContractType.ShouldBe(typeof(IService));
                     ctx.State.ShouldBe(EmptyState.Shared);
                     ctx.Resolver.ShouldBe(child2);
                     return service;

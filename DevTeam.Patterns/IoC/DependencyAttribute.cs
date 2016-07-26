@@ -7,7 +7,7 @@
     {
        public Type StateType { get; set; }
 
-        public Type InstanceType { get; set; }
+        public Type ContractType { get; set; }
 
         public object Key { get; set; }
 

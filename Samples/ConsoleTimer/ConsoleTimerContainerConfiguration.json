@@ -8,11 +8,11 @@
             "Binds": [
                 {
                     "State": "System.TimeSpan",
-                    "Instance": "ConsoleTimer.ITimer, ConsoleTimer",
+                    "Contract": "ConsoleTimer.ITimer, ConsoleTimer",
                     "Implementation": "ConsoleTimer.Timer, ConsoleTimer"
                 },
                 {
-                    "Instance": "ConsoleTimer.ITimePublisher, ConsoleTimer",
+                    "Contract": "ConsoleTimer.ITimePublisher, ConsoleTimer",
                     "Implementation": "ConsoleTimer.TimePublisher, ConsoleTimer"
                 }
             ]

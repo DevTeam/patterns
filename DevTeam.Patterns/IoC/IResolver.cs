@@ -7,6 +7,6 @@ namespace DevTeam.Patterns.IoC
 	{
 	    IEnumerable<IRegistration> Registrations { get; }
 
-	    object Resolve(IResolver resolver, Type stateType, Type instanceType, object state, object key = null);
+	    object Resolve(IResolver resolver, Type stateType, Type contractType, object state, object key = null);
 	}
 }

@@ -6,7 +6,7 @@
     {
         public string State { get; set; }
 
-        public string Instance { get; set; }
+        public string Contract { get; set; }
 
         public string Implementation { get; set; }
 

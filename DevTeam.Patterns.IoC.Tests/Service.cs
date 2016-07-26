@@ -42,7 +42,7 @@
         private readonly IService _dependency;
 
         [Resolver]
-        public Service1WithStateAndDependency([State] string state, [Dependency(InstanceType = typeof(IService), Key = "dep")] IService dependency)
+        public Service1WithStateAndDependency([State] string state, [Dependency(ContractType = typeof(IService), Key = "dep")] IService dependency)
         {
             _state = state;
             _dependency = dependency;
@@ -76,7 +76,7 @@
         private readonly IService _dependency;
 
         [Resolver]
-        public Service1WithStateAndDependencyFromAttr([State] int state, [Dependency(InstanceType = typeof(IService), Key = "dep2", StateType = typeof(string), State = "defaultState")] IService dependency)
+        public Service1WithStateAndDependencyFromAttr([State] int state, [Dependency(ContractType = typeof(IService), Key = "dep2", StateType = typeof(string), State = "defaultState")] IService dependency)
         {
             _state = state;
             _dependency = dependency;

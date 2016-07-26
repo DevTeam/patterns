@@ -19,27 +19,27 @@
 
         public IEnumerable<IRegistration> Registrations => _state.TargetContainer.Registrations;
 
-        public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, object key = null)
+        public IRegistration Register(Type stateType, Type contractType, Func<IResolvingContext, object> factoryMethod, object key = null)
         {
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
             using (_state.TargetContainer.Register(() => (TContext)_state.Context))
             {
-                return _state.TargetContainer.Register(stateType, instanceType, factoryMethod, key);
+                return _state.TargetContainer.Register(stateType, contractType, factoryMethod, key);
             }
         }
 
-        public object Resolve(IResolver resolver, Type stateType, Type instanceType, object state, object key = null)
+        public object Resolve(IResolver resolver, Type stateType, Type contractType, object state, object key = null)
         {
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (state == null) throw new ArgumentNullException(nameof(state));
 
             using (_state.TargetContainer.Register(() => (TContext)_state.Context))
             {
-                return _state.TargetContainer.Resolve(resolver, stateType, instanceType, state, key);
+                return _state.TargetContainer.Resolve(resolver, stateType, contractType, state, key);
             }
         }
 

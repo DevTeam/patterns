@@ -12,7 +12,7 @@
 
         IResolver Resolver { get; }
 
-        Type ResolvingInstanceType { get; }
+        Type ResolvingContractType { get; }
 
         object State { get; }
     }

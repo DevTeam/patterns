@@ -5,43 +5,43 @@
 
     internal class ControlledLifetime: ILifetime
     {
-        private readonly Dictionary<IRegistration, HashSet<IDisposable>> _instances = new Dictionary<IRegistration, HashSet<IDisposable>>();
+        private readonly Dictionary<IRegistration, HashSet<IDisposable>> _contracts = new Dictionary<IRegistration, HashSet<IDisposable>>();
 
         public object Create(IResolvingContext ctx, Func<IResolvingContext, object> factory)
         {
             if (ctx == null) throw new ArgumentNullException(nameof(ctx));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-            var instance = factory(ctx);
-            var disposable = instance as IDisposable;
+            var contract = factory(ctx);
+            var disposable = contract as IDisposable;
             if (disposable == null)
             {
-                return instance;
+                return contract;
             }
 
-            HashSet<IDisposable> instances;
-            if (!_instances.TryGetValue(ctx.Registration, out instances))
+            HashSet<IDisposable> contracts;
+            if (!_contracts.TryGetValue(ctx.Registration, out contracts))
             {
-                instances = new HashSet<IDisposable>();
-                _instances.Add(ctx.Registration, instances);
+                contracts = new HashSet<IDisposable>();
+                _contracts.Add(ctx.Registration, contracts);
             }
 
-            instances.Add(disposable);
-            return instance;
+            contracts.Add(disposable);
+            return contract;
         }
 
         public void Release(IReleasingContext ctx)
         {
-            HashSet<IDisposable> instances;
-            if (!_instances.TryGetValue(ctx.Registration, out instances))
+            HashSet<IDisposable> contracts;
+            if (!_contracts.TryGetValue(ctx.Registration, out contracts))
             {
                 return;
             }
 
-            _instances.Remove(ctx.Registration);
-            foreach (var instance in instances)
+            _contracts.Remove(ctx.Registration);
+            foreach (var contract in contracts)
             {
-                instance.Dispose();
+                contract.Dispose();
             }
         }
     }

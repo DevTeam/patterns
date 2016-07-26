@@ -35,11 +35,11 @@
                 var testAssembly = _reflection.LoadAssembly(test.Method.Fixture.Assembly.Name);
                 var testFixtureType = testAssembly.GetType(test.Method.Fixture.Name);
                 var methodInfo = testFixtureType.Methods.SingleOrDefault(method => method.Name == test.Method.Name);
-                var testInstance = testFixtureType.CreateInstance();
+                var testContract = testFixtureType.CreateInstance();
                 try
                 {
                     _results.OnNext(new TestProgress(test, TestState.Starting));
-                    var result = methodInfo.Invoke(testInstance);
+                    var result = methodInfo.Invoke(testContract);
                     _results.OnNext(new TestProgress(test, TestState.Finished, new TestResult(result)));
                 }
                 catch (Exception exception)

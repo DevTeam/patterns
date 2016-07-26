@@ -12,7 +12,7 @@
             var yKey = y.Key?.ToString() ?? string.Empty;
             var regexX = new Regex(xKey);
             var regexY = new Regex(yKey);
-            if (x.InstanceType == y.InstanceType && x.StateType == y.StateType && (regexX.IsMatch(yKey) || regexY.IsMatch(xKey)))
+            if (x.ContractType == y.ContractType && x.StateType == y.StateType && (regexX.IsMatch(yKey) || regexY.IsMatch(xKey)))
             {
                 return true;
             }
@@ -25,7 +25,7 @@
             unchecked
             {
                 var hashCode = obj.StateType.GetHashCode();
-                hashCode = (hashCode * 397) ^ obj.InstanceType.GetHashCode();
+                hashCode = (hashCode * 397) ^ obj.ContractType.GetHashCode();
                 return hashCode;
             }
         }

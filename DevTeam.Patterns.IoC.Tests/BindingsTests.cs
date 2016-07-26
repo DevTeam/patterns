@@ -20,7 +20,7 @@
 			target.Bind<string, IService, Service1WithState>("myService1");
 
 			// Then
-			target.Registrations.ShouldContain(i => i.StateType == typeof(string) && i.InstanceType == typeof(IService) && "myService1".Equals(i.Key));
+			target.Registrations.ShouldContain(i => i.StateType == typeof(string) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
 		}
 
         [Test]
@@ -33,8 +33,8 @@
             target.Bind<IService, Service1>("myService1");
 
             // Then
-            var instance = target.Resolve<IService>("myService1");
-            instance.ShouldBeOfType<Service1>();            
+            var contract = target.Resolve<IService>("myService1");
+            contract.ShouldBeOfType<Service1>();            
         }
 
         [Test]
@@ -47,9 +47,9 @@
             target.Bind<string, IService, Service1WithState>("myService1");
 
             // Then
-            var instance = target.Resolve<string, IService>("state", "myService1");
-            instance.ShouldBeOfType<Service1WithState>();
-            instance.State.ShouldBe("state");
+            var contract = target.Resolve<string, IService>("state", "myService1");
+            contract.ShouldBeOfType<Service1WithState>();
+            contract.State.ShouldBe("state");
         }
 
         [Test]
@@ -63,10 +63,10 @@
             target.Bind<string, IService, Service1WithStateAndDependency>("myService1");
 
             // Then
-            var instance = target.Resolve<string, IService>("state", "myService1");
-            instance.ShouldBeOfType<Service1WithStateAndDependency>();
-            instance.State.ShouldBe("state");
-            instance.Dependency.ShouldBeOfType<Service1>();
+            var contract = target.Resolve<string, IService>("state", "myService1");
+            contract.ShouldBeOfType<Service1WithStateAndDependency>();
+            contract.State.ShouldBe("state");
+            contract.Dependency.ShouldBeOfType<Service1>();
         }
 
         [Test]
@@ -80,10 +80,10 @@
             target.Bind<string, IService, Service1WithStateAndNotMarkedDependency>("myService1");
 
             // Then
-            var instance = target.Resolve<string, IService>("state", "myService1");
-            instance.ShouldBeOfType<Service1WithStateAndNotMarkedDependency>();
-            instance.State.ShouldBe("state");
-            instance.Dependency.ShouldBe(99);
+            var contract = target.Resolve<string, IService>("state", "myService1");
+            contract.ShouldBeOfType<Service1WithStateAndNotMarkedDependency>();
+            contract.State.ShouldBe("state");
+            contract.Dependency.ShouldBe(99);
         }
 
 
@@ -99,10 +99,10 @@
             target.Bind<int, IService, Service1WithStateAndDependencyFromAttr>("myService1");
 
             // Then
-            var instance = target.Resolve<int, IService>(33, "myService1");
-            instance.ShouldBeOfType<Service1WithStateAndDependencyFromAttr>();
-            instance.State.ShouldBe(33);
-            instance.Dependency.ShouldBeOfType<Service1WithStateAndDependency>();
+            var contract = target.Resolve<int, IService>(33, "myService1");
+            contract.ShouldBeOfType<Service1WithStateAndDependencyFromAttr>();
+            contract.State.ShouldBe(33);
+            contract.Dependency.ShouldBeOfType<Service1WithStateAndDependency>();
         }
 
         [Test]
@@ -117,10 +117,10 @@
             target.Bind<int, IService, Service1WithStateAndDependencyViaResolver>("myService1");
 
             // Then
-            var instance = target.Resolve<int, IService>(33, "myService1");
-            instance.ShouldBeOfType<Service1WithStateAndDependencyViaResolver>();
-            instance.State.ShouldBe(33);
-            instance.Dependency.ShouldBeOfType<Service1WithStateAndDependency>();
+            var contract = target.Resolve<int, IService>(33, "myService1");
+            contract.ShouldBeOfType<Service1WithStateAndDependencyViaResolver>();
+            contract.State.ShouldBe(33);
+            contract.Dependency.ShouldBeOfType<Service1WithStateAndDependency>();
         }
 
         [Test]
@@ -135,10 +135,10 @@
             target.Bind<IService, Service1>("dep2");
 
             // Then
-            var instance = target.Resolve<int, Service1WithStateAndEnumerableDependency>(33, "myService1");
-            instance.ShouldBeOfType<Service1WithStateAndEnumerableDependency>();
-            instance.State.ShouldBe(33);
-            var dpendencies = (IEnumerable<IService>)instance.Dependency;
+            var contract = target.Resolve<int, Service1WithStateAndEnumerableDependency>(33, "myService1");
+            contract.ShouldBeOfType<Service1WithStateAndEnumerableDependency>();
+            contract.State.ShouldBe(33);
+            var dpendencies = (IEnumerable<IService>)contract.Dependency;
             dpendencies.Count().ShouldBe(2);
         }
 
@@ -154,10 +154,10 @@
             target.Bind<IService, Service1>("dep2");
 
             // Then
-            var instance = target.Resolve<int, Service1WithStateAndEnumerableDependency>(33, "myService1");
-            instance.ShouldBeOfType<Service1WithStateAndEnumerableDependency>();
-            instance.State.ShouldBe(33);
-            var dpendencies = (IEnumerable<IService>)instance.Dependency;
+            var contract = target.Resolve<int, Service1WithStateAndEnumerableDependency>(33, "myService1");
+            contract.ShouldBeOfType<Service1WithStateAndEnumerableDependency>();
+            contract.State.ShouldBe(33);
+            var dpendencies = (IEnumerable<IService>)contract.Dependency;
             dpendencies.Count().ShouldBe(2);
         }
 

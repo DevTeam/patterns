@@ -32,7 +32,7 @@
             yield return container.Register(typeof(EmptyState), typeof(ISubject<>),
                 ctx =>
                     {
-                        var subjecType = typeof(SimpleSubject<>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0]);
+                        var subjecType = typeof(SimpleSubject<>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0]);
                         return Activator.CreateInstance(subjecType);
                     },
                 WellknownSubject.Simple);

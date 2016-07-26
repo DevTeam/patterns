@@ -6,7 +6,7 @@
     {
         Type StateType { get; }
 
-        Type InstanceType { get; }
+        Type ContractType { get; }
 
         object Key { get; }
     }

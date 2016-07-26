@@ -84,7 +84,7 @@
                 .Register(typeof(EmptyState), typeof(IResolver<>),
                 ctx =>
                 {
-                    var resolverType = typeof(Resolver<>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0]);
+                    var resolverType = typeof(Resolver<>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0]);
                     return Activator.CreateInstance(resolverType, ctx.Resolver, ctx.Registration.Key);
                 });
 
@@ -94,7 +94,7 @@
                 .Register(typeof(EmptyState), typeof(IResolver<,>),
                 ctx =>
                 {
-                    var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingInstanceType.GenericTypeArguments[0], ctx.ResolvingInstanceType.GenericTypeArguments[1]);
+                    var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0], ctx.ResolvingContractType.GenericTypeArguments[1]);
                     return Activator.CreateInstance(resolverType, ctx.Resolver, ctx.Registration.Key);
                 });
 
@@ -107,11 +107,11 @@
                 typeof(IEnumerable<>),
                 ctx =>
                 {
-                    var enumItemType = ctx.ResolvingInstanceType.GenericTypeArguments[0];
+                    var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
                     var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
                     var source =
                         from key in ctx.Resolver.Registrations
-                        where key.InstanceType == enumItemType && key.StateType == ctx.Registration.StateType
+                        where key.ContractType == enumItemType && key.StateType == ctx.Registration.StateType
                         select ctx.Resolver.Resolve(ctx.Resolver, key.StateType, enumItemType, ctx.State, key.Key);
                     return Activator.CreateInstance(enumType, source);
                 });
@@ -123,11 +123,11 @@
                 typeof(IEnumerable<>),
                 ctx =>
                 {
-                    var enumItemType = ctx.ResolvingInstanceType.GenericTypeArguments[0];
+                    var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
                     var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
                     var source =
                         from key in ctx.Resolver.Registrations
-                        where key.InstanceType == enumItemType
+                        where key.ContractType == enumItemType
                         let state = ((StateSelector)ctx.State)(ctx)
                         select ctx.Resolver.Resolve(ctx.Resolver, key.StateType, enumItemType, state, key.Key);
                     return Activator.CreateInstance(enumType, source);

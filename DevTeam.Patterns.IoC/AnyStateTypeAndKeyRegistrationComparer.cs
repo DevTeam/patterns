@@ -6,12 +6,12 @@
 
         public bool Equals(IRegistration x, IRegistration y)
         {
-            return x.InstanceType == y.InstanceType;
+            return x.ContractType == y.ContractType;
         }
 
         public int GetHashCode(IRegistration obj)
         {
-            return obj.InstanceType.GetHashCode();
+            return obj.ContractType.GetHashCode();
         }
     }
 }

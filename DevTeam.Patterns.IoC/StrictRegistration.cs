@@ -13,7 +13,7 @@ namespace DevTeam.Patterns.IoC
 
         public Type StateType => _description.StateType;
 
-        public Type InstanceType => _description.InstanceType;
+        public Type ContractType => _description.ContractType;
 
         public object Key => _description.Key;
 
@@ -24,14 +24,14 @@ namespace DevTeam.Patterns.IoC
 
         public override string ToString()
         {
-            return $"{InstanceType.FullName}({StateType.FullName}, \"{Key}\")";
+            return $"{ContractType.FullName}({StateType.FullName}, \"{Key}\")";
         }
 
         public bool Equals(IRegistration other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return StateType == other.StateType && InstanceType == other.InstanceType && Equals(Key, other.Key);
+            return StateType == other.StateType && ContractType == other.ContractType && Equals(Key, other.Key);
         }
 
         public override bool Equals(object obj)
@@ -47,7 +47,7 @@ namespace DevTeam.Patterns.IoC
             unchecked
             {
                 var hashCode = StateType.GetHashCode();
-                hashCode = (hashCode * 397) ^ InstanceType.GetHashCode();
+                hashCode = (hashCode * 397) ^ ContractType.GetHashCode();
                 hashCode = (hashCode * 397) ^ Key?.GetHashCode() ?? 0;
                 return hashCode;
             }

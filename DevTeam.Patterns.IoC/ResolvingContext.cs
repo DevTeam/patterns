@@ -9,15 +9,15 @@
         private readonly Guid? _prevResolvingId;
         private readonly Guid? _prevPerThreadResolvingId;
 
-        public ResolvingContext(IResolver resolver, IRegistration registration, Type resolvingInstanceType, object state)
+        public ResolvingContext(IResolver resolver, IRegistration registration, Type resolvingContractType, object state)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
             if (registration == null) throw new ArgumentNullException(nameof(registration));            
-            if (resolvingInstanceType == null) throw new ArgumentNullException(nameof(resolvingInstanceType));
+            if (resolvingContractType == null) throw new ArgumentNullException(nameof(resolvingContractType));
 
             Resolver = resolver;
             Registration = registration;            
-            ResolvingInstanceType = resolvingInstanceType;
+            ResolvingContractType = resolvingContractType;
             State = state;
 
             _prevResolvingId = _resolvingId;
@@ -41,7 +41,7 @@
 
         public IResolver Resolver { get; }
 
-        public Type ResolvingInstanceType { get; }
+        public Type ResolvingContractType { get; }
 
         public object State { get; }
 

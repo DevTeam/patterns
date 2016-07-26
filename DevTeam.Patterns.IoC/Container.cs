@@ -38,10 +38,10 @@
 
 	    public IEnumerable<IRegistration> Registrations => _factories.SelectMany(i => i.Value.Keys).Distinct().Union(_parentResolver != null ? _parentResolver.Registrations : Enumerable.Empty<IRegistration>());
 
-	    public IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, object key = null)
+	    public IRegistration Register(Type stateType, Type contractType, Func<IResolvingContext, object> factoryMethod, object key = null)
 		{
 	        if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-		    if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+		    if (contractType == null) throw new ArgumentNullException(nameof(contractType));
 		    if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
             var comparer = GetComparer();
@@ -53,11 +53,11 @@
             }
 
             var resources = new CompositeDisposable();
-            var registrationDescription = new RegistrationDescription(stateType, instanceType, key, resources);
+            var registrationDescription = new RegistrationDescription(stateType, contractType, key, resources);
 	        var registration = new StrictRegistration(registrationDescription);
             try
             {
-                if (instanceType != typeof(ILifetime))
+                if (contractType != typeof(ILifetime))
 	            {
 	                var lifetime = (ILifetime)Resolve(this, typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
                     dictionary.Add(registration, ctx => lifetime.Create(ctx, factoryMethod));
@@ -77,13 +77,13 @@
 	        return registration;
 		}
 
-	    public object Resolve(IResolver resolver, Type stateType, Type instanceType, object state, object key = null)
+	    public object Resolve(IResolver resolver, Type stateType, Type contractType, object state, object key = null)
         {
 	        if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
 
             resolver = resolver ?? this;
-            var registrationDescription = new RegistrationDescription(stateType, instanceType, key, Disposable.Empty());
+            var registrationDescription = new RegistrationDescription(stateType, contractType, key, Disposable.Empty());
 	        foreach (var registration in GetResolverRegistrations(registrationDescription))
 	        {
 	            foreach (var dictionary in _factories)
@@ -91,7 +91,7 @@
 	                Func<IResolvingContext, object> factory;
 	                if (dictionary.Value.TryGetValue(registration, out factory))
                     {
-                        using (var ctx = new ResolvingContext(resolver, registration, instanceType, state))
+                        using (var ctx = new ResolvingContext(resolver, registration, contractType, state))
                         {
                             return factory(ctx);
                         }
@@ -104,16 +104,16 @@
 		    {
 		        if (_parentResolver != null)
 		        {
-		            return _parentResolver.Resolve(resolver, stateType, instanceType, state, key);
+		            return _parentResolver.Resolve(resolver, stateType, contractType, state, key);
 		        }
 		        
                 // Defaults		      
-		        if (instanceType == typeof(ILifetime) && stateType == typeof(EmptyState) && key == null)
+		        if (contractType == typeof(ILifetime) && stateType == typeof(EmptyState) && key == null)
 		        {
                     return RootContainerConfiguration.TransientLifetime.Value;
 		        }
 
-                if (instanceType == typeof(IRegistrationComparer) && stateType == typeof(EmptyState) && key == null)
+                if (contractType == typeof(IRegistrationComparer) && stateType == typeof(EmptyState) && key == null)
                 {
                     return RootContainerConfiguration.RootContainerRegestryKeyComparer.Value;
                 }                
@@ -128,7 +128,7 @@
         }
 
         /// <summary>
-        /// Disposes this container instance and any child containers. Also disposes any registered object instances whose lifetimes are managed by the container.
+        /// Disposes this container contract and any child containers. Also disposes any registered object contracts whose lifetimes are managed by the container.
         /// </summary>
         public void Dispose()
 	    {

@@ -4,6 +4,6 @@
 
     public interface IRegistry
 	{
-        IRegistration Register(Type stateType, Type instanceType, Func<IResolvingContext, object> factoryMethod, object key = null);
+        IRegistration Register(Type stateType, Type contractType, Func<IResolvingContext, object> factoryMethod, object key = null);
     }
 }

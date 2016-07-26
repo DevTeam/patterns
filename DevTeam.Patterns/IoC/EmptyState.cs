@@ -6,7 +6,7 @@
     public struct EmptyState
     {
         /// <summary>
-        /// Provides the default shared instance.
+        /// Provides the default shared contract.
         /// </summary>
         public static readonly EmptyState Shared = new EmptyState();        
     }

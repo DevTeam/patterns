@@ -20,13 +20,13 @@
             return (T)resolver.Resolve(resolver, typeof(EmptyState), typeof(T), EmptyState.Shared, key);            
         }
 
-        public static object Resolve(this IResolver resolver, Type stateType, Type instanceType, object state, object key = null)
+        public static object Resolve(this IResolver resolver, Type stateType, Type contractType, object state, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
 
-            return resolver.Resolve(null, stateType, instanceType, state, key);
+            return resolver.Resolve(null, stateType, contractType, state, key);
         }
 
         public static IEnumerable<T> ResolveAll<T>(this IResolver resolver)

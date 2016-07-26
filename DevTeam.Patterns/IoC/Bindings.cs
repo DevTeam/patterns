@@ -18,15 +18,15 @@
             return container.Bind(typeof(TState), typeof(T), typeof(TImplementation), key);
         }
 
-        public static IRegistration Bind(this IContainer container, Type stateType, Type instanceType, Type implementationType, object key = null)
+        public static IRegistration Bind(this IContainer container, Type stateType, Type contractType, Type implementationType, object key = null)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (instanceType == null) throw new ArgumentNullException(nameof(instanceType));
+            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
 
             var binder = container.Resolve<IBinder>();
-            return binder.Bind(container, stateType, instanceType, implementationType, key);
+            return binder.Bind(container, stateType, contractType, implementationType, key);
         }
     }
 }
