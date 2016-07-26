@@ -42,12 +42,9 @@
     <Compile Include="ConfigurationsContainerConfiguration.cs" />
     <Compile Include="Json\BindElement.cs" />
     <Compile Include="Json\ConfigurationElement.cs" />
-    <Compile Include="Json\ContainerBaseElemen.cs" />
     <Compile Include="Json\ContainerElement.cs" />
     <Compile Include="Json\DependencyElement.cs" />
     <Compile Include="Json\JsonConfiguration.cs" />
-    <Compile Include="Json\ScopeElement.cs" />
-    <Compile Include="Json\UsingElement.cs" />
     <Compile Include="Json\KeyElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

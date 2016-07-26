@@ -3,19 +3,16 @@
         { "Type": "DevTeam.Platform.System.SystemContainerConfiguration, DevTeam.Platform.System.dotNet" }        
     ],
 
-    "Scopes": [
+    "Bindings": [
         {
-            "Binds": [
-                {
-                    "State": "System.TimeSpan",
-                    "Contract": "ConsoleTimer.ITimer, ConsoleTimer",
-                    "Implementation": "ConsoleTimer.Timer, ConsoleTimer"
-                },
-                {
-                    "Contract": "ConsoleTimer.ITimePublisher, ConsoleTimer",
-                    "Implementation": "ConsoleTimer.TimePublisher, ConsoleTimer"
-                }
-            ]
+            "State": "System.TimeSpan",
+            "Contract": "ConsoleTimer.ITimer, ConsoleTimer",
+            "Implementation": "ConsoleTimer.Timer, ConsoleTimer",
+            "Lifetime": "Singleton"
+        },
+        {
+            "Contract": "ConsoleTimer.ITimePublisher, ConsoleTimer",
+            "Implementation": "ConsoleTimer.TimePublisher, ConsoleTimer"
         }
     ]
 }
