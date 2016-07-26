@@ -4,7 +4,7 @@
 
     using DevTeam.Patterns.IoC;
 
-    public class Timer: ITimer
+    internal class Timer: ITimer
     {
         private readonly TimeSpan _period;
 

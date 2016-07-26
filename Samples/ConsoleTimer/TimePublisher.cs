@@ -6,7 +6,7 @@
     using DevTeam.Patterns.Reactive;
     using DevTeam.Platform.System;
 
-    public class TimePublisher: ITimePublisher
+    internal class TimePublisher: ITimePublisher
     {
         private readonly IDisposable _subscription;
 
