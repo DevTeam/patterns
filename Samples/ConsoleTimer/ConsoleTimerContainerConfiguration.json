@@ -4,12 +4,14 @@
     ],
 
     "Bindings": [
+        // Bind to Timer
         {
             "State": "System.TimeSpan",
             "Contract": "ConsoleTimer.ITimer, ConsoleTimer",
             "Implementation": "ConsoleTimer.Timer, ConsoleTimer",
             "Lifetime": "Singleton"
         },
+        // Bind to Time Publisher
         {
             "Contract": "ConsoleTimer.ITimePublisher, ConsoleTimer",
             "Implementation": "ConsoleTimer.TimePublisher, ConsoleTimer"
