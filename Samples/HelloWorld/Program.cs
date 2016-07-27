@@ -1,27 +1,29 @@
 ﻿namespace HelloWorld
 {
+    using System;
+
     using DevTeam.Patterns.IoC;
 
-    public class Program
+    class Program
     {
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
-            var container = new Container();            
-            container.Register(() => new ConsoleService());
-            container.Register(() => new HelloWorldWriter(container.Resolve<ConsoleService>()));
-
+            // Step 1
+            var container = new Container();
+            // Step 2
+            container.Bind<ConsoleService, ConsoleService>();
+            container.Bind<HelloWorldWriter, HelloWorldWriter>();
+            // Step 3
             var hellowWorldWriter = container.Resolve<HelloWorldWriter>();
             hellowWorldWriter.Write();            
         }
 
         // Client
-        private class HelloWorldWriter
+        class HelloWorldWriter
         {
             private readonly ConsoleService _consoleService;
 
-            public HelloWorldWriter(
-                // Dependency injection
-                ConsoleService consoleService)
+            public HelloWorldWriter(ConsoleService consoleService)
             {
                 _consoleService = consoleService;
             }
@@ -33,11 +35,11 @@
         }
 
         // Service
-        private class ConsoleService
+        class ConsoleService
         {
             public void WriteLine(string line)
             {            
-                System.Console.WriteLine(line);    
+                Console.WriteLine(line);    
             }
         }
     }
