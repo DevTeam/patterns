@@ -14,7 +14,7 @@
             { typeof(ILifetime), RootContainerConfiguration.TransientLifetime.Value },
             { typeof(IRegistrationComparer), RootContainerConfiguration.RootContainerRegestryKeyComparer.Value },
             { typeof(IBinder), RootContainerConfiguration.Binder.Value },
-            { typeof(IFactory), RootContainerConfiguration.ReflectionFactory.Value}
+            { typeof(IFactory), RootContainerConfiguration.Factory.Value}
         };        
         private static readonly ComparerForRegistrationComparer ComparerForRegistrationComparer = new ComparerForRegistrationComparer();
         private readonly SortedDictionary<IRegistrationComparer, Dictionary> _factories = new SortedDictionary<IRegistrationComparer, Dictionary>(ComparerForRegistrationComparer);

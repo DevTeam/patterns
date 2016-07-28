@@ -25,7 +25,7 @@
         private static readonly Lazy<IRegistrationComparer> AnyRegistrationComparer = new Lazy<IRegistrationComparer>(() => new AnyKeyRegistrationComparer());
 
         internal static readonly Lazy<IBinder> Binder = new Lazy<IBinder>(() => new Binder());
-        internal static readonly Lazy<IFactory> ReflectionFactory = new Lazy<IFactory>(() => new ReflectionFactory());
+        internal static readonly Lazy<IFactory> Factory = new Lazy<IFactory>(() => new ExpressionFactory());
 
         private RootContainerConfiguration()
         {
