@@ -2,7 +2,7 @@ namespace DevTeam.Patterns.IoC
 {
     using System;
 
-    internal class StrictRegistration: IRegistration
+    internal struct StrictRegistration: IRegistration
     {
         private readonly RegistrationDescription _description;
         

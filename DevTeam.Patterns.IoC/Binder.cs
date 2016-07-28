@@ -7,6 +7,8 @@
 
     public class Binder: IBinder
     {
+        private readonly Dictionary<ConstructorInfo, CtorInfo> _ctorDictionary = new Dictionary<ConstructorInfo, CtorInfo>();
+
         public IRegistration Bind(IRegistry registry, Type stateType, Type contractType, Type implementationType, IFactory factory, object key = null)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
@@ -41,30 +43,21 @@
                 resolvingConstructor = resolvingConstructors[0];
             }
 
-            var ctorParameters = resolvingConstructor.GetParameters().Select(parameter => new CtorParameter(parameter)).ToList();
-            if (stateType != typeof(EmptyState))
+            CtorInfo ctorInfo;
+            if (!_ctorDictionary.TryGetValue(resolvingConstructor, out ctorInfo))
             {
-                var stateParamaters = (
-                    from parameter in ctorParameters
-                    where parameter.State != null
-                    select parameter).ToList();
-
-                if (stateParamaters.Count != 1)
-                {
-                    throw new InvalidOperationException($"Constructor should have only one state parameter, but has more: {CreateParametersList(stateParamaters)}");
-                }
-
-                var stateParamater = stateParamaters.Single();
-                if (stateParamater.Parameter.ParameterType != stateType)
-                {
-                    throw new InvalidOperationException($"State parameter \"{stateParamater.Parameter.Name}\" has invalid type \"{stateParamater.Parameter.ParameterType.Name}\", but should have \"{stateType}\".");
-                }
+                ctorInfo = new CtorInfo(resolvingConstructor, stateType);
             }
 
+            if (ctorInfo.Error != null)
+            {
+                throw ctorInfo.Error;
+            }
+                        
             return registry.Register(stateType, contractType,
                 ctx =>
                 {
-                    var parameters = ctorParameters.Select(parameter => ResolveParameter(factory, ctx.Resolver, ctx.State, parameter)).ToArray();
+                    var parameters = ctorInfo.Parameters.Select(parameter => ResolveParameter(factory, ctx.Resolver, ctx.State, parameter)).ToArray();
                     return factory.Create(resolvingConstructor, parameters);                    
                 },
                 key);
@@ -73,8 +66,7 @@
         private static object ResolveParameter(IFactory factory, IResolver resolver, object state, CtorParameter parameter)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
-            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
-
+            
             if (parameter.State != null)
             {
                 return factory.ResolveState(resolver, parameter.Parameter, parameter.State, state);                
@@ -94,6 +86,37 @@
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             return string.Join(", ", parameters.Select(i => $"\"{i}\""));
+        }
+
+        private class CtorInfo
+        {
+            public CtorInfo(MethodBase resolvingConstructor, Type stateType)
+            {
+                Parameters = resolvingConstructor.GetParameters().Select(parameter => new CtorParameter(parameter)).ToList();
+                if (stateType != typeof(EmptyState))
+                {
+                    var stateParamaters = (
+                        from parameter in Parameters
+                        where parameter.State != null
+                        select parameter).ToList();
+
+                    if (stateParamaters.Count != 1)
+                    {
+                        Error = new InvalidOperationException($"Constructor should have only one state parameter, but has more: {CreateParametersList(stateParamaters)}");
+                        return;
+                    }
+
+                    var stateParamater = stateParamaters.Single();
+                    if (stateParamater.Parameter.ParameterType != stateType)
+                    {
+                        Error = new InvalidOperationException($"State parameter \"{stateParamater.Parameter.Name}\" has invalid type \"{stateParamater.Parameter.ParameterType.Name}\", but should have \"{stateType}\".");
+                    }
+                }
+            }
+
+            public List<CtorParameter> Parameters { get; }
+
+            public InvalidOperationException Error { get; }
         }
 
         private class CtorParameter
