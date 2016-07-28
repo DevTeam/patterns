@@ -5,9 +5,9 @@
     using System.Linq;
     using System.Reflection;
 
-    public class ReflectionBinder: IBinder
+    public class Binder: IBinder
     {
-        public IRegistration Bind(IRegistry registry, Type stateType, Type contractType, Type implementationType, object key = null)
+        public IRegistration Bind(IRegistry registry, Type stateType, Type contractType, Type implementationType, IFactory factory, object key = null)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
@@ -64,31 +64,26 @@
             return registry.Register(stateType, contractType,
                 ctx =>
                 {
-                    var parameters = ctorParameters.Select(parameter => ResolveParameter(ctx.Resolver, ctx.State, parameter)).ToArray();
-                    return resolvingConstructor.Invoke(parameters);
+                    var parameters = ctorParameters.Select(parameter => ResolveParameter(factory, ctx.Resolver, ctx.State, parameter)).ToArray();
+                    return factory.Create(resolvingConstructor, parameters);                    
                 },
                 key);
         }
 
-        private static object ResolveParameter(IResolver resolver, object state, CtorParameter parameter)
+        private static object ResolveParameter(IFactory factory, IResolver resolver, object state, CtorParameter parameter)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
             if (parameter == null) throw new ArgumentNullException(nameof(parameter));
 
             if (parameter.State != null)
             {
-                return state;
+                return factory.ResolveState(resolver, parameter.Parameter, parameter.State, state);                
             }
 
             if (parameter.Dependency != null)
             {
                 var dependency = parameter.Dependency;
-                return resolver.Resolve(
-                    resolver,
-                    dependency.StateType ?? typeof(EmptyState),
-                    dependency.ContractType ?? parameter.Parameter.ParameterType,
-                    dependency.State ?? EmptyState.Shared,
-                    dependency.Key);
+                return factory.ResolveDependency(resolver, parameter.Parameter, dependency);                
             }
 
             throw new InvalidOperationException("Fail to resolve");

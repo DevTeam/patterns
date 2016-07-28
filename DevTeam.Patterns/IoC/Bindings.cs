@@ -25,8 +25,12 @@
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
 
+            // Resolve default binder
             var binder = container.Resolve<IBinder>();
-            return binder.Bind(container, stateType, contractType, implementationType, key);
+            // Resolve default factory
+            var factory = container.Resolve<IFactory>();
+            
+            return binder.Bind(container, stateType, contractType, implementationType, factory, key);
         }
     }
 }

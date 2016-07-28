@@ -51,7 +51,7 @@
     <Compile Include="AnyStateTypeAndKeyRegistrationComparer.cs" />
     <Compile Include="AnyKeyRegistrationComparer.cs" />
     <Compile Include="ComparerForRegistrationComparer.cs" />
-    <Compile Include="ReflectionBinder.cs" />
+    <Compile Include="Binder.cs" />
     <Compile Include="ConfigurationEqualityComparer.cs" />
     <Compile Include="Configurations.cs" />
     <Compile Include="ContainerDescription.cs" />
@@ -59,6 +59,7 @@
     <Compile Include="PerThreadLifetime.cs" />
     <Compile Include="PerResolveLifetime.cs" />
     <Compile Include="ControlledLifetime.cs" />
+    <Compile Include="ReflectionFactory.cs" />
     <Compile Include="RootContainerConfiguration.cs" />
     <Compile Include="RegistrationDescription.cs" />
     <Compile Include="PatternKeyRegistrationComparer.cs" />

@@ -9,6 +9,13 @@
 
     public class Container: IContainer
 	{
+        private static readonly Dictionary<Type, object> DefaultInstances = new Dictionary<Type, object>()
+        {
+            { typeof(ILifetime), RootContainerConfiguration.TransientLifetime.Value },
+            { typeof(IRegistrationComparer), RootContainerConfiguration.RootContainerRegestryKeyComparer.Value },
+            { typeof(IBinder), RootContainerConfiguration.Binder.Value },
+            { typeof(IFactory), RootContainerConfiguration.ReflectionFactory.Value}
+        };        
         private static readonly ComparerForRegistrationComparer ComparerForRegistrationComparer = new ComparerForRegistrationComparer();
         private readonly SortedDictionary<IRegistrationComparer, Dictionary> _factories = new SortedDictionary<IRegistrationComparer, Dictionary>(ComparerForRegistrationComparer);
 		private readonly IResolver _parentResolver;
@@ -108,15 +115,11 @@
 		        }
 		        
                 // Defaults		      
-		        if (contractType == typeof(ILifetime) && stateType == typeof(EmptyState) && key == null)
+		        object defaultInstance;
+		        if (stateType == typeof(EmptyState) && key == null && DefaultInstances.TryGetValue(contractType, out defaultInstance))
 		        {
-                    return RootContainerConfiguration.TransientLifetime.Value;
-		        }
-
-                if (contractType == typeof(IRegistrationComparer) && stateType == typeof(EmptyState) && key == null)
-                {
-                    return RootContainerConfiguration.RootContainerRegestryKeyComparer.Value;
-                }                
+		            return defaultInstance;
+		        }		        
             }
 		    catch (InvalidOperationException ex)
 		    {

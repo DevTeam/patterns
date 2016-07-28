@@ -4,7 +4,6 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
     internal class RootContainerConfiguration: IConfiguration
     {
@@ -25,7 +24,8 @@
         private static readonly Lazy<IRegistrationComparer> AnyStateTypeAndKey = new Lazy<IRegistrationComparer>(() => new AnyStateTypeAndKeyRegistrationComparer());
         private static readonly Lazy<IRegistrationComparer> AnyRegistrationComparer = new Lazy<IRegistrationComparer>(() => new AnyKeyRegistrationComparer());
 
-        internal static readonly Lazy<IBinder> ReflectionBinder = new Lazy<IBinder>(() => new ReflectionBinder());
+        internal static readonly Lazy<IBinder> Binder = new Lazy<IBinder>(() => new Binder());
+        internal static readonly Lazy<IFactory> ReflectionFactory = new Lazy<IFactory>(() => new ReflectionFactory());
 
         private RootContainerConfiguration()
         {
@@ -56,11 +56,7 @@
             yield return container.Register(() => PatternRegistrationComparer.Value, WellknownRegistrationComparer.PatternKey);
             yield return container.Register(() => AnyStateTypeAndKey.Value, WellknownRegistrationComparer.AnyStateTypeAndKey);
             yield return container.Register(() => AnyRegistrationComparer.Value, WellknownRegistrationComparer.AnyKey);
-
-            // Wellknown binders
-            yield return container.Register(() => ReflectionBinder.Value);
-            yield return container.Register(() => ReflectionBinder.Value, WellknownBinder.Reflection);
-
+            
             // Context container
             yield return container.Register(typeof(ContextContainerState), typeof(IContextContainer),
                 ctx =>
