@@ -70,7 +70,7 @@
         }
 
         [Test]
-        public void ShouldResolveWhenCtorHasStateAndNptMarkedDependency()
+        public void ShouldResolveWhenCtorHasStateAndNotMarkedDependency()
         {
             // Given
             var target = CreateTarget();

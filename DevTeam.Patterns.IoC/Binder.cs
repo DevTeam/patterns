@@ -57,7 +57,12 @@
             return registry.Register(stateType, contractType,
                 ctx =>
                 {
-                    var parameters = ctorInfo.Parameters.Select(parameter => ResolveParameter(factory, ctx.Resolver, ctx.State, parameter)).ToArray();
+                    var parameters = new object[ctorInfo.Parameters.Count];
+                    for (var i = 0; i < parameters.Length; i++)
+                    {
+                        parameters[i] = ResolveParameter(factory, ctx.Resolver, ctx.State, ctorInfo.Parameters[i]);
+                    }
+
                     return factory.Create(resolvingConstructor, parameters);                    
                 },
                 key);
