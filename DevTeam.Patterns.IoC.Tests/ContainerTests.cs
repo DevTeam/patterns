@@ -85,20 +85,6 @@ namespace DevTeam.Patterns.IoC.Tests
         }
 
         [Test]
-        public void ShouldCreateChildContainerViaState()
-        {
-            // Given
-            var target = CreateTarget();
-
-            // When
-            var childContainer = (IContainer)target.Resolve(target, typeof(object), typeof(IContainer), "child");
-
-            // Then
-            childContainer.ShouldBeAssignableTo<IContainer>();
-            childContainer.Key.ShouldBe("child");
-        }
-
-        [Test]
 		public void ChildContainerShouldHasNameFromResolve()
 		{
 			// Given
