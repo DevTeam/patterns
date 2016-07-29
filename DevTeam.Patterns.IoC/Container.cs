@@ -18,7 +18,8 @@
         };        
         private static readonly ComparerForRegistrationComparer ComparerForRegistrationComparer = new ComparerForRegistrationComparer();
         private readonly SortedDictionary<IRegistrationComparer, Dictionary> _factories = new SortedDictionary<IRegistrationComparer, Dictionary>(ComparerForRegistrationComparer);
-		private readonly IResolver _parentResolver;
+        private readonly Dictionary<RegistrationDescription, RegistrationInfo> _chache = new Dictionary<RegistrationDescription, RegistrationInfo>();
+        private readonly IResolver _parentResolver;
         private readonly IDisposable _disposable = Disposable.Empty();
 
         /// <summary>
@@ -61,7 +62,8 @@
 
             var resources = new CompositeDisposable();
             var registrationDescription = new RegistrationDescription(stateType, contractType, key, resources);
-	        var registration = new StrictRegistration(registrationDescription);
+	        _chache.Remove(registrationDescription);
+            var registration = new StrictRegistration(registrationDescription);
             try
             {
                 if (contractType != typeof(ILifetime))
@@ -91,18 +93,24 @@
 
             resolver = resolver ?? this;
             var registrationDescription = new RegistrationDescription(stateType, contractType, key, Disposable.Empty());
-	        foreach (var registration in GetResolverRegistrations(registrationDescription))
+
+            RegistrationInfo info;
+	        if (!_chache.TryGetValue(registrationDescription, out info))
 	        {
-	            foreach (var dictionary in _factories)
+                Func<IResolvingContext, object> factory = null;
+
+                info = (
+                    from registration in GetResolverRegistrations(registrationDescription)
+                    from dictionary in _factories
+                    where dictionary.Value.TryGetValue(registration, out factory)
+                    select new RegistrationInfo(factory, registration)).FirstOrDefault() ?? new RegistrationInfo();
+            }
+
+	        if (!info.IsEmpty)
+	        {
+	            using (var ctx = new ResolvingContext(resolver, info.Registration, contractType, state))
 	            {
-	                Func<IResolvingContext, object> factory;
-	                if (dictionary.Value.TryGetValue(registration, out factory))
-                    {
-                        using (var ctx = new ResolvingContext(resolver, registration, contractType, state))
-                        {
-                            return factory(ctx);
-                        }
-                    }
+	                return info.Factory(ctx);
 	            }
 	        }
 
@@ -186,6 +194,26 @@
         private IRegistrationComparer GetComparer()
         {
             return (IRegistrationComparer)Resolve(this, typeof(EmptyState), typeof(IRegistrationComparer), EmptyState.Shared, null);            
+        }
+
+        private class RegistrationInfo
+        {
+            public RegistrationInfo()
+            {
+                IsEmpty = true;
+            }
+
+            public RegistrationInfo(Func<IResolvingContext, object> factory, IRegistration registration)
+            {
+                Factory = factory;
+                Registration = registration;
+            }
+
+            public bool IsEmpty { get; }
+
+            public Func<IResolvingContext, object> Factory { get; }
+
+            public IRegistration Registration { get; }
         }
     }
 }
