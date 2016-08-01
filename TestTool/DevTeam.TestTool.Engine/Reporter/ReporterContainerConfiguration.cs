@@ -3,11 +3,8 @@
     using System;
     using System.Collections.Generic;
 
-    using Patterns.EventAggregator;
     using Patterns.IoC;
     using Contracts;
-
-    using Patterns.Reactive;
 
     /// <inheritdoc/>
     internal class ReporterContainerConfiguration: IConfiguration
@@ -23,8 +20,8 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Bind<ISession, ITool, ReporterTool>();
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<ITestReporter, TextTestReporter>("text");
+            yield return container.Register<ReporterTool>().As<ISession, ITool>();
+            yield return container.Register<TextTestReporter>(WellknownLifetime.Singleton).As<ITestReporter>("text");
         }
     }
 }

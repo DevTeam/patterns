@@ -18,11 +18,11 @@
         /// <inheritdoc/>
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
-            // Bind to Timer
-            yield return container.Bind<TimeSpan, ITimer, Timer>();
+            // Register to Timer
+            yield return container.Register<Timer>().As<TimeSpan, ITimer>();
 
-            // Bind to Time Publisher
-            yield return container.Bind<ITimePublisher, TimePublisher>();
+            // Register to Time Publisher
+            yield return container.Register<TimePublisher>().As<ITimePublisher>();
         }
     }
 }

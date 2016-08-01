@@ -5,7 +5,6 @@
   },
 
   "dependencies": {
-    "DevTeam.Platform.System.dotNetCore": "1.0.0-*",
     "Microsoft.NETCore.App": {
         "type": "platform",
         "version": "1.0.0"
@@ -28,6 +27,9 @@
             "target": "project"
         },
         "DevTeam.Platform": {
+            "target": "project"
+        },
+        "DevTeam.Platform.System": {
             "target": "project"
         }
       },

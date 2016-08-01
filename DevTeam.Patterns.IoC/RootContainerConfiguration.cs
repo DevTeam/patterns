@@ -71,7 +71,7 @@
                 .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyStateTypeAndKey)
                 .Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(EmptyState), typeof(IContainer), ctx => new Container(new ContainerDescription(ctx.Resolver, ctx.Registration.Key)));
 
-            // Default configuration equality comparer
+            // FullCompliance configuration equality comparer
             yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IEqualityComparer<IConfiguration>), ctx => new ConfigurationEqualityComparer());
 
             // Resolvers

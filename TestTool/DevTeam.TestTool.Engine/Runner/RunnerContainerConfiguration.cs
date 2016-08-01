@@ -20,8 +20,8 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Bind<ISession, ITool, RunnerTool>();
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<ITestRunner, TestRunner>();
+            yield return container.Register<RunnerTool>().As<ISession, ITool>();
+            yield return container.Register<TestRunner>().As<ITestRunner>(WellknownLifetime.Singleton);
         }
     }
 }

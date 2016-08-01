@@ -17,7 +17,7 @@
 			var target = CreateTarget();
 
 			// When
-			target.Bind<string, IService, Service1WithState>("myService1");
+			target.Register<Service1WithState>().As<string, IService>("myService1");
 
 			// Then
 			target.Registrations.ShouldContain(i => i.StateType == typeof(string) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
@@ -30,7 +30,7 @@
             var target = CreateTarget();
 
             // When
-            target.Bind<IService, Service1>("myService1");
+            target.Register<Service1>().As<IService>("myService1");
 
             // Then
             var contract = target.Resolve<IService>("myService1");
@@ -44,7 +44,7 @@
             var target = CreateTarget();
 
             // When
-            target.Bind<string, IService, Service1WithState>("myService1");
+            target.Register<Service1WithState>().As<string, IService>("myService1");
 
             // Then
             var contract = target.Resolve<string, IService>("state", "myService1");
@@ -59,8 +59,8 @@
             var target = CreateTarget();
 
             // When
-            target.Bind<IService, Service1>("dep");
-            target.Bind<string, IService, Service1WithStateAndDependency>("myService1");
+            target.Register<Service1>().As<IService>("dep");
+            target.Register<Service1WithStateAndDependency>().As<string, IService>("myService1");
 
             // Then
             var contract = target.Resolve<string, IService>("state", "myService1");
@@ -77,7 +77,7 @@
 
             // When
             target.Register(() => 99);
-            target.Bind<string, IService, Service1WithStateAndNotMarkedDependency>("myService1");
+            target.Register<Service1WithStateAndNotMarkedDependency>().As<string, IService>("myService1");
 
             // Then
             var contract = target.Resolve<string, IService>("state", "myService1");
@@ -94,9 +94,9 @@
             var target = CreateTarget();
 
             // When
-            target.Bind<IService, Service1>("dep");
-            target.Bind<string, IService, Service1WithStateAndDependency>("dep2");
-            target.Bind<int, IService, Service1WithStateAndDependencyFromAttr>("myService1");
+            target.Register<Service1>().As<IService>("dep");
+            target.Register<Service1WithStateAndDependency>().As<string, IService>("dep2");
+            target.Register<Service1WithStateAndDependencyFromAttr>().As<int, IService>("myService1");
 
             // Then
             var contract = target.Resolve<int, IService>(33, "myService1");
@@ -112,9 +112,9 @@
             var target = CreateTarget();
 
             // When
-            target.Bind<IService, Service1>("dep");
-            target.Bind<string, IService, Service1WithStateAndDependency>("dep2");
-            target.Bind<int, IService, Service1WithStateAndDependencyViaResolver>("myService1");
+            target.Register<Service1>().As<IService>("dep");
+            target.Register<Service1WithStateAndDependency>().As<string, IService>("dep2");
+            target.Register<Service1WithStateAndDependencyViaResolver>().As<int, IService>("myService1");
 
             // Then
             var contract = target.Resolve<int, IService>(33, "myService1");
@@ -130,9 +130,9 @@
             var target = CreateTarget();
             
             // When
-            target.Using<ILifetime>(WellknownLifetime.Singleton).Bind<int, Service1WithStateAndEnumerableDependency, Service1WithStateAndEnumerableDependency>("myService1");
-            target.Bind<IService, Service1>("dep");
-            target.Bind<IService, Service1>("dep2");
+            target.Register<Service1WithStateAndEnumerableDependency>(WellknownLifetime.Singleton).As<int, Service1WithStateAndEnumerableDependency>("myService1");
+            target.Register<Service1>().As<IService>("dep");
+            target.Register<Service1>().As<IService>("dep2");
 
             // Then
             var contract = target.Resolve<int, Service1WithStateAndEnumerableDependency>(33, "myService1");
@@ -149,9 +149,9 @@
             var target = CreateTarget().Resolve<IContainer>("child");
 
             // When
-            target.Using<ILifetime>(WellknownLifetime.Singleton).Bind<int, Service1WithStateAndEnumerableDependency, Service1WithStateAndEnumerableDependency>("myService1");
-            target.Bind<IService, Service1>("dep");
-            target.Bind<IService, Service1>("dep2");
+            target.Register<Service1WithStateAndEnumerableDependency>(WellknownLifetime.Singleton).As<int, Service1WithStateAndEnumerableDependency>("myService1");
+            target.Register<Service1>().As<IService>("dep");
+            target.Register<Service1>().As<IService>("dep2");
 
             // Then
             var contract = target.Resolve<int, Service1WithStateAndEnumerableDependency>(33, "myService1");

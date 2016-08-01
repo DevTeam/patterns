@@ -26,21 +26,21 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Bind<IEnumerable<IPropertyValue>, ISession, Session>();
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IPropertyFactory, PropertyFactory>();
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IConverter<string[], IEnumerable<IPropertyValue>>, CommandLineArgsToPropertiesConverter>();
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IResolver<ISession, ITool>, ToolResolver>();
-            yield return container.Bind<PropertyValueDescription, IPropertyValue, PropertyValue>();
+            yield return container.Register<Session>().As<IEnumerable<IPropertyValue>, ISession>();
+            yield return container.Register<PropertyFactory>(WellknownLifetime.Singleton).As<IPropertyFactory>();
+            yield return container.Register<CommandLineArgsToPropertiesConverter>(WellknownLifetime.Singleton).As<IConverter<string[], IEnumerable<IPropertyValue>>>();
+            yield return container.Register<ToolResolver>(WellknownLifetime.Singleton).As<IResolver<ISession, ITool>>();
+            yield return container.Register<PropertyValue>().As<PropertyValueDescription, IPropertyValue>();
 
             // Tools
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IConfiguration, ExplorerContainerConfiguration>(WellknownTool.Explorer);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IConfiguration, RunnerContainerConfiguration>(WellknownTool.Runnner);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IConfiguration, ReporterContainerConfiguration>(WellknownTool.Reporter);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IConfiguration, PublisherContainerConfiguration>(WellknownTool.Publisher);
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ExplorerContainerConfiguration>().As<IConfiguration>(WellknownTool.Explorer);
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<RunnerContainerConfiguration>().As<IConfiguration>(WellknownTool.Runnner);
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ReporterContainerConfiguration>().As<IConfiguration>(WellknownTool.Reporter);
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<PublisherContainerConfiguration>().As<IConfiguration>(WellknownTool.Publisher);
 
             // Properties
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IProperty, ToolProperty>(WellknownProperty.Tool);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IProperty, AssemblyProperty>(WellknownProperty.Assembly);
+            yield return container.Register<ToolProperty>(WellknownLifetime.Singleton).As<IProperty>(WellknownProperty.Tool);
+            yield return container.Register<AssemblyProperty>(WellknownLifetime.Singleton).As<IProperty>(WellknownProperty.Assembly);
         }
     }
 }

@@ -4,7 +4,6 @@
 
     using DevTeam.Patterns.EventAggregator;
     using DevTeam.Patterns.IoC;
-    using DevTeam.Patterns.Reactive;
     using DevTeam.Platform.System;
 
     /// <inheritdoc/>
@@ -21,19 +20,19 @@
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             // Register Echo Request
-            yield return container.Bind<string, IEchoRequest, EchoRequest>();
+            yield return container.Register<EchoRequest>().As<string, IEchoRequest>();            
 
             // Register Echo
-            yield return container.Bind<string, IEcho, Echo>();
+            yield return container.Register<Echo>().As<string, IEcho>();
 
             // Register Echo Service
-            yield return container.Bind<string, IEchoService, EchoService>();
+            yield return container.Register<EchoService>().As<string, IEchoService>();
 
             // Register Console Echo Publisher as Singleton
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IEchoPublisher, ConsoleEchoPublisher>();
+            yield return container.Register<ConsoleEchoPublisher>(WellknownLifetime.Singleton).As<IEchoPublisher>();
 
             // Register Console Echo Request bbSource as Singleton
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IEchoRequestSource, ConsoleEchoRequestSource>();
+            yield return container.Register<ConsoleEchoRequestSource>(WellknownLifetime.Singleton).As<IEchoRequestSource>();
         }
     }
 }

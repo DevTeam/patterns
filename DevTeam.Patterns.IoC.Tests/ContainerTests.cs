@@ -438,7 +438,7 @@ namespace DevTeam.Patterns.IoC.Tests
             var child1 = target.CreateChildContainer("child1");
             var child2 = child1.CreateChildContainer("child2");
             var service = new Service1();
-            child1.Bind(typeof(string), typeof(IService), typeof(Service1WithStateAndDependency), "abc");
+            child1.Register(typeof(string), typeof(IService), typeof(Service1WithStateAndDependency), "abc");
             target.Register(typeof(EmptyState), typeof(IService),
                 ctx =>
                 {

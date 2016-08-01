@@ -2,7 +2,7 @@ namespace DevTeam.Patterns.IoC
 {
     internal class DefaultContainerRegistrationComparer: IRegistrationComparer
     {
-        public WellknownRegistrationComparer Key => WellknownRegistrationComparer.Default;
+        public WellknownRegistrationComparer Key => WellknownRegistrationComparer.FullCompliance;
 
         public bool Equals(IRegistration x, IRegistration y)
         {

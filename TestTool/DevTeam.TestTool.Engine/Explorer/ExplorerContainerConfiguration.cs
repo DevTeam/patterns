@@ -26,8 +26,8 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Bind<ISession, ITool, ExplorerTool>();
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<ISession, ITestSource, TestSource>();
+            yield return container.Register<ExplorerTool>().As<ISession, ITool>();
+            yield return container.Register<TestSource>(WellknownLifetime.Singleton).As<ISession, ITestSource>();
         }
     }
 }

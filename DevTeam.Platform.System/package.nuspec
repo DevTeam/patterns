@@ -19,10 +19,10 @@
 	</metadata>
 	<files>
   		<file src="..\DevTeam.Platform.System.dotNet\bin\Release\DevTeam.Platform.System.dotNet.*" target="lib\net45" />
-		<file src="..\DevTeam.Platform.System.dotNetCore\bin\Release\netstandard1.6\DevTeam.Platform.System.dotNetCore.*" target="lib\netstandard1.6+netcoreapp" />
+		<file src="bin\Release\netstandard1.6\DevTeam.Platform.System.*" target="lib\portable-net46+netstandard1.6+netcoreapp" />
 
 		<file src="..\DevTeam.Platform.System.dotNet\**\*.*" target="src\DevTeam.Platform.System.dotNet" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
-		<file src="..\DevTeam.Platform.System.dotNetCore\**\*.*" target="src\DevTeam.Platform.System.dotNetCore" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
+		<file src="**\*.*" target="src\DevTeam.Platform.System" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
 
 		<!--file src="..\Platform.Reflection.Tests\**\*.*" target="src\Platform.Reflection.Tests" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/-->
 	</files>

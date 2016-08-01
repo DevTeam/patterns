@@ -3,12 +3,9 @@
     using System;
     using System.Collections.Generic;
 
-    using Patterns.EventAggregator;
     using Patterns.IoC;
     using Contracts;
     using Host;
-
-    using Platform.System;
 
     /// <inheritdoc/>
     internal class PublisherContainerConfiguration : IConfiguration
@@ -24,9 +21,9 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Bind<ISession, ITool, PublisherTool>();
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IReportPublisher, ReportPublisher>();
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Bind<IOutput, ConsoleOutput>();            
+            yield return container.Register<PublisherTool>().As<ISession, ITool>();
+            yield return container.Register<ReportPublisher>().As<IReportPublisher>(WellknownLifetime.Singleton);
+            yield return container.Register<ConsoleOutput>().As<IOutput>(WellknownLifetime.Singleton);
         }
     }
 }

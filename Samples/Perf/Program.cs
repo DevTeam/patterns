@@ -23,7 +23,7 @@
             for (var i = 0; i < mod; i++)
             {
                 rootContainer.Register<int, int>(n => n + 1, i);
-                rootContainer.Bind<int, MyClass, MyClass>(i);
+                rootContainer.Register<MyClass>().As<int, MyClass>(i);
             }
 
             Console.WriteLine("Resolves");

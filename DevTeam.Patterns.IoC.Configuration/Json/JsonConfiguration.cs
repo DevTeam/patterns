@@ -66,7 +66,7 @@
                 let contractType = Type.GetType(bindElement.Contract, true)
                 let implementationType = Type.GetType(bindElement.Implementation, true)
                 let key = GetKey(bindElement.Key)
-                select ApplyUsingContainer(container, bindElement).Bind(stateType, contractType, implementationType, key);
+                select ApplyUsingContainer(container, bindElement).Register(stateType, contractType, implementationType, key);
         }
 
         private static IContainer ApplyUsingContainer(IContainer container, BindElement bindElement)

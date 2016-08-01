@@ -2,7 +2,7 @@
 {
     public enum WellknownRegistrationComparer
     {
-        Default,
+        FullCompliance,
 
         PatternKey,
 
