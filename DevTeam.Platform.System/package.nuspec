@@ -19,7 +19,7 @@
 	</metadata>
 	<files>
   		<file src="..\DevTeam.Platform.System.dotNet\bin\Release\DevTeam.Platform.System.dotNet.*" target="lib\net45" />
-		<file src="bin\Release\netstandard1.6\DevTeam.Platform.System.*" target="lib\portable-net46+netstandard1.6+netcoreapp" />
+		<file src="bin\Release\DevTeam.Platform.System.*" target="lib\portable-net46+netstandard1.6+netcoreapp" />
 
 		<file src="..\DevTeam.Platform.System.dotNet\**\*.*" target="src\DevTeam.Platform.System.dotNet" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>
 		<file src="**\*.*" target="src\DevTeam.Platform.System" exclude="**\bin\**\*.*;**\obj\**\*.*;**\*.user"/>

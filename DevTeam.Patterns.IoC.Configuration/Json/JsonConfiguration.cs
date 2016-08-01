@@ -45,7 +45,7 @@
                 select dependency.CreateRegistrations(container)).SelectMany(i => i)
                 : Enumerable.Empty<IRegistration>();
 
-            var bindingsRegistrations = CreateBindingsRegistrations(container, configurationElement);
+            var bindingsRegistrations = CreateRegistrations(container, configurationElement);
 
             var childrenRegistrations = (
                 from contrainerElement in configurationElement.Containers?? Enumerable.Empty<ContainerElement>()
@@ -56,12 +56,12 @@
 
         }
 
-        private static IEnumerable<IRegistration> CreateBindingsRegistrations(IContainer container, ConfigurationElement configurationElement)
+        private static IEnumerable<IRegistration> CreateRegistrations(IContainer container, ConfigurationElement configurationElement)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
             return 
-                from bindElement in configurationElement?.Bindings ?? Enumerable.Empty<BindElement>()
+                from bindElement in configurationElement?.Registrations ?? Enumerable.Empty<RegistrationElement>()
                 let stateType = bindElement.State != null ? Type.GetType(bindElement.State, true) : typeof(EmptyState)
                 let contractType = Type.GetType(bindElement.Contract, true)
                 let implementationType = Type.GetType(bindElement.Implementation, true)
@@ -69,19 +69,19 @@
                 select ApplyUsingContainer(container, bindElement).Register(stateType, contractType, implementationType, key);
         }
 
-        private static IContainer ApplyUsingContainer(IContainer container, BindElement bindElement)
+        private static IContainer ApplyUsingContainer(IContainer container, RegistrationElement registrationElement)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
-            if (bindElement == null) throw new ArgumentNullException(nameof(bindElement));
+            if (registrationElement == null) throw new ArgumentNullException(nameof(registrationElement));
 
-            if (bindElement.Lifetime != null)
+            if (registrationElement.Lifetime != null)
             {
-                container = container.Using<ILifetime>(bindElement.Lifetime.Value);
+                container = container.Using<ILifetime>(registrationElement.Lifetime.Value);
             }
 
-            if (bindElement.RegistrationComparer != null)
+            if (registrationElement.RegistrationComparer != null)
             {
-                container = container.Using<IRegistrationComparer>(bindElement.RegistrationComparer.Value);
+                container = container.Using<IRegistrationComparer>(registrationElement.RegistrationComparer.Value);
             }
 
             return container;

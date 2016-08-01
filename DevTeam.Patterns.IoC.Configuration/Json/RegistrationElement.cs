@@ -2,7 +2,7 @@
 {
     using Newtonsoft.Json;
 
-    internal class BindElement
+    internal class RegistrationElement
     {
         public string State { get; set; }
 

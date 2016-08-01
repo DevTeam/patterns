@@ -8,6 +8,6 @@
 
         public IList<ContainerElement> Containers { get; set; }
 
-        public IList<BindElement> Bindings { get; set; }
+        public IList<RegistrationElement> Registrations { get; set; }
     }
 }

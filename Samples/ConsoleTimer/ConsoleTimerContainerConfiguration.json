@@ -3,7 +3,7 @@
         { "Type": "DevTeam.Platform.System.SystemContainerConfiguration, DevTeam.Platform.System.dotNet" }        
     ],
 
-    "Bindings": [
+    "Registrations": [
         // Register to Timer
         {
             "State": "System.TimeSpan",
