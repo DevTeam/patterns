@@ -17,6 +17,12 @@
             return registration;
         }
 
+        public static Registration InScope(this Registration registration, WellknownScope scope)
+        {
+            registration.Scope = scope;
+            return registration;
+        }
+
         public static IRegistration As<TState, T>(this Registration registration, object key = null)
         {
             var container = registration.Container;
@@ -29,6 +35,11 @@
             if (registration.RegistrationComparer != WellknownRegistrationComparer.FullCompliance)
             {
                 container = container.Using<IRegistrationComparer>(registration.RegistrationComparer);
+            }
+
+            if (registration.Scope != WellknownScope.Public)
+            {
+                container = container.Using<IScope>(registration.Scope);
             }
 
             return container.Register(typeof(TState), typeof(T), registration.ImplementationType, key);
@@ -109,6 +120,7 @@
                 Container = container;
                 Lifetime = lifetime;
                 RegistrationComparer = WellknownRegistrationComparer.FullCompliance;
+                Scope = WellknownScope.Public;
             }
 
             internal Type ImplementationType { get; }
@@ -118,6 +130,8 @@
             internal WellknownLifetime Lifetime { get; }
 
             internal WellknownRegistrationComparer RegistrationComparer { get; set; }
+
+            public WellknownScope Scope { get; set; }
         }
     }    
 }

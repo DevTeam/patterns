@@ -5,17 +5,19 @@
     using System.Linq;
 
     using Dispose;
-    using Dictionary = System.Collections.Generic.Dictionary<IRegistration, System.Func<IResolvingContext, object>>;
+    using Dictionary = System.Collections.Generic.Dictionary<IRegistration, Container.RegistrationInfo>;
 
     public class Container: IContainer
 	{
-        private static readonly Dictionary<Type, object> DefaultInstances = new Dictionary<Type, object>()
+        private static readonly Dictionary<Type, object> DefaultInstances = new Dictionary<Type, object>
         {
             { typeof(ILifetime), RootContainerConfiguration.TransientLifetime.Value },
             { typeof(IRegistrationComparer), RootContainerConfiguration.RootContainerRegestryKeyComparer.Value },
             { typeof(IBinder), RootContainerConfiguration.Binder.Value },
-            { typeof(IFactory), RootContainerConfiguration.Factory.Value}
-        };        
+            { typeof(IFactory), RootContainerConfiguration.Factory.Value },
+            { typeof(IScope), RootContainerConfiguration.PublicScope.Value }
+        };
+
         private static readonly ComparerForRegistrationComparer ComparerForRegistrationComparer = new ComparerForRegistrationComparer();
         private readonly SortedDictionary<IRegistrationComparer, Dictionary> _factories = new SortedDictionary<IRegistrationComparer, Dictionary>(ComparerForRegistrationComparer);
         private readonly Dictionary<RegistrationDescription, RegistrationInfo> _chache = new Dictionary<RegistrationDescription, RegistrationInfo>();
@@ -44,7 +46,13 @@
 
         public object Key { get; }
 
-	    public IEnumerable<IRegistration> Registrations => _factories.SelectMany(i => i.Value.Keys).Distinct().Union(_parentResolver != null ? _parentResolver.Registrations : Enumerable.Empty<IRegistration>());
+	    public IEnumerable<IRegistration> Registrations => 
+            _factories
+            .SelectMany(i => i.Value)
+            .Where(i => i.Value.Scope.Satisfy(this))
+            .Select(i => i.Key)
+            .Distinct()
+            .Union(_parentResolver != null ? _parentResolver.Registrations : Enumerable.Empty<IRegistration>());
 
 	    public IRegistration Register(Type stateType, Type contractType, Func<IResolvingContext, object> factoryMethod, object key = null)
 		{
@@ -61,6 +69,7 @@
             }
 
             var resources = new CompositeDisposable();
+            var scope = (IScope)Resolve(this, typeof(IResolver), typeof(IScope), this);
             var registrationDescription = new RegistrationDescription(stateType, contractType, key, resources);
 	        _chache.Remove(registrationDescription);
             var registration = new StrictRegistration(registrationDescription);
@@ -69,12 +78,12 @@
                 if (contractType != typeof(ILifetime))
 	            {
 	                var lifetime = (ILifetime)Resolve(this, typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
-                    dictionary.Add(registration, ctx => lifetime.Create(ctx, factoryMethod));
+                    dictionary.Add(registration, new RegistrationInfo(ctx => lifetime.Create(ctx, factoryMethod), registration, scope));
                     resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(registration), lifetime)));
 	            }
 	            else
 	            {
-                    dictionary.Add(registration, factoryMethod);
+                    dictionary.Add(registration, new RegistrationInfo(factoryMethod, registration, scope));
 	                resources.Add(Disposable.Create(() => Unregister(registration)));
 	            }	            
 	        }
@@ -97,13 +106,14 @@
             RegistrationInfo info;
 	        if (!_chache.TryGetValue(registrationDescription, out info))
 	        {
-                Func<IResolvingContext, object> factory = null;
+                RegistrationInfo curRegistrationInfo = null;
 
                 info = (
                     from registration in GetResolverRegistrations(registrationDescription)
                     from dictionary in _factories
-                    where dictionary.Value.TryGetValue(registration, out factory)
-                    select new RegistrationInfo(factory, registration)).FirstOrDefault() ?? new RegistrationInfo();
+                    where dictionary.Value.TryGetValue(registration, out curRegistrationInfo)
+                    where curRegistrationInfo.Scope.Satisfy(resolver)
+                    select new RegistrationInfo(curRegistrationInfo.Factory, registration, curRegistrationInfo.Scope)).FirstOrDefault() ?? new RegistrationInfo();
             }
 
 	        if (!info.IsEmpty)
@@ -124,7 +134,7 @@
 		        
                 // Defaults		      
 		        object defaultInstance;
-		        if (stateType == typeof(EmptyState) && key == null && DefaultInstances.TryGetValue(contractType, out defaultInstance))
+		        if (key == null && DefaultInstances.TryGetValue(contractType, out defaultInstance))
 		        {
 		            return defaultInstance;
 		        }		        
@@ -143,6 +153,7 @@
         /// </summary>
         public void Dispose()
 	    {
+            _chache.Clear();
             _factories.SelectMany(i => i.Value.Keys).Distinct().ToCompositeDisposable().Dispose();
             _disposable.Dispose();
         }
@@ -154,7 +165,14 @@
 
 	    private bool Unregister(IRegistration registration)
 	    {
-	        var removed = false;
+	        _chache.Remove(
+	            new RegistrationDescription(
+	                registration.StateType,
+	                registration.ContractType,
+	                registration.Key,
+	                Disposable.Empty()));
+	        
+            var removed = false;
 	        foreach (var dictionary in _factories)
 	        {
                 removed |= dictionary.Value.Remove(registration);
@@ -196,17 +214,18 @@
             return (IRegistrationComparer)Resolve(this, typeof(EmptyState), typeof(IRegistrationComparer), EmptyState.Shared, null);            
         }
 
-        private class RegistrationInfo
+        internal class RegistrationInfo
         {
             public RegistrationInfo()
             {
                 IsEmpty = true;
             }
 
-            public RegistrationInfo(Func<IResolvingContext, object> factory, IRegistration registration)
+            public RegistrationInfo(Func<IResolvingContext, object> factory, IRegistration registration, IScope scope)
             {
                 Factory = factory;
                 Registration = registration;
+                Scope = scope;
             }
 
             public bool IsEmpty { get; }
@@ -214,6 +233,8 @@
             public Func<IResolvingContext, object> Factory { get; }
 
             public IRegistration Registration { get; }
+
+            public IScope Scope { get; }
         }
     }
 }

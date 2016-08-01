@@ -57,9 +57,11 @@
     <Compile Include="ContainerDescription.cs" />
     <Compile Include="ContextContainer.cs" />
     <Compile Include="ExpressionFactory.cs" />
+    <Compile Include="InternalScope.cs" />
     <Compile Include="PerThreadLifetime.cs" />
     <Compile Include="PerResolveLifetime.cs" />
     <Compile Include="ControlledLifetime.cs" />
+    <Compile Include="PublicScope.cs" />
     <Compile Include="RootContainerConfiguration.cs" />
     <Compile Include="RegistrationDescription.cs" />
     <Compile Include="PatternKeyRegistrationComparer.cs" />

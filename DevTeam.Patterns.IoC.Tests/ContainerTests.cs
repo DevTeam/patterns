@@ -381,7 +381,7 @@ namespace DevTeam.Patterns.IoC.Tests
         }
 
         [Test]
-        public void ShouldResolveAllContractsbAsIEnumerableWhenKeyIsNull()
+        public void ShouldResolveAllContractsAsIEnumerableWhenKeyIsNull()
         {
             // Given
             var target = CreateTarget();

@@ -74,14 +74,19 @@
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (registrationElement == null) throw new ArgumentNullException(nameof(registrationElement));
 
-            if (registrationElement.Lifetime != null)
+            if (registrationElement.Lifetime != null && registrationElement.Lifetime != WellknownLifetime.Transient)
             {
                 container = container.Using<ILifetime>(registrationElement.Lifetime.Value);
             }
 
-            if (registrationElement.RegistrationComparer != null)
+            if (registrationElement.RegistrationComparer != null && registrationElement.RegistrationComparer == WellknownRegistrationComparer.FullCompliance)
             {
                 container = container.Using<IRegistrationComparer>(registrationElement.RegistrationComparer.Value);
+            }
+
+            if (registrationElement.Scope != null && registrationElement.Scope != WellknownScope.Public)
+            {
+                container = container.Using<IScope>(registrationElement.Scope);
             }
 
             return container;

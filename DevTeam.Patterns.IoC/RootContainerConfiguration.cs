@@ -27,6 +27,8 @@
         internal static readonly Lazy<IBinder> Binder = new Lazy<IBinder>(() => new Binder());
         internal static readonly Lazy<IFactory> Factory = new Lazy<IFactory>(() => new ExpressionFactory());
 
+        internal static readonly Lazy<IScope> PublicScope = new Lazy<IScope>(() => new PublicScope());
+
         private RootContainerConfiguration()
         {
         }
@@ -79,56 +81,60 @@
                 .Using<ILifetime>(WellknownLifetime.Singleton)
                 .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
                 .Register(typeof(EmptyState), typeof(IResolver<>),
-                ctx =>
-                {
-                    var resolverType = typeof(Resolver<>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0]);
-                    return Activator.CreateInstance(resolverType, ctx.Resolver, ctx.Registration.Key);
-                });
+                    ctx =>
+                    {
+                        var resolverType = typeof(Resolver<>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0]);
+                        return Activator.CreateInstance(resolverType, ctx.Resolver, ctx.Registration.Key);
+                    });
 
             yield return container
                 .Using<ILifetime>(WellknownLifetime.Singleton)
                 .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
                 .Register(typeof(EmptyState), typeof(IResolver<,>),
-                ctx =>
-                {
-                    var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0], ctx.ResolvingContractType.GenericTypeArguments[1]);
-                    return Activator.CreateInstance(resolverType, ctx.Resolver, ctx.Registration.Key);
-                });
+                    ctx =>
+                    {
+                        var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0], ctx.ResolvingContractType.GenericTypeArguments[1]);
+                        return Activator.CreateInstance(resolverType, ctx.Resolver, ctx.Registration.Key);
+                    });
 
 
             // Resolve All as IEnumerable
             yield return container
                 .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyStateTypeAndKey)
                 .Register(
-                typeof(EmptyState),
-                typeof(IEnumerable<>),
-                ctx =>
-                {
-                    var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
-                    var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
-                    var source =
-                        from key in ctx.Resolver.Registrations
-                        where key.ContractType == enumItemType && key.StateType == ctx.Registration.StateType
-                        select ctx.Resolver.Resolve(ctx.Resolver, key.StateType, enumItemType, ctx.State, key.Key);
-                    return Activator.CreateInstance(enumType, source);
-                });
+                    typeof(EmptyState),
+                    typeof(IEnumerable<>),
+                    ctx =>
+                    {
+                        var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
+                        var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
+                        var source =
+                            from key in ctx.Resolver.Registrations
+                            where key.ContractType == enumItemType && key.StateType == ctx.Registration.StateType
+                            select ctx.Resolver.Resolve(ctx.Resolver, key.StateType, enumItemType, ctx.State, key.Key);
+                        return Activator.CreateInstance(enumType, source);
+                    });
 
             yield return container
                 .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
                 .Register(
-                typeof(StateSelector),
-                typeof(IEnumerable<>),
-                ctx =>
-                {
-                    var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
-                    var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
-                    var source =
-                        from key in ctx.Resolver.Registrations
-                        where key.ContractType == enumItemType
-                        let state = ((StateSelector)ctx.State)(ctx)
-                        select ctx.Resolver.Resolve(ctx.Resolver, key.StateType, enumItemType, state, key.Key);
-                    return Activator.CreateInstance(enumType, source);
-                });
+                    typeof(StateSelector),
+                    typeof(IEnumerable<>),
+                    ctx =>
+                    {
+                        var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
+                        var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
+                        var source =
+                            from key in ctx.Resolver.Registrations
+                            where key.ContractType == enumItemType
+                            let state = ((StateSelector)ctx.State)(ctx)
+                            select ctx.Resolver.Resolve(ctx.Resolver, key.StateType, enumItemType, state, key.Key);
+                        return Activator.CreateInstance(enumType, source);
+                    });
+
+            // Scopes
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(IResolver), typeof(IScope), ctx => PublicScope.Value, WellknownScope.Public);
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(IResolver), typeof(IScope), ctx => new InternalScope(ctx.Resolver), WellknownScope.Internal);
         }
 
         private class Enumerable<T> : IEnumerable<T>

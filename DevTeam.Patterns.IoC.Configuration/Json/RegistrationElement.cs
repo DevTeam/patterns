@@ -17,5 +17,7 @@
         public WellknownLifetime? Lifetime { get; set; }
 
         public WellknownRegistrationComparer? RegistrationComparer { get; set; }
+
+        public WellknownScope? Scope { get; set; }
     }
 }
