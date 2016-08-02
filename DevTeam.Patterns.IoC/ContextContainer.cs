@@ -25,7 +25,7 @@
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
-            using (_state.TargetContainer.Register(() => (TContext)_state.Context))
+            using (_state.TargetContainer.Register(typeof(EmptyState), typeof(TContext), ctx => (TContext)_state.Context))
             {
                 return _state.TargetContainer.Register(stateType, contractType, factoryMethod, key);
             }

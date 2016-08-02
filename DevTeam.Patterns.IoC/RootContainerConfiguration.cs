@@ -133,8 +133,8 @@
                     });
 
             // Scopes
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(IResolver), typeof(IScope), ctx => PublicScope.Value, WellknownScope.Public);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(IResolver), typeof(IScope), ctx => new InternalScope(ctx.Resolver), WellknownScope.Internal);
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IScope), ctx => PublicScope.Value, WellknownScope.Public);
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IScope), ctx => new InternalScope(ctx.Resolver), WellknownScope.Internal);
         }
 
         private class Enumerable<T> : IEnumerable<T>

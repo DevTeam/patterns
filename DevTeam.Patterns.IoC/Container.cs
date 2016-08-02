@@ -69,7 +69,7 @@
             }
 
             var resources = new CompositeDisposable();
-            var scope = (IScope)Resolve(this, typeof(IResolver), typeof(IScope), this);
+            var scope = (IScope)Resolve(this, typeof(EmptyState), typeof(IScope), this);
             var registrationDescription = new RegistrationDescription(stateType, contractType, key, resources);
 	        _chache.Remove(registrationDescription);
             var registration = new StrictRegistration(registrationDescription);
@@ -134,7 +134,7 @@
 		        
                 // Defaults		      
 		        object defaultInstance;
-		        if (key == null && DefaultInstances.TryGetValue(contractType, out defaultInstance))
+		        if (stateType == typeof(EmptyState) && key == null && DefaultInstances.TryGetValue(contractType, out defaultInstance))
 		        {
 		            return defaultInstance;
 		        }		        

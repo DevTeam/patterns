@@ -461,6 +461,75 @@ namespace DevTeam.Patterns.IoC.Tests
             // Then            
         }
 
+        [Test]
+        public void ShouldResolveWhenPublicScopeForCurrentContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            var child1 = target.CreateChildContainer();
+
+            // When
+            child1.Using<IScope>(WellknownScope.Public).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
+
+            // Then
+            child1.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child1.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
+        }
+
+        [Test]
+        public void ShouldResolveWhenPublicScopeForOtherContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            var child1 = target.CreateChildContainer();
+            var child2 = child1.CreateChildContainer();
+
+            // When
+            child1.Using<IScope>(WellknownScope.Public).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
+
+            // Then
+            child2.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child2.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
+        }
+
+        [Test]
+        public void ShouldResolveWhenInternalScopeForCurrentContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            var child1 = target.CreateChildContainer();
+
+            // When
+            child1.Using<IScope>(WellknownScope.Internal).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
+
+            // Then
+            child1.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child1.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
+        }
+
+        [Test]
+        public void ShouldResolveWhenInternalScopeForOtherContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            var child1 = target.CreateChildContainer();
+            var child2 = child1.CreateChildContainer();
+
+            // When
+            child1.Using<IScope>(WellknownScope.Internal).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
+
+            // Then
+            child2.Registrations.ShouldNotContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            try
+            {
+                child2.Resolve<Service1State, IService>(new Service1State(), "myService1");
+                Assert.Fail("Expected exception is InvalidOperationException");
+            }
+            catch (InvalidOperationException)
+            {                
+            }
+        }
+
         private static Container CreateTarget(object name = null)
 		{
 			return new Container();
