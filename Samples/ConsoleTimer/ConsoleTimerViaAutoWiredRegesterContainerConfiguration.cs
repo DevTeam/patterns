@@ -7,7 +7,7 @@
     using DevTeam.Platform.System;
 
     /// <inheritdoc/>
-    internal class ConsoleTimerViaBindingsContainerConfiguration : IConfiguration
+    internal class ConsoleTimerViaAutoWiredRegesterContainerConfiguration : IConfiguration
     {
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
@@ -18,10 +18,10 @@
         /// <inheritdoc/>
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
-            // Register to Timer
+            // Register Timer
             yield return container.Register<Timer>().As<TimeSpan, ITimer>();
 
-            // Register to Time Publisher
+            // Register Time Publisher
             yield return container.Register<TimePublisher>().As<ITimePublisher>();
         }
     }

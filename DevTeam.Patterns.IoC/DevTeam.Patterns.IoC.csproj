@@ -52,7 +52,6 @@
     <Compile Include="AnyKeyRegistrationComparer.cs" />
     <Compile Include="ComparerForRegistrationComparer.cs" />
     <Compile Include="Binder.cs" />
-    <Compile Include="ConfigurationEqualityComparer.cs" />
     <Compile Include="Configurations.cs" />
     <Compile Include="ContainerDescription.cs" />
     <Compile Include="ContextContainer.cs" />

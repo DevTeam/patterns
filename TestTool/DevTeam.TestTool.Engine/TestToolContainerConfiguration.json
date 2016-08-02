@@ -4,14 +4,14 @@
     ],
 
     "Registrations": [
-        // Register Timer
+        // Register to Timer
         {
             "State": "System.TimeSpan",
             "Contract": "ConsoleTimer.ITimer, ConsoleTimer",
             "Implementation": "ConsoleTimer.Timer, ConsoleTimer",
             "Lifetime": "Singleton"
         },
-        // Register Time Publisher
+        // Register to Time Publisher
         {
             "Contract": "ConsoleTimer.ITimePublisher, ConsoleTimer",
             "Implementation": "ConsoleTimer.TimePublisher, ConsoleTimer"

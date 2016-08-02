@@ -8,34 +8,41 @@
 
     public static class Configurations
     {        
-        public static IDisposable Apply(this IConfiguration configuration, IContainer container, IEqualityComparer<IConfiguration> comparer = null)
+        private static readonly IEqualityComparer<IConfiguration> Comparer = new ConfigurationEqualityComparer();
+
+        public static IDisposable Apply(this IConfiguration configuration, IContainer container)
         {
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            return (
-                from configurationItem in configuration.Merge(new HashSet<IConfiguration>(comparer ?? container.Resolve<IEqualityComparer<IConfiguration>>()))
-                select configurationItem.CreateRegistrations(container))
+           return
+                GetDependencies(configuration)
+                .Concat(Enumerable.Repeat(configuration, 1))
+                .Distinct(Comparer)
+                .Select(config => config.CreateRegistrations(container))
                 .SelectMany(i => i)
                 .ToCompositeDisposable();
         }
 
-        private static IEnumerable<IConfiguration> Merge(this IConfiguration configuration, HashSet<IConfiguration> configurations)
+        private static IEnumerable<IConfiguration> GetDependencies(IConfiguration configuration)
         {
-            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
-            if (configurations == null) throw new ArgumentNullException(nameof(configurations));
-
-            if (!configurations.Add(configuration))
+            return (
+                from nestedConfiguration in configuration.GetDependencies()
+                select GetDependencies(nestedConfiguration))
+                .SelectMany(i => i).Concat(Enumerable.Repeat(configuration, 1));
+        }
+       
+        private class ConfigurationEqualityComparer : IEqualityComparer<IConfiguration>
+        {
+            public bool Equals(IConfiguration x, IConfiguration y)
             {
-                return configurations;
+                return x?.GetType() == y?.GetType();
             }
 
-            foreach (var dependency in configuration.GetDependencies())
+            public int GetHashCode(IConfiguration obj)
             {
-                dependency.Merge(configurations);
+                return obj?.GetType().GetHashCode() ?? 0;
             }
-
-            return configurations;
-        }        
+        }
     }
 }

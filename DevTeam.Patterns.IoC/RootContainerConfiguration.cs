@@ -19,7 +19,7 @@
         private static readonly Lazy<ILifetime> PerThreadLifetime = new Lazy<ILifetime>(() => new PerThreadLifetime(new TransientLifetime()));
         private static readonly Lazy<ILifetime> ControlledPerThreadLifetime = new Lazy<ILifetime>(() => new PerThreadLifetime(new ControlledLifetime()));
 
-        internal static readonly Lazy<IRegistrationComparer> RootContainerRegestryKeyComparer = new Lazy<IRegistrationComparer>(() => new DefaultContainerRegistrationComparer());
+        internal static readonly Lazy<IRegistrationComparer> FullComplianceRegistrationComparer = new Lazy<IRegistrationComparer>(() => new DefaultContainerRegistrationComparer());
         private static readonly Lazy<IRegistrationComparer> PatternRegistrationComparer = new Lazy<IRegistrationComparer>(() => new PatternKeyRegistrationComparer());
         private static readonly Lazy<IRegistrationComparer> AnyStateTypeAndKey = new Lazy<IRegistrationComparer>(() => new AnyStateTypeAndKeyRegistrationComparer());
         private static readonly Lazy<IRegistrationComparer> AnyRegistrationComparer = new Lazy<IRegistrationComparer>(() => new AnyKeyRegistrationComparer());
@@ -55,6 +55,7 @@
             yield return container.Register(() => ControlledPerThreadLifetime.Value, WellknownLifetime.ControlledPerThreadLifetime);
 
             // Wellknown registration comparers
+            yield return container.Register(() => FullComplianceRegistrationComparer.Value, WellknownRegistrationComparer.FullCompliance);
             yield return container.Register(() => PatternRegistrationComparer.Value, WellknownRegistrationComparer.PatternKey);
             yield return container.Register(() => AnyStateTypeAndKey.Value, WellknownRegistrationComparer.AnyStateTypeAndKey);
             yield return container.Register(() => AnyRegistrationComparer.Value, WellknownRegistrationComparer.AnyKey);
@@ -72,10 +73,7 @@
             yield return container
                 .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyStateTypeAndKey)
                 .Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(EmptyState), typeof(IContainer), ctx => new Container(new ContainerDescription(ctx.Resolver, ctx.Registration.Key)));
-
-            // FullCompliance configuration equality comparer
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IEqualityComparer<IConfiguration>), ctx => new ConfigurationEqualityComparer());
-
+            
             // Resolvers
             yield return container
                 .Using<ILifetime>(WellknownLifetime.Singleton)

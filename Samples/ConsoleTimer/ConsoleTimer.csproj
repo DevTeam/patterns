@@ -40,7 +40,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleTimerViaBindingsContainerConfiguration.cs" />
+    <Compile Include="ConsoleTimerViaAutoWiredRegesterContainerConfiguration.cs" />
     <Compile Include="ConsoleTimerViaRegisterContainerConfiguration.cs" />
     <Compile Include="ITimePublisher.cs" />
     <Compile Include="ITimer.cs" />

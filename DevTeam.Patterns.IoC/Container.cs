@@ -12,7 +12,7 @@
         private static readonly Dictionary<Type, object> DefaultInstances = new Dictionary<Type, object>
         {
             { typeof(ILifetime), RootContainerConfiguration.TransientLifetime.Value },
-            { typeof(IRegistrationComparer), RootContainerConfiguration.RootContainerRegestryKeyComparer.Value },
+            { typeof(IRegistrationComparer), RootContainerConfiguration.FullComplianceRegistrationComparer.Value },
             { typeof(IBinder), RootContainerConfiguration.Binder.Value },
             { typeof(IFactory), RootContainerConfiguration.Factory.Value },
             { typeof(IScope), RootContainerConfiguration.PublicScope.Value }
