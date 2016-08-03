@@ -6,12 +6,6 @@
     using Patterns.IoC;
     using Contracts;
 
-    using Patterns.Reactive;
-
-    using Patterns.EventAggregator;
-
-    using Platform.Reflection;
-
     /// <inheritdoc/>
     internal class ExplorerContainerConfiguration: IConfiguration
     {

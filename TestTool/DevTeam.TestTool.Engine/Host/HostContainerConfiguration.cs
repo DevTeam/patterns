@@ -33,10 +33,10 @@
             yield return container.Register<PropertyValue>().As<PropertyValueDescription, IPropertyValue>();
 
             // Tools
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ExplorerContainerConfiguration>().As<IConfiguration>(WellknownTool.Explorer);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<RunnerContainerConfiguration>().As<IConfiguration>(WellknownTool.Runnner);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<ReporterContainerConfiguration>().As<IConfiguration>(WellknownTool.Reporter);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<PublisherContainerConfiguration>().As<IConfiguration>(WellknownTool.Publisher);
+            yield return container.Register<ExplorerContainerConfiguration>(WellknownLifetime.Singleton).As<IConfiguration>(WellknownTool.Explorer);
+            yield return container.Register<RunnerContainerConfiguration>(WellknownLifetime.Singleton).As<IConfiguration>(WellknownTool.Runnner);
+            yield return container.Register<ReporterContainerConfiguration>(WellknownLifetime.Singleton).As<IConfiguration>(WellknownTool.Reporter);
+            yield return container.Register<PublisherContainerConfiguration>(WellknownLifetime.Singleton).As<IConfiguration>(WellknownTool.Publisher);
 
             // Properties
             yield return container.Register<ToolProperty>(WellknownLifetime.Singleton).As<IProperty>(WellknownProperty.Tool);
