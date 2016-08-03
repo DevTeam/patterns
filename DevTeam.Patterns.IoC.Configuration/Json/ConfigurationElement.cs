@@ -4,6 +4,8 @@
 
     internal class ConfigurationElement
     {
+        public IList<string> Vars { get; set; }
+
         public IList<DependencyElement> Dependencies { get; set; }
 
         public IList<ContainerElement> Containers { get; set; }

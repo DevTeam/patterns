@@ -97,9 +97,6 @@
     <Compile Include="WellknownTool.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestToolContainerConfiguration.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup />

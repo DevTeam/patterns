@@ -3,12 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
 
     using Newtonsoft.Json;    
 
     internal class JsonConfiguration: IConfiguration
     {
-        private readonly ConfigurationElement _configurationElement;
+        private static readonly Regex VarRegex = new Regex(@"^\s*(?<name>.+)\s*=\s*(?<value>.+)\s*$", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+        private readonly ConfigurationElement _configurationElement;        
 
         public JsonConfiguration(
             string configuration)
@@ -20,53 +22,94 @@
 
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            return GetDependencies(_configurationElement);
+            var vars = new Dictionary<string, string>();
+            var newVars = CreateVars(_configurationElement, vars);
+            return GetDependencies(_configurationElement, newVars);
         }
 
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            return CreateConfigurationRegistrations(container, _configurationElement, false);
+            var vars = new Dictionary<string, string>();
+            return CreateConfigurationRegistrations(container, _configurationElement, false, vars);
         }
 
-        private static IEnumerable<IConfiguration> GetDependencies(ConfigurationElement configurationElement)
+        private static IEnumerable<IConfiguration> GetDependencies(ConfigurationElement configurationElement, IDictionary<string, string> vars)
         {
             return
                 from dependency in configurationElement.Dependencies ?? Enumerable.Empty<DependencyElement>()
-                let dependencyType = Type.GetType(dependency.Type, true)
+                let dependencyType = Type.GetType(ResolverString(dependency.Type, vars), true)
                 select (IConfiguration)Activator.CreateInstance(dependencyType);
         }
 
-        private static IEnumerable<IRegistration> CreateConfigurationRegistrations(IContainer container, ConfigurationElement configurationElement, bool includeDependencies)
+        private static IEnumerable<IRegistration> CreateConfigurationRegistrations(IContainer container, ConfigurationElement configurationElement, bool includeDependencies, IDictionary<string, string> vars)
         {
+            var newVars = CreateVars(configurationElement, vars);
+
             var dependeciesRegistrations = includeDependencies ? (
-                from dependency in GetDependencies(configurationElement)
+                from dependency in GetDependencies(configurationElement, newVars)
                 select dependency.CreateRegistrations(container)).SelectMany(i => i)
                 : Enumerable.Empty<IRegistration>();
 
-            var bindingsRegistrations = CreateRegistrations(container, configurationElement);
+            var registrations = CreateRegistrations(container, configurationElement, newVars);
 
             var childrenRegistrations = (
                 from contrainerElement in configurationElement.Containers?? Enumerable.Empty<ContainerElement>()
                 let childCoontainer = container.Resolve<IContainer>(GetKey(contrainerElement.Key))
-                select CreateConfigurationRegistrations(childCoontainer, contrainerElement, true)).SelectMany(i => i);
+                select CreateConfigurationRegistrations(childCoontainer, contrainerElement, true, newVars)).SelectMany(i => i);
 
-            return dependeciesRegistrations.Concat(bindingsRegistrations).Concat(childrenRegistrations);
+            return dependeciesRegistrations.Concat(registrations).Concat(childrenRegistrations);
 
         }
 
-        private static IEnumerable<IRegistration> CreateRegistrations(IContainer container, ConfigurationElement configurationElement)
+        private static Dictionary<string, string> CreateVars(ConfigurationElement configurationElement, IDictionary<string, string> vars)
+        {
+            var newVars = new Dictionary<string, string>(vars);
+
+            var overridedVarsMatches = (
+                from varElement in configurationElement.Vars
+                select VarRegex.Match(varElement)).ToList();
+
+            var overridedVars = 
+                from match in overridedVarsMatches
+                where match.Success && match.Groups.Count == 3
+                select new { name = match.Groups[1].Value, value = match.Groups[2].Value };
+
+            foreach (var overridedVar in overridedVars)
+            {
+                newVars[overridedVar.name] = overridedVar.value;
+            }
+
+            return newVars;
+        }
+
+        private static IEnumerable<IRegistration> CreateRegistrations(IContainer container, ConfigurationElement configurationElement, IDictionary<string, string> vars)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
             return 
-                from bindElement in configurationElement?.Registrations ?? Enumerable.Empty<RegistrationElement>()
-                let stateType = bindElement.State != null ? Type.GetType(bindElement.State, true) : typeof(EmptyState)
-                let contractType = Type.GetType(bindElement.Contract, true)
-                let implementationType = Type.GetType(bindElement.Implementation, true)
-                let key = GetKey(bindElement.Key)
-                select ApplyUsingContainer(container, bindElement).Register(stateType, contractType, implementationType, key);
+                from registrationElement in configurationElement?.Registrations ?? Enumerable.Empty<RegistrationElement>()
+                let stateType = registrationElement.State != null ? Type.GetType(ResolverString(registrationElement.State, vars), true) : typeof(EmptyState)
+                let contractType = Type.GetType(ResolverString(registrationElement.Contract, vars), true)
+                let implementationType = Type.GetType(ResolverString(registrationElement.Implementation, vars), true)
+                let key = GetKey(registrationElement.Key)
+                select ApplyUsingContainer(container, registrationElement).Register(stateType, contractType, implementationType, key);
+        }
+
+        private static string ResolverString(string stringTorResolve, IDictionary<string, string> vars)
+        {
+            if (stringTorResolve == null)
+            {
+                return null;
+            }
+
+            foreach (var varElement in vars)
+            {
+                stringTorResolve = stringTorResolve.Replace($"$({varElement.Key})", varElement.Value);
+            }
+
+            return stringTorResolve;
         }
 
         private static IContainer ApplyUsingContainer(IContainer container, RegistrationElement registrationElement)
