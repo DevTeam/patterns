@@ -17,9 +17,9 @@
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
 
             var resolvingConstructor = GetConstructor(implementationType);
-            if (contractType.GetTypeInfo().IsGenericType)
+            if (implementationType.GetTypeInfo().IsGenericType && !contractType.IsConstructedGenericType)
             {
-                if (!implementationType.GetTypeInfo().IsGenericType)
+                if (!contractType.GetTypeInfo().IsGenericType || contractType.IsConstructedGenericType)
                 {
                     throw new InvalidOperationException("A generic implementation should relay on a generic contract.");
                 }
@@ -33,7 +33,7 @@
             return registry.Register(stateType, contractType,
                 ctx =>
                 {
-                    if (ctx.ResolvingContractType.GetTypeInfo().IsGenericType)
+                    if (implementationType.GetTypeInfo().IsGenericType && !implementationType.IsConstructedGenericType)
                     {
                         implementationType = implementationType.MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments);
                         resolvingConstructor = GetConstructor(implementationType);

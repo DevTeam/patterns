@@ -1,5 +1,6 @@
 ﻿namespace DevTeam.Patterns.IoC.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -176,6 +177,20 @@
         }
 
         [Test]
+        public void ShouldResolveWhenDefinedGeneric()
+        {
+            // Given
+            var target = CreateTarget();
+
+            // When
+            target.Register(typeof(Service2<int>)).As(typeof(IService2<int>), "myService1");
+
+            // Then
+            var contract = target.Resolve<IService2<int>>("myService1");
+            contract.ShouldBeOfType<Service2<int>>();
+        }
+
+        [Test]
         public void ShouldResolveWhenGenericWithState()
         {
             // Given
@@ -187,6 +202,20 @@
             // Then
             var contract = target.Resolve<int, IService2<string>>(3, "myService1");
             contract.ShouldBeOfType<Service2WithState<string>>();
+        }
+
+        [Test]
+        public void ShouldResolveWhenDefinedGenericWithState()
+        {
+            // Given
+            var target = CreateTarget();
+
+            // When
+            target.Register(typeof(Service2WithState<DateTime>)).As(typeof(int), typeof(IService2<DateTime>), "myService1");
+
+            // Then
+            var contract = target.Resolve<int, IService2<DateTime>>(3, "myService1");
+            contract.ShouldBeOfType<Service2WithState<DateTime>>();
         }
 
         private static Container CreateTarget(object key = null)
