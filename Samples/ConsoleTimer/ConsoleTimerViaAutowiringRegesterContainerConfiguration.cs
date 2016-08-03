@@ -7,7 +7,7 @@
     using DevTeam.Platform.System;
 
     /// <inheritdoc/>
-    internal class ConsoleTimerViaAutoWiredRegesterContainerConfiguration : IConfiguration
+    internal class ConsoleTimerViaAutowiringRegesterContainerConfiguration : IConfiguration
     {
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()

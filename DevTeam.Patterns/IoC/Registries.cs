@@ -3,28 +3,51 @@
     using System;
 
     public static class Registries
-    {
+    {     
         public static Registration Register<TImplementation>(this IContainer container, WellknownLifetime lifetime = WellknownLifetime.Transient)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            return new Registration(typeof(TImplementation), container, lifetime);
+            return container.Register(typeof(TImplementation), lifetime);
         }
-        
+
+        public static Registration Register(this IContainer container, Type implementationType, WellknownLifetime lifetime = WellknownLifetime.Transient)
+        {
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
+
+            return new Registration(implementationType, container, lifetime);
+        }
+
         public static Registration FindingBy(this Registration registration, WellknownRegistrationComparer registrationComparer)
         {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
             registration.RegistrationComparer = registrationComparer;
             return registration;
         }
 
         public static Registration InScope(this Registration registration, WellknownScope scope)
         {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
             registration.Scope = scope;
             return registration;
         }
 
         public static IRegistration As<TState, T>(this Registration registration, object key = null)
         {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
+            return registration.As(typeof(TState), typeof(T), key);
+        }
+
+        public static IRegistration As(this Registration registration, Type stateType, Type contractType, object key = null)
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
+
             var container = registration.Container;
 
             if (registration.Lifetime != WellknownLifetime.Transient)
@@ -42,7 +65,15 @@
                 container = container.Using<IScope>(registration.Scope);
             }
 
-            return container.Register(typeof(TState), typeof(T), registration.ImplementationType, key);
+            return container.Register(stateType, contractType, registration.ImplementationType, key);
+        }
+
+        public static IRegistration As(this Registration registration, Type contractType, object key = null)
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
+
+            return registration.As(typeof(EmptyState), contractType, key);
         }
 
         public static IRegistration As<T>(this Registration registration, object key = null)

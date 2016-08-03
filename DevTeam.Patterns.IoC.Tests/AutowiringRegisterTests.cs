@@ -8,7 +8,7 @@
 	using Shouldly;
 
 	[TestFixture]
-	public class BindingsTests
+	public class AutowiringRegisterTests
 	{
 		[Test]
 		public void ShouldMakeRegistration()
@@ -159,6 +159,34 @@
             contract.State.ShouldBe(33);
             var dpendencies = (IEnumerable<IService>)contract.Dependency;
             dpendencies.Count().ShouldBe(2);
+        }
+
+        [Test]
+        public void ShouldResolveWhenGeneric()
+        {
+            // Given
+            var target = CreateTarget();
+
+            // When
+            target.Register(typeof(Service2<>)).As(typeof(IService2<>), "myService1");
+
+            // Then
+            var contract = target.Resolve<IService2<int>>("myService1");
+            contract.ShouldBeOfType<Service2<int>>();
+        }
+
+        [Test]
+        public void ShouldResolveWhenGenericWithState()
+        {
+            // Given
+            var target = CreateTarget();
+
+            // When
+            target.Register(typeof(Service2WithState<>)).As(typeof(int), typeof(IService2<>), "myService1");
+
+            // Then
+            var contract = target.Resolve<int, IService2<string>>(3, "myService1");
+            contract.ShouldBeOfType<Service2WithState<string>>();
         }
 
         private static Container CreateTarget(object key = null)

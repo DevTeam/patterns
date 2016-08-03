@@ -533,14 +533,6 @@ namespace DevTeam.Patterns.IoC.Tests
         private static Container CreateTarget(object name = null)
 		{
 			return new Container();
-		}
-
-        private class Service2Int: IService2<int>
-        {            
-        }
-
-        private class Service2String : IService2<string>
-        {
-        }
+		}       
     }
 }

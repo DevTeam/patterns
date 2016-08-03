@@ -16,6 +16,43 @@
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
 
+            var resolvingConstructor = GetConstructor(implementationType);
+            if (contractType.GetTypeInfo().IsGenericType)
+            {
+                if (!implementationType.GetTypeInfo().IsGenericType)
+                {
+                    throw new InvalidOperationException("A generic implementation should relay on a generic contract.");
+                }
+
+                if (contractType.GetTypeInfo().GenericTypeParameters.Length != implementationType.GetTypeInfo().GenericTypeParameters.Length)
+                {
+                    throw new InvalidOperationException("A generic type parameters of implementation should correspond to generic type parameters of contract.");
+                }
+            }
+
+            return registry.Register(stateType, contractType,
+                ctx =>
+                {
+                    if (ctx.ResolvingContractType.GetTypeInfo().IsGenericType)
+                    {
+                        implementationType = implementationType.MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments);
+                        resolvingConstructor = GetConstructor(implementationType);
+                    }
+
+                    var ctorInfo = GetCtorInfo(stateType, resolvingConstructor);
+                    var parameters = new object[ctorInfo.Parameters.Count];
+                    for (var i = 0; i < parameters.Length; i++)
+                    {
+                        parameters[i] = ResolveParameter(ctx.Resolver, ctx.State, ctorInfo.Parameters[i]);
+                    }
+
+                    return factory.Create(resolvingConstructor, parameters);                    
+                },
+                key);
+        }
+
+        private static ConstructorInfo GetConstructor(Type implementationType)
+        {
             ConstructorInfo resolvingConstructor;
             var ctors = implementationType.GetTypeInfo().DeclaredConstructors.ToList();
             if (ctors.Count == 1)
@@ -37,12 +74,17 @@
 
                 if (resolvingConstructors.Count > 1)
                 {
-                    throw new InvalidOperationException("Shuld be only one resolving constructord.");
+                    throw new InvalidOperationException("Should be only one resolving constructord.");
                 }
 
                 resolvingConstructor = resolvingConstructors[0];
             }
 
+            return resolvingConstructor;
+        }
+
+        private CtorInfo GetCtorInfo(Type stateType, ConstructorInfo resolvingConstructor)
+        {
             CtorInfo ctorInfo;
             if (!_ctorDictionary.TryGetValue(resolvingConstructor, out ctorInfo))
             {
@@ -53,34 +95,23 @@
             {
                 throw ctorInfo.Error;
             }
-                        
-            return registry.Register(stateType, contractType,
-                ctx =>
-                {
-                    var parameters = new object[ctorInfo.Parameters.Count];
-                    for (var i = 0; i < parameters.Length; i++)
-                    {
-                        parameters[i] = ResolveParameter(factory, ctx.Resolver, ctx.State, ctorInfo.Parameters[i]);
-                    }
 
-                    return factory.Create(resolvingConstructor, parameters);                    
-                },
-                key);
+            return ctorInfo;
         }
 
-        private static object ResolveParameter(IFactory factory, IResolver resolver, object state, CtorParameter parameter)
+        private static object ResolveParameter(IResolver resolver, object state, CtorParameter parameter)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
             
             if (parameter.State != null)
             {
-                return factory.ResolveState(resolver, parameter.Parameter, parameter.State, state);                
+                return ResolveState(resolver, parameter.Parameter, parameter.State, state);                
             }
 
             if (parameter.Dependency != null)
             {
                 var dependency = parameter.Dependency;
-                return factory.ResolveDependency(resolver, parameter.Parameter, dependency);                
+                return ResolveDependency(resolver, parameter.Parameter, dependency);                
             }
 
             throw new InvalidOperationException("Fail to resolve");
@@ -91,6 +122,29 @@
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             return string.Join(", ", parameters.Select(i => $"\"{i}\""));
+        }
+
+        private static object ResolveState(IResolver resolver, ParameterInfo parameter, StateAttribute stateAttr, object state)
+        {
+            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
+            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
+            if (stateAttr == null) throw new ArgumentNullException(nameof(stateAttr));
+
+            return state;
+        }
+
+        private static object ResolveDependency(IResolver resolver, ParameterInfo parameter, DependencyAttribute dependencyAttr)
+        {
+            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
+            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
+            if (dependencyAttr == null) throw new ArgumentNullException(nameof(dependencyAttr));
+
+            return resolver.Resolve(
+                resolver,
+                dependencyAttr.StateType ?? typeof(EmptyState),
+                dependencyAttr.ContractType ?? parameter.ParameterType,
+                dependencyAttr.State ?? EmptyState.Shared,
+                dependencyAttr.Key);
         }
 
         private class CtorInfo

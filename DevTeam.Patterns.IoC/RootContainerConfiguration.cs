@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     internal class RootContainerConfiguration: IConfiguration
     {
@@ -66,7 +67,8 @@
                 {
                     var state = (ContextContainerState)ctx.State;
                     var resolverType = typeof(ContextContainer<>).MakeGenericType(state.ContextType);
-                    return Activator.CreateInstance(resolverType, ctx.State);
+                    var ctor = resolverType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 1);
+                    return Factory.Value.Create(ctor, ctx.State);
                 });
 
             // Child container

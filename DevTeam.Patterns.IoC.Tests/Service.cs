@@ -120,4 +120,23 @@
 
         public object Dependency => _dependency;
     }
+
+    public class Service2Int : IService2<int>
+    {
+    }
+
+    public class Service2String : IService2<string>
+    {
+    }
+
+    public class Service2<T> : IService2<T>
+    {
+    }
+
+    public class Service2WithState<T> : IService2<T>
+    {
+        public Service2WithState([State] int state)
+        {
+        }
+    }
 }
