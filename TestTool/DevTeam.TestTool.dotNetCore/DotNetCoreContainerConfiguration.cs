@@ -2,12 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
 
     using Patterns.IoC;
-
-    using Engine.Host;
-
     using Patterns.EventAggregator;
+    using Patterns.IoC.Configuration;
     using Patterns.Reactive;
 
     using Platform.Reflection;
@@ -23,7 +23,7 @@
             yield return new EventAggregatorContainerConfiguration();
             yield return new ReflectionContainerConfiguration();
             yield return new SystemContainerConfiguration();
-            yield return new HostContainerConfiguration();
+            yield return new ConfigurationsContainerConfiguration();
         }
 
         /// <inheritdoc/>
@@ -31,7 +31,8 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield break;
+            var configFile = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "TestToolContainerConfiguration.json", SearchOption.AllDirectories).First();
+            return container.Resolve<string, IConfiguration>(File.ReadAllText(configFile), WellknownConfigurations.Json).CreateRegistrations(container);
         }
     }
 }
