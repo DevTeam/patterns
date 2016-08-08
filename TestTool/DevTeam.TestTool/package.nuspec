@@ -39,7 +39,7 @@
 		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Patterns.Reactive.dll" target="tools\netcoreapp" />
 		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Platform.dll" target="tools\netcoreapp" />
 		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Platform.Reflection.dll" target="tools\netcoreapp" />
-		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Platform.System.dotNetCore.dll" target="tools\netcoreapp" />
+		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.Platform.System.dll" target="tools\netcoreapp" />
 		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.TestTool.Contracts.dll" target="tools\netcoreapp" />
 		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.TestTool.Engine.dll" target="tools\netcoreapp" />
 		<file src="..\DevTeam.TestTool.dotNetCore\bin\Release\netcoreapp1.0\DevTeam.TestTool.Engine.Contracts.dll" target="tools\netcoreapp" />
