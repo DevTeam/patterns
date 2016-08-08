@@ -4,15 +4,15 @@
 
     public class ContainerDescription
     {
-        public ContainerDescription(IResolver parentResolver, object key)
+        public ContainerDescription(IContainer parentContainer, object key)
         {
-            if (parentResolver == null) throw new ArgumentNullException(nameof(parentResolver));            
+            if (parentContainer == null) throw new ArgumentNullException(nameof(parentContainer));
 
-            ParentResolver = parentResolver;
+            ParentContainer = parentContainer;
             Key = key;
         }
 
-        public IResolver ParentResolver { get; private set; }
+        public IContainer ParentContainer { get; private set; }
 
         public object Key { get; private set; }
     }

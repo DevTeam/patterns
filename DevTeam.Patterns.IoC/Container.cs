@@ -7,8 +7,8 @@
     using Dispose;
     using Dictionary = System.Collections.Generic.Dictionary<IRegistration, Container.RegistrationInfo>;
 
-    public class Container: IContainer
-	{
+    public class Container : IContainer
+    {
         private static readonly Dictionary<Type, object> DefaultInstances = new Dictionary<Type, object>
         {
             { typeof(ILifetime), RootContainerConfiguration.TransientLifetime.Value },
@@ -21,17 +21,17 @@
         private static readonly ComparerForRegistrationComparer ComparerForRegistrationComparer = new ComparerForRegistrationComparer();
         private readonly SortedDictionary<IRegistrationComparer, Dictionary> _factories = new SortedDictionary<IRegistrationComparer, Dictionary>(ComparerForRegistrationComparer);
         private readonly Dictionary<RegistrationDescription, RegistrationInfo> _chache = new Dictionary<RegistrationDescription, RegistrationInfo>();
-        private readonly IResolver _parentResolver;
+        private readonly IContainer _parentContainer;
         private readonly IDisposable _disposable = Disposable.Empty();
 
         /// <summary>
-        /// Creates a default container with key/name. Returns a reference to the new container.
+        /// Creates a default container with key/name. Returns a reference to the new resolver.
         /// </summary>
         /// <param name="key">Container's key. For example a name.</param>
         public Container(object key = null)
         {
             Key = key;
-            _disposable = 
+            _disposable =
                 RootContainerConfiguration.Shared.CreateRegistrations(this)
                 .ToCompositeDisposable();
         }
@@ -41,24 +41,24 @@
             if (containerDescription == null) throw new ArgumentNullException(nameof(containerDescription));
 
             Key = containerDescription.Key;
-            _parentResolver = containerDescription.ParentResolver;
+            _parentContainer = containerDescription.ParentContainer;
         }
 
         public object Key { get; }
 
-	    public IEnumerable<IRegistration> Registrations => 
+        public IEnumerable<IRegistration> Registrations =>
             _factories
             .SelectMany(i => i.Value)
-            .Where(i => i.Value.Scope.Satisfy(this))
+            .Where(i => i.Value.Scope.ReadyToResolve(_parentContainer == null, this))
             .Select(i => i.Key)
             .Distinct()
-            .Union(_parentResolver != null ? _parentResolver.Registrations : Enumerable.Empty<IRegistration>());
+            .Union(_parentContainer != null ? _parentContainer.Registrations : Enumerable.Empty<IRegistration>());
 
-	    public IRegistration Register(Type stateType, Type contractType, Func<IResolvingContext, object> factoryMethod, object key = null)
-		{
-	        if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-		    if (contractType == null) throw new ArgumentNullException(nameof(contractType));
-		    if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
+        public IRegistration Register(Type stateType, Type contractType, Func<IResolvingContext, object> factoryMethod, object key = null)
+        {
+            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
+            if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
             var comparer = GetComparer();
             Dictionary dictionary;
@@ -71,115 +71,127 @@
             var resources = new CompositeDisposable();
             var scope = (IScope)Resolve(this, typeof(EmptyState), typeof(IScope), this);
             var registrationDescription = new RegistrationDescription(stateType, contractType, key, resources);
-	        _chache.Remove(registrationDescription);
+            _chache.Remove(registrationDescription);
             var registration = new StrictRegistration(registrationDescription);
             try
             {
                 if (contractType != typeof(ILifetime))
-	            {
-	                var lifetime = (ILifetime)Resolve(this, typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
-                    dictionary.Add(registration, new RegistrationInfo(ctx => lifetime.Create(ctx, factoryMethod), registration, scope));
-                    resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(registration), lifetime)));
-	            }
-	            else
-	            {
-                    dictionary.Add(registration, new RegistrationInfo(factoryMethod, registration, scope));
-	                resources.Add(Disposable.Create(() => Unregister(registration)));
-	            }	            
-	        }
-	        catch (Exception ex)
-	        {
-	            throw new InvalidOperationException($"The entry {registration} registration failed. Registered entries:\n{GetRegisteredInfo()}", ex);
-	        }
-	        
-	        return registration;
-		}
+                {
+                    if (scope.ReadyToRegister(_parentContainer == null))
+                    {
+                        var lifetime = (ILifetime)Resolve(this, typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
+                        dictionary.Add(registration, new RegistrationInfo(ctx => lifetime.Create(ctx, factoryMethod), registration, scope));
+                        resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(registration), lifetime)));
+                    }
+                    else
+                    {
+                        if (_parentContainer != null)
+                        {
+                            return _parentContainer.Register(stateType, contractType, factoryMethod, key);
+                        }
 
-	    public object Resolve(IResolver resolver, Type stateType, Type contractType, object state, object key = null)
+                        throw new InvalidOperationException();
+                    }
+                }
+                else
+                {
+                    dictionary.Add(registration, new RegistrationInfo(factoryMethod, registration, scope));
+                    resources.Add(Disposable.Create(() => Unregister(registration)));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"The entry {registration} registration failed. Registered entries:\n{GetRegisteredInfo()}", ex);
+            }
+
+            return registration;
+        }
+
+        public object Resolve(IResolver resolver, Type stateType, Type contractType, object state, object key = null)
         {
-	        if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
 
             resolver = resolver ?? this;
             var registrationDescription = new RegistrationDescription(stateType, contractType, key, Disposable.Empty());
 
             RegistrationInfo info;
-	        if (!_chache.TryGetValue(registrationDescription, out info))
-	        {
+            if (!_chache.TryGetValue(registrationDescription, out info))
+            {
                 RegistrationInfo curRegistrationInfo = null;
 
                 info = (
                     from registration in GetResolverRegistrations(registrationDescription)
                     from dictionary in _factories
                     where dictionary.Value.TryGetValue(registration, out curRegistrationInfo)
-                    where curRegistrationInfo.Scope.Satisfy(resolver)
+                    where curRegistrationInfo.Scope.ReadyToResolve(_parentContainer == null, resolver)
                     select new RegistrationInfo(curRegistrationInfo.Factory, registration, curRegistrationInfo.Scope)).FirstOrDefault() ?? new RegistrationInfo();
             }
 
-	        if (!info.IsEmpty)
-	        {
-	            using (var ctx = new ResolvingContext(resolver, info.Registration, contractType, state))
-	            {
-	                return info.Factory(ctx);
-	            }
-	        }
+            if (!info.IsEmpty)
+            {
+                using (var ctx = new ResolvingContext(resolver, info.Registration, contractType, state))
+                {
+                    return info.Factory(ctx);
+                }
+            }
 
-	        Exception innerException = null;
-		    try
-		    {
-		        if (_parentResolver != null)
-		        {
-		            return _parentResolver.Resolve(resolver, stateType, contractType, state, key);
-		        }
-		        
+            Exception innerException = null;
+            try
+            {
+                if (_parentContainer != null)
+                {
+                    return _parentContainer.Resolve(resolver, stateType, contractType, state, key);
+                }
+
                 // Defaults		      
-		        object defaultInstance;
-		        if (stateType == typeof(EmptyState) && key == null && DefaultInstances.TryGetValue(contractType, out defaultInstance))
-		        {
-		            return defaultInstance;
-		        }		        
+                object defaultInstance;
+                if (stateType == typeof(EmptyState) && key == null && DefaultInstances.TryGetValue(contractType, out defaultInstance))
+                {
+                    return defaultInstance;
+                }
             }
-		    catch (InvalidOperationException ex)
-		    {
-		        innerException = ex;                
+            catch (InvalidOperationException ex)
+            {
+                innerException = ex;
             }
 
-	        var keys = string.Join(" or ", GetResolverRegistrations(registrationDescription).Select(i => i.ToString()));
+            var keys = string.Join(" or ", GetResolverRegistrations(registrationDescription).Select(i => i.ToString()));
             throw new InvalidOperationException($"The entries {keys} was not registered. {GetRegisteredInfo()}", innerException);
         }
 
         /// <summary>
-        /// Disposes this container contract and any child containers. Also disposes any registered object contracts whose lifetimes are managed by the container.
+        /// Disposes this container contract and any child containers. Also disposes any registered object contracts whose lifetimes are managed by the resolver.
         /// </summary>
         public void Dispose()
-	    {
+        {
             _chache.Clear();
             _factories.SelectMany(i => i.Value.Keys).Distinct().ToCompositeDisposable().Dispose();
             _disposable.Dispose();
         }
 
-	    public override string ToString()
-	    {
-	        return Key?.ToString() ?? string.Empty;
-	    }	    
+        public override string ToString()
+        {
+            return Key?.ToString() ?? string.Empty;
+        }
 
-	    private bool Unregister(IRegistration registration)
-	    {
-	        _chache.Remove(
-	            new RegistrationDescription(
-	                registration.StateType,
-	                registration.ContractType,
-	                registration.Key,
-	                Disposable.Empty()));
-	        
+        private bool Unregister(IRegistration registration)
+        {
+            _chache.Remove(
+                new RegistrationDescription(
+                    registration.StateType,
+                    registration.ContractType,
+                    registration.Key,
+                    Disposable.Empty()));
+
             var removed = false;
-	        foreach (var dictionary in _factories)
-	        {
+            foreach (var dictionary in _factories)
+            {
                 removed |= dictionary.Value.Remove(registration);
             }
 
-	        return removed;
-	    }
+            return removed;
+        }
 
         private bool Unregister(IReleasingContext ctx, ILifetime factory)
         {
@@ -196,7 +208,7 @@
         {
             var details = _factories.Count == 0 ? "no entries" : string.Join(", ", _factories.SelectMany(i => i.Value.Keys).Distinct().Select(k => k.ToString()));
             return $"Container \"{Key}\". Registered entries: {details}";
-	    }
+        }
 
         private static IEnumerable<IRegistration> GetResolverRegistrations(RegistrationDescription registrationDescription)
         {
@@ -211,7 +223,7 @@
 
         private IRegistrationComparer GetComparer()
         {
-            return (IRegistrationComparer)Resolve(this, typeof(EmptyState), typeof(IRegistrationComparer), EmptyState.Shared, null);            
+            return (IRegistrationComparer)Resolve(this, typeof(EmptyState), typeof(IRegistrationComparer), EmptyState.Shared, null);
         }
 
         internal class RegistrationInfo

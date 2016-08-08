@@ -4,112 +4,112 @@ namespace DevTeam.Patterns.IoC.Tests
 {
     using System;
     using System.Linq;
-	using Moq;
+    using Moq;
 
-	using NUnit.Framework;
+    using NUnit.Framework;
 
-	using Shouldly;
+    using Shouldly;
 
-	[TestFixture]
-	public class ContainerTests
-	{
-		private Mock<IService> _service1;
+    [TestFixture]
+    public class ContainerTests
+    {
+        private Mock<IService> _service1;
         private Mock<IService> _service2;
         private Service1State _service1State;
-	    private Mock<IService2<int>> _service3;
+        private Mock<IService2<int>> _service3;
         private Mock<IService2<string>> _service4;
 
         [SetUp]
-		public void SetUp()
-		{
-			_service1 = new Mock<IService>();
+        public void SetUp()
+        {
+            _service1 = new Mock<IService>();
             _service2 = new Mock<IService>();
             _service3 = new Mock<IService2<int>>();
             _service4 = new Mock<IService2<string>>();
             _service1State = new Service1State();
-		}
+        }
 
-		[Test]
-		public void ShouldRegister()
-		{
-			// Given
-			var target = CreateTarget();
+        [Test]
+        public void ShouldRegister()
+        {
+            // Given
+            var target = CreateTarget();
 
-			// When
-			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
+            // When
+            target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
-			// Then
-			target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
-		}
+            // Then
+            target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+        }
 
-		[Test]
-		public void ShouldRemoveRegistrationWhenRegistrationTokenIsDisposed()
-		{
-			// Given
-			var target = CreateTarget();
-			var registrationToken = target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
+        [Test]
+        public void ShouldRemoveRegistrationWhenRegistrationTokenIsDisposed()
+        {
+            // Given
+            var target = CreateTarget();
+            var registrationToken = target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
-			// When
-			registrationToken.Dispose();
+            // When
+            registrationToken.Dispose();
 
-			// Then
-			target.Registrations.ShouldNotContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
-		}
+            // Then
+            target.Registrations.ShouldNotContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+        }
 
-		[Test]
-		public void ShouldRegisterAndResolve()
-		{
-			// Given
-			var target = CreateTarget();
+        [Test]
+        public void ShouldRegisterAndResolve()
+        {
+            // Given
+            var target = CreateTarget();
 
-			// When
-			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
-			
-			// Then
-			var resolvedContract = target.Resolve(target, typeof(Service1State), typeof(IService), _service1State, "myService1");
-			resolvedContract.ShouldBe(_service1.Object);
-		}
+            // When
+            target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
-		[Test]
-		public void ShouldCreateChildContainerViaKey()
-		{
-			// Given
-			var target = CreateTarget();
+            // Then
+            var resolvedContract = target.Resolve(target, typeof(Service1State), typeof(IService), _service1State, "myService1");
+            resolvedContract.ShouldBe(_service1.Object);
+        }
 
-			// When
-			var childContainer = (IContainer)target.Resolve(target, typeof(EmptyState), typeof(IContainer), EmptyState.Shared, "child");
+        [Test]
+        public void ShouldCreateChildContainerViaKey()
+        {
+            // Given
+            var target = CreateTarget();
 
-			// Then
-			childContainer.ShouldBeAssignableTo<IContainer>();
+            // When
+            var childContainer = (IContainer)target.Resolve(target, typeof(EmptyState), typeof(IContainer), EmptyState.Shared, "child");
+
+            // Then
+            childContainer.ShouldBeAssignableTo<IContainer>();
             childContainer.Key.ShouldBe("child");
         }
 
         [Test]
-		public void ChildContainerShouldHasNameFromResolve()
-		{
-			// Given
-			var target = CreateTarget();
+        public void ChildContainerShouldHasNameFromResolve()
+        {
+            // Given
+            var target = CreateTarget();
 
-			// When
-			var childContainer = (IContainer)target.Resolve(target, typeof(EmptyState), typeof(IContainer), EmptyState.Shared, "child123");
+            // When
+            var childContainer = (IContainer)target.Resolve(target, typeof(EmptyState), typeof(IContainer), EmptyState.Shared, "child123");
 
-			// Then
-			childContainer.Key.ShouldBe("child123");
-		}
+            // Then
+            childContainer.Key.ShouldBe("child123");
+        }
 
-		[Test]
-		public void ShouldResolve()
-		{
-			// Given
-			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
+        [Test]
+        public void ShouldResolve()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
-			// When
-			var contract = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+            // When
+            var contract = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
-			// Then
-			contract.ShouldBe(_service1.Object);
-		}
+            // Then
+            contract.ShouldBe(_service1.Object);
+        }
 
         [Test]
         public void ShouldResolveGeneric()
@@ -153,83 +153,83 @@ namespace DevTeam.Patterns.IoC.Tests
         }
 
         [Test]
-		public void ShouldResolveFromChildContainer()
-		{
-			// Given
-			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
+        public void ShouldResolveFromChildContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
-			// When
-			var childContainer = target.Resolve<IContainer>("new");
-			var contract = childContainer.Resolve(childContainer, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+            // When
+            var childContainer = target.Resolve<IContainer>("new");
+            var contract = childContainer.Resolve(childContainer, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
-			// Then
-			contract.ShouldBe(_service1.Object);
-		}
+            // Then
+            contract.ShouldBe(_service1.Object);
+        }
 
-		[Test]
-		public void ShouldResolveFromMultChildContainer()
-		{
-			// Given
-			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
+        [Test]
+        public void ShouldResolveFromMultChildContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
-			// When
-			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
-			var contract = childContainer.Resolve(childContainer, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
+            // When
+            var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
+            var contract = childContainer.Resolve(childContainer, typeof(Service1State), typeof(IService), new Service1State(), "myService1");
 
-			// Then
-			contract.ShouldBe(_service1.Object);
-		}
+            // Then
+            contract.ShouldBe(_service1.Object);
+        }
 
-		[Test]
-		public void ShouldResolveMult()
-		{
-			// Given
-			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
+        [Test]
+        public void ShouldResolveMult()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
             target.Register(typeof(Service1State), typeof(IService), ctx => _service2.Object, "myService2");
 
             // When
             var contracts = target.ResolveAll<Service1State, IService>(name => new Service1State()).ToList();
 
-			// Then
-			contracts.Count.ShouldBe(2);
-			contracts.ShouldContain(_service1.Object);
+            // Then
+            contracts.Count.ShouldBe(2);
+            contracts.ShouldContain(_service1.Object);
             contracts.ShouldContain(_service2.Object);
         }
 
-		[Test]
-		public void ShouldResolveMultFromChildContainer()
-		{
-			// Given
-			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
+        [Test]
+        public void ShouldResolveMultFromChildContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
-			// When
-			var childContainer = target.Resolve<IContainer>("new");
-            var contracts = childContainer.ResolveAll<Service1State, IService>(name => new Service1State()).ToList();
-            
-            // Then
-            contracts.Count.ShouldBe(1);
-			contracts[0].ShouldBe(_service1.Object);
-		}
-
-		[Test]
-		public void ShouldResolveMultFromMultChildContainer()
-		{
-			// Given
-			var target = CreateTarget();
-			target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
-
-			// When
-			var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
+            // When
+            var childContainer = target.Resolve<IContainer>("new");
             var contracts = childContainer.ResolveAll<Service1State, IService>(name => new Service1State()).ToList();
 
             // Then
             contracts.Count.ShouldBe(1);
-			contracts[0].ShouldBe(_service1.Object);
-		}
+            contracts[0].ShouldBe(_service1.Object);
+        }
+
+        [Test]
+        public void ShouldResolveMultFromMultChildContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
+
+            // When
+            var childContainer = target.Resolve<IContainer>("new").Resolve<IContainer>("new2");
+            var contracts = childContainer.ResolveAll<Service1State, IService>(name => new Service1State()).ToList();
+
+            // Then
+            contracts.Count.ShouldBe(1);
+            contracts[0].ShouldBe(_service1.Object);
+        }
 
         [Test]
         public void TypedResolverShouldBeSingletone()
@@ -245,7 +245,7 @@ namespace DevTeam.Patterns.IoC.Tests
 
             // Then
             resolver.ShouldBe(resolver2);
-            resolver.ShouldNotBe(resolver3);            
+            resolver.ShouldNotBe(resolver3);
         }
 
         [Test]
@@ -256,8 +256,8 @@ namespace DevTeam.Patterns.IoC.Tests
             target.Register(() => 99);
 
             // When
-            var resolver = target.Resolve<IResolver<int>>();            
-            var val =  resolver.Resolve();
+            var resolver = target.Resolve<IResolver<int>>();
+            var val = resolver.Resolve();
 
             // Then            
             val.ShouldBe(99);
@@ -318,7 +318,7 @@ namespace DevTeam.Patterns.IoC.Tests
             var target = CreateTarget();
             var service3 = new Service2Int();
             long sum = 0;
-            target.Register(typeof(long), typeof(IService2<>), ctx => { sum+= (long)ctx.State; return service3; }, "abc");
+            target.Register(typeof(long), typeof(IService2<>), ctx => { sum += (long)ctx.State; return service3; }, "abc");
 
             // When
             target.Resolve<long, IService2<int>>(3, "abc");
@@ -377,7 +377,7 @@ namespace DevTeam.Patterns.IoC.Tests
             var contract = target.Resolve(target, typeof(Service1State), typeof(IService), new Service1State(), "abc");
 
             // Then
-            contract.ShouldBe(_service1.Object);            
+            contract.ShouldBe(_service1.Object);
         }
 
         [Test]
@@ -398,7 +398,7 @@ namespace DevTeam.Patterns.IoC.Tests
             var resolvedContract = ((IEnumerable<IService>)target.Resolve(target, typeof(Service1State), typeof(IEnumerable<IService>), _service1State, null)).ToList();
 
             // Then
-            resolvedContract.ShouldBeSubsetOf(new [] { service1, service2, service3 });
+            resolvedContract.ShouldBeSubsetOf(new[] { service1, service2, service3 });
         }
 
         [Test]
@@ -526,13 +526,59 @@ namespace DevTeam.Patterns.IoC.Tests
                 Assert.Fail("Expected exception is InvalidOperationException");
             }
             catch (InvalidOperationException)
-            {                
+            {
             }
         }
 
+        [Test]
+        public void ShouldResolveWhenGlobalScopeForRootContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            var child1 = target.CreateChildContainer();
+
+            // When
+            child1.Using<IScope>(WellknownScope.Global).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
+
+            // Then
+            target.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            target.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
+        }
+
+        [Test]
+        public void ShouldResolveWhenGlobalScopeForCurrentContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            var child1 = target.CreateChildContainer();
+
+            // When
+            child1.Using<IScope>(WellknownScope.Global).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
+
+            // Then
+            child1.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child1.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
+        }
+
+        [Test]
+        public void ShouldResolveWhenGlobalScopeForChildContainer()
+        {
+            // Given
+            var target = CreateTarget();
+            var child1 = target.CreateChildContainer();
+            var child2 = child1.CreateChildContainer();
+
+            // When
+            child1.Using<IScope>(WellknownScope.Global).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
+
+            // Then
+            child2.Registrations.ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child2.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
+        }
+
         private static Container CreateTarget(object name = null)
-		{
-			return new Container();
-		}       
+        {
+            return new Container();
+        }
     }
 }

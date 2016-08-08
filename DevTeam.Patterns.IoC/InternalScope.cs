@@ -13,7 +13,12 @@
             _resolver = resolver;
         }
 
-        public bool Satisfy(IResolver resolver)
+        public bool ReadyToRegister(bool isRoot)
+        {
+            return true;
+        }
+
+        public bool ReadyToResolve(bool isRoot, IResolver resolver)
         {
             return Equals(_resolver, resolver);
         }

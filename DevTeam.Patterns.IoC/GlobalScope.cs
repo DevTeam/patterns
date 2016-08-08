@@ -1,15 +1,15 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    internal class PublicScope: IScope
+    internal class GlobalScope: IScope
     {
         public bool ReadyToRegister(bool isRoot)
         {
-            return true;
+            return isRoot;
         }
 
         public bool ReadyToResolve(bool isRoot, IResolver resolver)
         {
-            return true;
+            return isRoot;
         }
     }
 }

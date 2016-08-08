@@ -60,6 +60,7 @@
     <Compile Include="PerThreadLifetime.cs" />
     <Compile Include="PerResolveLifetime.cs" />
     <Compile Include="ControlledLifetime.cs" />
+    <Compile Include="GlobalScope.cs" />
     <Compile Include="PublicScope.cs" />
     <Compile Include="RootContainerConfiguration.cs" />
     <Compile Include="RegistrationDescription.cs" />

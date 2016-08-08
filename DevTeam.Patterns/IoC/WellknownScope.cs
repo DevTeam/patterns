@@ -4,6 +4,8 @@
     {
         Public,
 
-        Internal
+        Internal,
+
+        Global
     }
 }

@@ -2,6 +2,8 @@
 {
     public interface IScope: IContext
     {
-        bool Satisfy(IResolver resolver);
+        bool ReadyToRegister(bool isRoot);
+
+        bool ReadyToResolve(bool isRoot, IResolver resolver);
     }
 }
