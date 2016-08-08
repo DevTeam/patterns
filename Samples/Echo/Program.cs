@@ -1,5 +1,6 @@
 ﻿namespace Echo
 {
+    using DevTeam.Patterns.Dispose;
     using DevTeam.Patterns.EventAggregator;
     using DevTeam.Patterns.IoC;
     using DevTeam.Platform.System;
@@ -11,7 +12,7 @@
             // Create root IoC container
             using (var container = new Container())
             // Apply configuration
-            using (new EchoConfiguration().Apply(container))
+            using (new EchoConfiguration().Apply(container).ToCompositeDisposable())
             {
                 var console = container.Resolve<IConsole>();
                 console.WriteLine("Input some message for echo or press enter to exit");

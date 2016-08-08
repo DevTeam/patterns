@@ -5,6 +5,8 @@
     using Patterns.IoC;
     using Contracts;
 
+    using Patterns.Dispose;
+
     internal class ToolResolver: IResolver<ISession, ITool>
     {
         private readonly IResolver<IContainer> _containerResolver;
@@ -26,7 +28,7 @@
             if (toolName == null) throw new ArgumentNullException(nameof(toolName));
             var tooContainerConfiguration = _configurationResolver.Resolve(toolName);
             var tooContainer = _containerResolver.Resolve(toolName);
-            tooContainerConfiguration.Apply(tooContainer);
+            tooContainerConfiguration.Apply(tooContainer).ToCompositeDisposable();
             return tooContainer.Resolve<ISession, ITool>(session);
         }
     }

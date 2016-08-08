@@ -2,6 +2,7 @@
 {
     using System.IO;
 
+    using DevTeam.Patterns.Dispose;
     using DevTeam.Patterns.IoC;
     using DevTeam.Patterns.IoC.Configuration;
     using DevTeam.Platform.System;
@@ -13,9 +14,9 @@
         {
             // Create root IoC container
             using (var container = new Container())
-            using (new ConfigurationsContainerConfiguration().Apply(container))
+            using (new ConfigurationsContainerConfiguration().Apply(container).ToCompositeDisposable())
             // Apply configuration
-            using (container.Resolve<string, IConfiguration>(File.ReadAllText("ConsoleTimerContainerConfiguration.json"), WellknownConfigurations.Json).Apply(container))
+            using (container.Resolve<string, IConfiguration>(File.ReadAllText("ConsoleTimerContainerConfiguration.json"), WellknownConfigurations.Json).Apply(container).ToCompositeDisposable())
             {
                 // Create console
                 var console = container.Resolve<IConsole>();

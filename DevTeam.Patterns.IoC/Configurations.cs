@@ -4,13 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Dispose;
-
     public static class Configurations
     {        
         private static readonly IEqualityComparer<IConfiguration> Comparer = new ConfigurationEqualityComparer();
 
-        public static IDisposable Apply(this IConfiguration configuration, IContainer container)
+        public static IEnumerable<IRegistration> Apply(this IConfiguration configuration, IContainer container)
         {
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
             if (container == null) throw new ArgumentNullException(nameof(container));
@@ -20,8 +18,7 @@
                 .Concat(Enumerable.Repeat(configuration, 1))
                 .Distinct(Comparer)
                 .Select(config => config.CreateRegistrations(container))
-                .SelectMany(i => i)
-                .ToCompositeDisposable();
+                .SelectMany(i => i);
         }
 
         private static IEnumerable<IConfiguration> GetDependencies(IConfiguration configuration)

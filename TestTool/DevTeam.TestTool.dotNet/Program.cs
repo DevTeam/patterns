@@ -5,6 +5,7 @@
 
     using Engine.Contracts;
 
+    using Patterns.Dispose;
     using Patterns.IoC;
 
     using Container = Patterns.IoC.Container;
@@ -14,7 +15,7 @@
         public static void Main(string[] args)
         {
             var container = new Container();
-            using (new DotNetContainerConfiguration().Apply(container))
+            using (new DotNetContainerConfiguration().Apply(container).ToCompositeDisposable())
             {
                 var commandLineArgsToPropertiesConverter = container.Resolve<IConverter<string[], IEnumerable<IPropertyValue>>>();
                 var properties = commandLineArgsToPropertiesConverter.Convert(args);
