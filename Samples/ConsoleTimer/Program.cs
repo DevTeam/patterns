@@ -12,7 +12,7 @@
         public static void Main()
         {
             // Create root IoC container
-            using (var container = new Container())            
+            using (var container = new Container())
             using (new ConfigurationsContainerConfiguration().Apply(container))
             // Apply configuration
             using (container.Resolve<string, IConfiguration>(File.ReadAllText("ConsoleTimerContainerConfiguration.json"), WellknownConfigurations.Json).Apply(container))

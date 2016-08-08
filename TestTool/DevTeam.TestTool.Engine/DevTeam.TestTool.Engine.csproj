@@ -94,9 +94,11 @@
     <Compile Include="Explorer\TestSource.cs" />
     <Compile Include="Runner\TestRunner.cs" />
     <Compile Include="Host\Session.cs" />
-    <Compile Include="WellknownTool.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="TestToolContainerConfiguration.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup />

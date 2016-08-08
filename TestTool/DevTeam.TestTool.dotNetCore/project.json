@@ -26,6 +26,9 @@
         "DevTeam.Patterns.IoC": {
           "target": "project"
         },
+        "DevTeam.Patterns.IoC.Configuration": {
+            "target": "project"
+        },
         "DevTeam.Platform": {
           "target": "project"
         },

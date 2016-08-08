@@ -20,7 +20,7 @@
             IResolver<ISession, ITool> toolResolver, 
             [State] IEnumerable<IPropertyValue> properties,
             [Dependency(Key = WellknownProperty.Tool)] IProperty toolProperty)
-        {            
+        {
             if (toolResolver == null) throw new ArgumentNullException(nameof(toolResolver));
             if (properties == null) throw new ArgumentNullException(nameof(properties));
             if (toolProperty == null) throw new ArgumentNullException(nameof(toolProperty));
@@ -29,16 +29,17 @@
             Properties = new ReadOnlyCollection<IPropertyValue>(new List<IPropertyValue>(properties));
             _disposable = (
                 from toolName in GetToolNames()
-                let tool = toolResolver.Resolve(this, toolName)
+                let toolId = (WellknownTool)Enum.Parse(typeof(WellknownTool), toolName)
+                let tool = toolResolver.Resolve(this, toolId)
                 orderby tool.ToolType descending
                 select tool.Activate()
-            ).ToCompositeDisposable();            
+            ).ToCompositeDisposable();
         }
 
         public IEnumerable<IPropertyValue> Properties { get; }
 
         public void Dispose()
-        {            
+        {
             _disposable.Dispose();
         }
 

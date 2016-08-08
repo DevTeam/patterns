@@ -46,7 +46,7 @@
                         parameters[i] = ResolveParameter(ctx.Resolver, ctx.State, ctorInfo.Parameters[i]);
                     }
 
-                    return factory.Create(resolvingConstructor, parameters);                    
+                    return factory.Create(resolvingConstructor, parameters);
                 },
                 key);
         }
@@ -105,13 +105,13 @@
             
             if (parameter.State != null)
             {
-                return ResolveState(resolver, parameter.Parameter, parameter.State, state);                
+                return ResolveState(resolver, parameter.Parameter, parameter.State, state);
             }
 
             if (parameter.Dependency != null)
             {
                 var dependency = parameter.Dependency;
-                return ResolveDependency(resolver, parameter.Parameter, dependency);                
+                return ResolveDependency(resolver, parameter.Parameter, dependency);
             }
 
             throw new InvalidOperationException("Fail to resolve");

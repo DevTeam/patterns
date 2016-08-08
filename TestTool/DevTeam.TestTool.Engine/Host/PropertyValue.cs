@@ -8,7 +8,7 @@
     {
         public PropertyValue([State] PropertyValueDescription description)
             :base(description.Property, description.Value)
-        {            
-        }        
+        {
+        }
     }
 }

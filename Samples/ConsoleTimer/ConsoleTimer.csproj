@@ -52,7 +52,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <Content Include="ConsoleTimerContainerConfiguration.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
   </ItemGroup>

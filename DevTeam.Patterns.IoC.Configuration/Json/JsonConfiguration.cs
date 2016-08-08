@@ -3,21 +3,22 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Text.RegularExpressions;
 
-    using Newtonsoft.Json;    
+    using Newtonsoft.Json;
 
     internal class JsonConfiguration: IConfiguration
     {
         private static readonly Regex VarRegex = new Regex(@"^\s*(?<name>.+)\s*=\s*(?<value>.+)\s*$", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant);
-        private readonly ConfigurationElement _configurationElement;        
+        private readonly ConfigurationElement _configurationElement;
 
         public JsonConfiguration(
             string configuration)
         {            
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
             
-            _configurationElement = JsonConvert.DeserializeObject<ConfigurationElement>(configuration);            
+            _configurationElement = JsonConvert.DeserializeObject<ConfigurationElement>(configuration);
         }
 
         public IEnumerable<IConfiguration> GetDependencies()
@@ -56,7 +57,7 @@
 
             var childrenRegistrations = (
                 from contrainerElement in configurationElement.Containers?? Enumerable.Empty<ContainerElement>()
-                let childCoontainer = container.Resolve<IContainer>(GetKey(contrainerElement.Key))
+                let childCoontainer = container.Resolve<IContainer>(GetKey(contrainerElement.Key, vars))
                 select CreateConfigurationRegistrations(childCoontainer, contrainerElement, true, newVars)).SelectMany(i => i);
 
             return dependeciesRegistrations.Concat(registrations).Concat(childrenRegistrations);
@@ -90,11 +91,18 @@
 
             return 
                 from registrationElement in configurationElement?.Registrations ?? Enumerable.Empty<RegistrationElement>()
-                let stateType = registrationElement.State != null ? Type.GetType(ResolverString(registrationElement.State, vars), true) : typeof(EmptyState)
-                let contractType = Type.GetType(ResolverString(registrationElement.Contract, vars), true)
-                let implementationType = Type.GetType(ResolverString(registrationElement.Implementation, vars), true)
-                let key = GetKey(registrationElement.Key)
+                let stateType = registrationElement.State != null ? GetType(registrationElement.State, vars) : typeof(EmptyState)
+                let contractType = GetType(registrationElement.Contract, vars)
+                let implementationType = GetType(registrationElement.Implementation, vars)
+                let key = GetKey(registrationElement.Key, vars)
                 select ApplyUsingContainer(container, registrationElement).Register(stateType, contractType, implementationType, key);
+        }
+
+        private static Type GetType(string typeName, IDictionary<string, string> vars)
+        {
+            if (typeName == null) throw new ArgumentNullException(nameof(typeName));
+            if (vars == null) throw new ArgumentNullException(nameof(vars));
+            return Type.GetType(ResolverString(typeName, vars), true);
         }
 
         private static string ResolverString(string stringTorResolve, IDictionary<string, string> vars)
@@ -135,7 +143,7 @@
             return container;
         }
 
-        private static object GetKey(KeyElement keyElement)
+        private static object GetKey(KeyElement keyElement, IDictionary<string, string> vars)
         {
             if (keyElement == null)
             {
@@ -145,11 +153,16 @@
             Type keyType;
             if (!string.IsNullOrWhiteSpace(keyElement.Type))
             {
-                keyType = Type.GetType(keyElement.Type, true);
+                keyType = GetType(keyElement.Type, vars);
             }
             else
             {
                 keyType = typeof(string);
+            }
+
+            if (keyType.GetTypeInfo().IsEnum)
+            {
+                return Enum.Parse(keyType, keyElement.Value);
             }
 
             return Convert.ChangeType(keyElement.Value, keyType);

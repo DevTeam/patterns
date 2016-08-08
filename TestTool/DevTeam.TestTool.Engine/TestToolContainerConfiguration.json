@@ -1,0 +1,101 @@
+﻿{
+    "Vars": [
+        "assemblyIoC=DevTeam.Patterns",
+        "namespaceIoC=DevTeam.Patterns.IoC",
+
+        "assemblyContracts=DevTeam.TestTool.Engine.Contracts",
+        "namespaceContracts=DevTeam.TestTool.Engine.Contracts",
+
+        "assemblyEngine=DevTeam.TestTool.Engine",
+        "namespaceHost=DevTeam.TestTool.Engine.Host",
+        "namespaceExplorer=DevTeam.TestTool.Engine.Explorer",
+        "namespaceRunner=DevTeam.TestTool.Engine.Runner",
+        "namespaceReporter=DevTeam.TestTool.Engine.Reporter",
+        "namespacePublisher=DevTeam.TestTool.Engine.Publisher"
+    ],
+
+    "Registrations": [
+        {
+            "State": "System.Collections.Generic.IEnumerable`1[[$(namespaceContracts).IPropertyValue, $(assemblyContracts)]]",
+            "Contract": "$(namespaceContracts).ISession, $(assemblyContracts)",
+            "Implementation": "$(namespaceHost).Session, $(assemblyEngine)"
+        },
+        {
+            "Contract": "$(namespaceHost).IPropertyFactory, $(assemblyEngine)",
+            "Implementation": "$(namespaceHost).PropertyFactory, $(assemblyEngine)"
+        },
+        {
+            "Contract": "$(namespaceContracts).IConverter`2[[System.String[]], System.Collections.Generic.IEnumerable`1[[$(assemblyContracts).IPropertyValue, $(assemblyContracts)]]], $(assemblyContracts)",
+            "Implementation": "$(namespaceHost).CommandLineArgsToPropertiesConverter, $(assemblyEngine)",
+            "Lifetime": "Singleton"
+        },
+        {
+            "Contract": "$(namespaceIoC).IResolver`2[[$(namespaceContracts).ISession, $(assemblyContracts)], [$(namespaceContracts).ITool, $(assemblyContracts)]], $(assemblyIoC)",
+            "Implementation": "$(namespaceHost).ToolResolver, $(assemblyEngine)",
+            "Lifetime": "Singleton"
+        },
+        {
+            "State": "$(namespaceHost).PropertyValueDescription, $(assemblyEngine)",
+            "Contract": "$(assemblyContracts).IPropertyValue, $(assemblyContracts)",
+            "Implementation": "$(namespaceHost).PropertyValue, $(assemblyEngine)"
+        },
+
+        // Tools,
+        {
+            "Key": {
+                "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
+                "Value": "Explorer"
+            },
+            "Contract": "$(namespaceIoC).IConfiguration, $(assemblyIoC)",
+            "Implementation": "$(namespaceExplorer).ExplorerContainerConfiguration, $(assemblyEngine)",
+            "Lifetime": "Singleton"
+        },
+        {
+            "Key": {
+                "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
+                "Value": "Runner"
+            },
+            "Contract": "$(namespaceIoC).IConfiguration, $(assemblyIoC)",
+            "Implementation": "$(namespaceRunner).RunnerContainerConfiguration, $(assemblyEngine)",
+            "Lifetime": "Singleton"
+        },
+        {
+            "Key": {
+                "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
+                "Value": "Reporter"
+            },
+            "Contract": "$(namespaceIoC).IConfiguration, $(assemblyIoC)",
+            "Implementation": "$(namespaceReporter).ReporterContainerConfiguration, $(assemblyEngine)",
+            "Lifetime": "Singleton"
+        },
+        {
+            "Key": {
+                "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
+                "Value": "Publisher"
+            },
+            "Contract": "$(namespaceIoC).IConfiguration, $(assemblyIoC)",
+            "Implementation": "$(namespacePublisher).PublisherContainerConfiguration, $(assemblyEngine)",
+            "Lifetime": "Singleton"
+        },
+
+        // Properties,
+        {
+            "Key": {
+                "Type": "$(assemblyContracts).WellknownProperty, $(assemblyContracts)",
+                "Value": "Tool"
+            },
+            "Contract": "$(namespaceContracts).IProperty, $(assemblyContracts)",
+            "Implementation": "$(namespaceHost).ToolProperty, $(assemblyEngine)",
+            "Lifetime": "Singleton"
+        },
+        {
+            "Key": {
+                "Type": "$(assemblyContracts).WellknownProperty, $(assemblyContracts)",
+                "Value": "Assembly"
+            },
+            "Contract": "$(namespaceContracts).IProperty, $(assemblyContracts)",
+            "Implementation": "$(namespaceHost).AssemblyProperty, $(assemblyEngine)",
+            "Lifetime": "Singleton"
+        }
+    ]
+}

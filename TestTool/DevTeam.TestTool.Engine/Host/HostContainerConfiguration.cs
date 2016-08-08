@@ -34,7 +34,7 @@
 
             // Tools
             yield return container.Register<ExplorerContainerConfiguration>(WellknownLifetime.Singleton).As<IConfiguration>(WellknownTool.Explorer);
-            yield return container.Register<RunnerContainerConfiguration>(WellknownLifetime.Singleton).As<IConfiguration>(WellknownTool.Runnner);
+            yield return container.Register<RunnerContainerConfiguration>(WellknownLifetime.Singleton).As<IConfiguration>(WellknownTool.Runner);
             yield return container.Register<ReporterContainerConfiguration>(WellknownLifetime.Singleton).As<IConfiguration>(WellknownTool.Reporter);
             yield return container.Register<PublisherContainerConfiguration>(WellknownLifetime.Singleton).As<IConfiguration>(WellknownTool.Publisher);
 
