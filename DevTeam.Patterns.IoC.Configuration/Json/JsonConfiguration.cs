@@ -68,7 +68,7 @@
             var newVars = new Dictionary<string, string>(vars);
 
             var overridedVarsMatches = (
-                from varElement in configurationElement.Vars
+                from varElement in configurationElement.Vars ?? Enumerable.Empty<string>()
                 select VarRegex.Match(varElement)).ToList();
 
             var overridedVars = 
