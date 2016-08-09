@@ -20,22 +20,35 @@
 
         public void OnNext(TestReport value)
         {
-            foreach (var output in _outputs)
-            {
-                output.WriteReport(value.Report);
-            }
+            Publish(value.Report);
+        }
+
+        public void OnNext(SummariseReport value)
+        {
+            Publish($"Totals: {value.TestTotals}");
+            Publish($"Fails: {value.TestFails}");
+            Publish($"Success: {value.TestSuccess}");
         }
 
         public void OnError(Exception error)
-        {            
+        {
         }
 
         public void OnCompleted()
-        {         
+        {
         }
 
         public void Dispose()
-        {         
+        {
         }
+
+        private void Publish(string message)
+        {
+            foreach (var output in _outputs)
+            {
+                output.WriteReport(message);
+            }
+        }
+
     }
 }

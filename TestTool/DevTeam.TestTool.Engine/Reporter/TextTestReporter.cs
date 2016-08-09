@@ -4,10 +4,11 @@
 
     using Contracts;
 
+    using Patterns.Dispose;
     using Patterns.IoC;
     using Patterns.Reactive;
 
-    internal class TextTestReporter: ITestReporter
+    internal class TextTestReporter : ITestReporter
     {
         private readonly ISubject<TestReport> _testReportSubject;
 
@@ -24,6 +25,11 @@
             return _testReportSubject.Subscribe(observer);
         }
 
+        public IDisposable Subscribe(IObserver<SummariseReport> observer)
+        {
+            return Disposable.Empty();
+        }
+
         public void OnNext(TestProgress value)
         {
             switch (value.TestState)
@@ -35,7 +41,7 @@
                 case TestState.Finished:
                     _testReportSubject.OnNext(new TestReport(value.Test, $"{value.Test} - finished"));
                     break;
-            }            
+            }
         }
 
         public void OnError(Exception error)
@@ -45,7 +51,7 @@
 
         public void OnCompleted()
         {
-            _testReportSubject.OnCompleted();         
+            _testReportSubject.OnCompleted();
         }
     }
 }

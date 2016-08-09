@@ -11,11 +11,10 @@
     using Patterns.Dispose;
     using Patterns.IoC;
 
-    internal class ReporterTool: ITool
+    internal class ReporterTool : ITool
     {
         private readonly ISession _session;
         private readonly IEnumerable<ITestReporter> _testReporters;
-        private readonly IEventAggregator _eventAggregator;
 
         public ReporterTool(
             [State] ISession session,
@@ -28,28 +27,25 @@
 
             _session = session;
             _testReporters = testReporters.ToList();
-            _eventAggregator = eventAggregator;
+            EventAggregator = eventAggregator;
         }
 
         public ToolType ToolType => ToolType.Reporter;
 
-        public IEventAggregator EventAggregator
-        {
-            get
-            {
-                return _eventAggregator;
-            }
-        }
+        public IEventAggregator EventAggregator { get; }
 
         public IDisposable Activate()
         {
             return (
-                from reporter in _testReporters
-                select EventAggregator.RegisterConsumer(reporter)).
-            Concat(
-                from reporter in _testReporters
-                select EventAggregator.RegisterProvider(reporter))
-            .ToCompositeDisposable();
+                    from reporter in _testReporters
+                    select EventAggregator.RegisterConsumer(reporter))
+                .Concat(
+                    from reporter in _testReporters
+                    select EventAggregator.RegisterProvider((IObservable<TestReport>)reporter))
+                .Concat(
+                    from reporter in _testReporters
+                    select EventAggregator.RegisterProvider((IObservable<SummariseReport>)reporter))
+                .ToCompositeDisposable();
         }
     }
 }

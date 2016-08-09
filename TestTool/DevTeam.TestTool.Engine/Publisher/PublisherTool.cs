@@ -8,11 +8,9 @@
     using Patterns.EventAggregator;
     using Contracts;
 
-    using Host;
-
     using Patterns.IoC;
 
-    internal class PublisherTool: ITool
+    internal class PublisherTool : ITool
     {
         private readonly ISession _session;
         private readonly IEnumerable<IReportPublisher> _reportPublishers;
@@ -35,10 +33,15 @@
 
         public IDisposable Activate()
         {
-            return (
-                from publisher in _reportPublishers
-                select _eventAggregator.RegisterConsumer(publisher))
-            .ToCompositeDisposable();
+            return 
+                _reportPublishers
+                .OfType<IObserver<TestReport>>()
+                .Select(publisher => _eventAggregator.RegisterConsumer(publisher))
+                .Concat(
+                    _reportPublishers
+                    .OfType<IObserver<SummariseReport>>()
+                    .Select(publisher => _eventAggregator.RegisterConsumer(publisher)))
+                .ToCompositeDisposable();
         }
     }
 }

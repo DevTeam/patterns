@@ -105,6 +105,43 @@
             ]
         },
 
+        // Reporter
+        {
+            "Key": { "Value": "Reporter" },
+            "Registrations": [
+                {
+                    "Key": {
+                        "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
+                        "Value": "Reporter"
+                    },
+                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
+                    "Contract": "$(namespaceContracts).ITool, $(assemblyContracts)",
+                    "Implementation": "$(namespaceReporter).ReporterTool, $(assemblyEngine)",
+                    "Lifetime": "Singleton",
+                    "Scope": "Global"
+                },
+                {
+                    "Key": {
+                        "Type": "System.String",
+                        "Value": "Text Reporter"
+                    },
+                    "Contract": "$(namespaceContracts).ITestReporter, $(assemblyContracts)",
+                    "Implementation": "$(namespaceReporter).TextTestReporter, $(assemblyEngine)",
+                    "Lifetime": "Singleton"
+                },
+                {
+                    "Key": {
+                        "Type": "System.String",
+                        "Value": "Summarise Reporter"
+                    },
+                    "Contract": "$(namespaceContracts).ITestReporter, $(assemblyContracts)",
+                    "Implementation": "$(namespaceReporter).SummariseTestReporter, $(assemblyEngine)",
+                    "Lifetime": "Singleton"
+                }
+            ]
+        },
+
+
         // Publisher
         {
             "Key": { "Value": "Publisher" },
@@ -128,33 +165,6 @@
                 {
                     "Contract": "$(namespaceContracts).IOutput, $(assemblyContracts)",
                     "Implementation": "$(namespacePublisher).ConsoleOutput, $(assemblyEngine)",
-                    "Lifetime": "Singleton"
-                }
-            ]
-        },
-
-        // Reporter
-        {
-            "Key": { "Value": "Reporter" },
-            "Registrations": [
-                {
-                    "Key": {
-                        "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
-                        "Value": "Reporter"
-                    },
-                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
-                    "Contract": "$(namespaceContracts).ITool, $(assemblyContracts)",
-                    "Implementation": "$(namespaceReporter).ReporterTool, $(assemblyEngine)",
-                    "Lifetime": "Singleton",
-                    "Scope": "Global"
-                },
-                {
-                    "Key": {
-                        "Type": "System.String",
-                        "Value": "text"
-                    },
-                    "Contract": "$(namespaceContracts).ITestReporter, $(assemblyContracts)",
-                    "Implementation": "$(namespaceReporter).TextTestReporter, $(assemblyEngine)",
                     "Lifetime": "Singleton"
                 }
             ]

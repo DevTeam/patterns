@@ -1,4 +1,4 @@
-﻿namespace DevTeam.Platform.System
+﻿ namespace DevTeam.Platform.System
 {
     public interface IConsole
     {

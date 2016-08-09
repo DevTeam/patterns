@@ -81,6 +81,7 @@
     <Compile Include="Host\BaseProperty.cs" />
     <Compile Include="Explorer\ExplorerTool.cs" />
     <Compile Include="Reporter\ReporterTool.cs" />
+    <Compile Include="Reporter\SummariseTestReporter.cs" />
     <Compile Include="Reporter\TextTestReporter.cs" />
     <Compile Include="Runner\RunnerTool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

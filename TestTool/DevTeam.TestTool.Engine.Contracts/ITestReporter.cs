@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface ITestReporter: IObserver<TestProgress>, IObservable<TestReport>
-    {        
+    public interface ITestReporter: IObserver<TestProgress>, IObservable<TestReport>, IObservable<SummariseReport>
+    {
     }
 }

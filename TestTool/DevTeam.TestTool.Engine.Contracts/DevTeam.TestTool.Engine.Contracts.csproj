@@ -52,6 +52,7 @@
     <Compile Include="ITestSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IProperty.cs" />
+    <Compile Include="SummariseReport.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="TestAssembly.cs" />
     <Compile Include="TestFixture.cs" />

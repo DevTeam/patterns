@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface IReportPublisher : IDisposable, IObserver<TestReport>
+    public interface IReportPublisher : IDisposable, IObserver<TestReport>, IObserver<SummariseReport>
     {
     }
 }

@@ -6,7 +6,7 @@
 
     using Platform.System;
 
-    internal class ConsoleOutput: IOutput
+    internal class ConsoleOutput : IOutput
     {
         private readonly IConsole _console;
 
