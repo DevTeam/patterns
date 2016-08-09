@@ -26,5 +26,6 @@
 	<files>
   		<file src="bin\Release\DevTeam.TestTool.Engine.dll" target="lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp" />
 		<file src="bin\Release\DevTeam.TestTool.Engine.pdb" target="lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp" />
+		<file src="bin\Release\TestToolContainerConfiguration.json" target="lib\portable-net45+win8+wp8+wpa81+MonoAndroid10+xamarinios10+MonoTouch10+Xamarin.iOS+monoandroid+monotouch+netstandard1.0+netcoreapp" />
 	</files>
 </package>
