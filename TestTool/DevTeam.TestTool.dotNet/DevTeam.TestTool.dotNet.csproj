@@ -34,6 +34,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -44,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DevTeam.Patterns.Dispose.Tests\DevTeam.Patterns.Dispose.Tests.csproj">
@@ -57,6 +62,10 @@
     <ProjectReference Include="..\..\DevTeam.Patterns.EventAggregator\DevTeam.Patterns.EventAggregator.csproj">
       <Project>{e4897226-0ffd-46c5-a44f-c7ee91572856}</Project>
       <Name>DevTeam.Patterns.EventAggregator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DevTeam.Patterns.IoC.Configuration\DevTeam.Patterns.IoC.Configuration.csproj">
+      <Project>{38ce547c-7d03-4d51-9c0b-450917a7d0ca}</Project>
+      <Name>DevTeam.Patterns.IoC.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DevTeam.Patterns.IoC\DevTeam.Patterns.IoC.csproj">
       <Project>{35055d77-822c-4d69-8df2-722b42cc405a}</Project>
