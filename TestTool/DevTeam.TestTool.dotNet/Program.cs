@@ -1,7 +1,6 @@
 ﻿namespace DevTeam.TestTool.dotNet
 {
     using System.Collections.Generic;
-    using System.ComponentModel;
 
     using Engine.Contracts;
 
@@ -20,7 +19,7 @@
                 var commandLineArgsToPropertiesConverter = container.Resolve<IConverter<string[], IEnumerable<IPropertyValue>>>();
                 var properties = commandLineArgsToPropertiesConverter.Convert(args);
                 using (container.Resolve<IEnumerable<IPropertyValue>, ISession>(properties))
-                {                    
+                {
                 }
             }
         }

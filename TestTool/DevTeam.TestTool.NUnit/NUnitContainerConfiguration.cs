@@ -16,7 +16,7 @@
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield return new ReactiveContainerConfiguration();            
+            yield return new ReactiveContainerConfiguration();
         }
 
         /// <inheritdoc/>

@@ -18,7 +18,8 @@
         {
             "State": "System.Collections.Generic.IEnumerable`1[[$(namespaceContracts).IPropertyValue, $(assemblyContracts)]]",
             "Contract": "$(namespaceContracts).ISession, $(assemblyContracts)",
-            "Implementation": "$(namespaceHost).Session, $(assemblyEngine)"
+            "Implementation": "$(namespaceHost).Session, $(assemblyEngine)",
+            "Scope": "Global"
         },
         {
             "Contract": "$(namespaceHost).IPropertyFactory, $(assemblyEngine)",
@@ -27,7 +28,8 @@
         {
             "Contract": "$(namespaceContracts).IConverter`2[[System.String[]], System.Collections.Generic.IEnumerable`1[[$(assemblyContracts).IPropertyValue, $(assemblyContracts)]]], $(assemblyContracts)",
             "Implementation": "$(namespaceHost).CommandLineArgsToPropertiesConverter, $(assemblyEngine)",
-            "Lifetime": "Singleton"
+            "Lifetime": "Singleton",
+            "Scope": "Global"
         },
         {
             "State": "$(namespaceHost).PropertyValueDescription, $(assemblyEngine)",
