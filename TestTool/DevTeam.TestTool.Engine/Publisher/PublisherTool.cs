@@ -27,7 +27,7 @@
             if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));
 
             _session = session;
-            _reportPublishers = reportPublishers;
+            _reportPublishers = reportPublishers.ToList();
             _eventAggregator = eventAggregator;
         }
 
@@ -38,7 +38,7 @@
             return (
                 from publisher in _reportPublishers
                 select _eventAggregator.RegisterConsumer(publisher))
-            .ToCompositeDisposable();            
+            .ToCompositeDisposable();
         }
     }
 }

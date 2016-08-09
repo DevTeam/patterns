@@ -2,20 +2,20 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Contracts;
-    using Host;
 
     internal class ReportPublisher : IReportPublisher
     {
-        private readonly IEnumerable<IOutput> _outputs;        
+        private readonly IEnumerable<IOutput> _outputs;
 
         public ReportPublisher(
             IEnumerable<IOutput> outputs)
         {
             if (outputs == null) throw new ArgumentNullException(nameof(outputs));
 
-            _outputs = outputs;
+            _outputs = outputs.ToList();
         }
 
         public void OnNext(TestReport value)

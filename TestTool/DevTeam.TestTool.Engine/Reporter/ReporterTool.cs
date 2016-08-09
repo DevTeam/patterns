@@ -27,7 +27,7 @@
             if (eventAggregator == null) throw new ArgumentNullException(nameof(eventAggregator));
 
             _session = session;
-            _testReporters = testReporters;
+            _testReporters = testReporters.ToList();
             _eventAggregator = eventAggregator;
         }
 

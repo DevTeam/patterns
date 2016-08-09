@@ -96,7 +96,6 @@
                     "Scope": "Global"
                 },
                 {
-                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
                     "Contract": "$(namespaceContracts).ITestRunner, $(assemblyContracts)",
                     "Implementation": "$(namespaceRunner).TestRunner, $(assemblyEngine)",
                     "Lifetime": "Singleton"
@@ -120,13 +119,11 @@
                     "Scope": "Global"
                 },
                 {
-                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
                     "Contract": "$(namespaceContracts).IReportPublisher, $(assemblyContracts)",
                     "Implementation": "$(namespacePublisher).ReportPublisher, $(assemblyEngine)",
                     "Lifetime": "Singleton"
                 },
                 {
-                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
                     "Contract": "$(namespaceContracts).IOutput, $(assemblyContracts)",
                     "Implementation": "$(namespacePublisher).ConsoleOutput, $(assemblyEngine)",
                     "Lifetime": "Singleton"
@@ -154,7 +151,6 @@
                         "Type": "System.String",
                         "Value": "text"
                     },
-                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
                     "Contract": "$(namespaceContracts).ITestReporter, $(assemblyContracts)",
                     "Implementation": "$(namespaceReporter).TextTestReporter, $(assemblyEngine)",
                     "Lifetime": "Singleton"

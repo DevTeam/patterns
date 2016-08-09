@@ -37,7 +37,7 @@
             _scheduler = scheduler;
             _session = session;
             _eventAggregator = eventAggregator;
-            _testsSources = testsSources.Resolve(session);
+            _testsSources = testsSources.Resolve(session).ToList();
             _testSubjectResolver = testSubjectResolver;
         }
 
