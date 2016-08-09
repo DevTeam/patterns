@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class Binder: IBinder
+    public class Binder : IBinder
     {
         private readonly Dictionary<ConstructorInfo, CtorInfo> _ctorDictionary = new Dictionary<ConstructorInfo, CtorInfo>();
 
@@ -102,7 +102,7 @@
         private static object ResolveParameter(IResolver resolver, object state, CtorParameter parameter)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
-            
+
             if (parameter.State != null)
             {
                 return ResolveState(resolver, parameter.Parameter, parameter.State, state);

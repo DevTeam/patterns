@@ -3,8 +3,8 @@
     internal class SingletonLifetime : KeyBasedLifetime
     {
         public SingletonLifetime(ILifetime baseLifetime)
-            :base(baseLifetime)
-        {            
+            : base(baseLifetime)
+        {
         }
 
         protected override object CreateKey(IResolvingContext ctx)
@@ -12,15 +12,20 @@
             return new Key(ctx);
         }
 
+        public override string ToString()
+        {
+            return $"{nameof(SingletonLifetime)} [{base.ToString()}]";
+        }
+
         private class Key
         {
             private readonly IResolvingContext _ctx;
-            
-	        public Key(IResolvingContext ctx)
-	        {
-	            _ctx = ctx;	            
-	        }
-            
+
+            public Key(IResolvingContext ctx)
+            {
+                _ctx = ctx;
+            }
+
             public bool Equals(Key other)
             {
                 if (ReferenceEquals(null, other)) return false;

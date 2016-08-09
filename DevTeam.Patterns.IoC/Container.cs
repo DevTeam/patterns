@@ -129,9 +129,13 @@
                     resources.Add(Disposable.Create(() => Unregister(registration)));
                 }
             }
+            catch (ArgumentException ex)
+            {
+                throw new InvalidOperationException($"The entry {registration} has already registered. Registered entries:{Environment.NewLine}{GetRegisteredInfo()}", ex);
+            }
             catch (Exception ex)
             {
-                throw new InvalidOperationException($"The entry {registration} registration failed. Registered entries:\n{GetRegisteredInfo()}", ex);
+                throw new InvalidOperationException($"The entry {registration} registration failed. Registered entries:{Environment.NewLine}{GetRegisteredInfo()}", ex);
             }
 
             return registration;
@@ -215,7 +219,7 @@
 
         public override string ToString()
         {
-            return Key?.ToString() ?? string.Empty;
+            return $"{nameof(Container)} [Key: {Key?.ToString() ?? string.Empty}, IsRoot: {IsRoot}, Registrations: {_factories.SelectMany(i => i.Value).Count()}]";
         }
 
         private bool Unregister(IRegistration registration)
@@ -249,8 +253,8 @@
 
         private string GetRegisteredInfo()
         {
-            var details = _factories.Count == 0 ? "no entries" : string.Join(", ", _factories.SelectMany(i => i.Value.Keys).Distinct().Select(k => k.ToString()));
-            return $"Container \"{Key}\". Registered entries: {details}";
+            var details = _factories.Count == 0 ? "no entries" : string.Join(Environment.NewLine, _factories.SelectMany(i => i.Value.Keys).Distinct().Select(k => k.ToString()));
+            return $"Container \"{Key}\". Registered entries:{Environment.NewLine}{details}";
         }
 
         private static IEnumerable<IRegistration> GetResolverRegistrations(RegistrationDescription registrationDescription)

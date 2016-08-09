@@ -19,5 +19,10 @@
         {
             return _resolver.Resolve<T>(key ?? _defaultKey);
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(Resolver<T>)} [BaseResolver: {_resolver}, DefaultKey: {_defaultKey?.ToString() ?? "null"}]";
+        }
     }
 }

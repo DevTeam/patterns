@@ -2,6 +2,9 @@
 {
     public enum WellknownConfigurations
     {
+        /// <summary>
+        /// Configuration from JSON string.
+        /// </summary>
         Json
     }
 }

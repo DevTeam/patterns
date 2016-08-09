@@ -24,7 +24,7 @@ namespace DevTeam.Patterns.IoC
 
         public override string ToString()
         {
-            return $"{ContractType.FullName}({StateType.FullName}, \"{Key}\")";
+            return $"{nameof(StrictRegistration)} [StateType: {StateType.Name}, ContractType: {ContractType.Name}, Key: {Key?.ToString() ?? "null"})";
         }
 
         public bool Equals(IRegistration other)

@@ -5,14 +5,14 @@
     /// <summary>
     /// Represents a disposable whose underlying disposable can be swapped for another disposable which causes the previous underlying disposable to be disposed.
     /// </summary>
-    public class SerialDisposable: IDisposable
+    public class SerialDisposable : IDisposable
     {
         private IDisposable _disposable = Patterns.Dispose.Disposable.Empty();
 
         /// <summary>
         /// Initializes a new instance of the SerialDisposable class.
         /// </summary>
-        public SerialDisposable()            
+        public SerialDisposable()
         {
         }
 
@@ -60,7 +60,7 @@
                 {
                     _disposable.Dispose();
                     _disposable = value;
-                }                
+                }
             }
         }
 

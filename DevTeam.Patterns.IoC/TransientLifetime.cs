@@ -16,5 +16,10 @@
         {
             if (ctx == null) throw new ArgumentNullException(nameof(ctx));
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(TransientLifetime)}";
+        }
     }
 }

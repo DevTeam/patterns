@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Dispose;
 
-    internal class SimpleSubject<T>: ISubject<T>
+    internal class SimpleSubject<T> : ISubject<T>
     {
         private readonly List<IObserver<T>> _observers = new List<IObserver<T>>();
 
@@ -21,7 +21,7 @@
             foreach (var observer in _observers)
             {
                 observer.OnNext(value);
-            }            
+            }
         }
 
         public void OnError(Exception error)
@@ -29,7 +29,7 @@
             foreach (var observer in _observers)
             {
                 observer.OnError(error);
-            }            
+            }
         }
 
         public void OnCompleted()
@@ -40,6 +40,11 @@
             }
 
             _observers.Clear();
-        }        
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(SimpleSubject<T>)} [Observers: {_observers.Count}]";
+        }
     }
 }

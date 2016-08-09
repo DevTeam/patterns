@@ -5,7 +5,7 @@
     /// <summary>
     /// Represents an abstraction for liftime manager.
     /// </summary>
-    public interface ILifetime: IContext
+    public interface ILifetime : IContext
     {
         object Create(IResolvingContext ctx, Func<IResolvingContext, object> factory);
 

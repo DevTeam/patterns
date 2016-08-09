@@ -5,7 +5,7 @@
 
     using Dispose;
 
-    internal class ManualScheduler: IScheduler, IDisposable
+    internal class ManualScheduler : IScheduler, IDisposable
     {
         private readonly LinkedList<Action> _actions = new LinkedList<Action>();
 
@@ -33,7 +33,7 @@
                     count--;
                     processed++;
                     _actions.RemoveFirst();
-                    action();                    
+                    action();
                 }
                 catch (Exception)
                 {
@@ -42,6 +42,11 @@
             }
 
             return processed;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(ManualScheduler)} [Actions: {_actions.Count}[";
         }
     }
 }

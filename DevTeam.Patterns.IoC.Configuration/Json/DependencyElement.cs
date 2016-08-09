@@ -6,5 +6,10 @@
     {
         [JsonProperty(Required = Required.Always)]
         public string Type { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(DependencyElement)} [Type: {Type ?? nameof(System.String)}]";
+        }
     }
 }

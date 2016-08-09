@@ -2,7 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-  
+    using System.Linq;
+
     internal abstract class KeyBasedLifetime: ILifetime
     {
         private readonly ILifetime _baseLifetime;
@@ -12,7 +13,7 @@
         {
             if (baseLifetime == null) throw new ArgumentNullException(nameof(baseLifetime));
             
-            _baseLifetime = baseLifetime;            
+            _baseLifetime = baseLifetime;
         }
 
         public object Create(IResolvingContext ctx, Func<IResolvingContext, object> factory)
@@ -24,7 +25,7 @@
             if (!_factories.TryGetValue(ctx.Registration, out registrationFactories))
             {
                 registrationFactories = new Dictionary<object, Lazy<object>>();
-                _factories.Add(ctx.Registration, registrationFactories);                
+                _factories.Add(ctx.Registration, registrationFactories);
             }
 
             var key = CreateKey(ctx);
@@ -34,7 +35,7 @@
                 currentFactory = new Lazy<object>(() => _baseLifetime.Create(ctx, factory));
                 registrationFactories.Add(key, currentFactory);
             }
-                                                
+
             return currentFactory.Value;
         }
 
@@ -45,9 +46,14 @@
             if (_factories.Remove(ctx.Registration))
             {
                 _baseLifetime.Release(ctx);
-            }            
+            }
         }
 
         protected abstract object CreateKey(IResolvingContext ctx);
+
+        public override string ToString()
+        {
+            return $"Contracts: {_factories.Count}, Instances: {_factories.Values.SelectMany(i => i).Count()}";
+        }
     }
 }

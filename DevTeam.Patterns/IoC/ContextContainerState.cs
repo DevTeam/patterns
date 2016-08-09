@@ -3,7 +3,7 @@
     using System;
 
     public class ContextContainerState
-    {        
+    {
         public ContextContainerState(IContainer targetContainer, IContext context, Type contextType)
         {
             if (targetContainer == null) throw new ArgumentNullException(nameof(targetContainer));
@@ -19,5 +19,10 @@
         public IContext Context { get; }
 
         public Type ContextType { get; }
+
+        public override string ToString()
+        {
+            return $"{nameof(ContextContainerState)} [TargetContainer: {TargetContainer}, Context: {Context}, ContextType: {ContextType?.ToString() ?? "null"}]";
+        }
     }
 }

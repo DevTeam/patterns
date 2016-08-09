@@ -19,5 +19,10 @@
         public WellknownRegistrationComparer? RegistrationComparer { get; set; }
 
         public WellknownScope? Scope { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(RegistrationElement)} [State: {State ?? "null"}, Contract: {Contract ?? "null"}, Implementation: {Implementation ?? "null"}, Key: {Key?.ToString() ?? "null"}, Lifetime: {Lifetime?.ToString() ?? nameof(WellknownLifetime.Transient)}, RegistrationComparer: {RegistrationComparer?.ToString() ?? nameof(WellknownRegistrationComparer.FullCompliance)}, Scope: {Scope?.ToString() ?? nameof(WellknownScope.Public)}]";
+        }
     }
 }

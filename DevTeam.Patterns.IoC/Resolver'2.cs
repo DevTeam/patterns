@@ -20,5 +20,10 @@ namespace DevTeam.Patterns.IoC
         {
             return _resolver.Resolve<TState, T>(state, key ?? _defaultKey);
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(Resolver<TState, T>)} [BaseResolver: {_resolver}, DefaultKey: {_defaultKey?.ToString() ?? "null"}]";
+        }
     }
 }

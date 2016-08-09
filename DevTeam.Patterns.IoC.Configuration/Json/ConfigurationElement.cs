@@ -11,5 +11,15 @@
         public IList<ContainerElement> Containers { get; set; }
 
         public IList<RegistrationElement> Registrations { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(ConfigurationElement)} [{GetDesctiption()}]";
+        }
+
+        protected string GetDesctiption()
+        {
+            return $"Vars: {Vars}, Dependencies: {Dependencies}, Containers: {Containers}, Registrations: {Registrations}";
+        }
     }
 }

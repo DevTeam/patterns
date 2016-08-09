@@ -2,7 +2,7 @@ namespace DevTeam.Patterns.IoC
 {
     using System;
 
-    internal struct GenericRegistration: IRegistration
+    internal struct GenericRegistration : IRegistration
     {
         private readonly RegistrationDescription _description;
 
@@ -20,7 +20,7 @@ namespace DevTeam.Patterns.IoC
 
         private GenericRegistration(RegistrationDescription description)
         {
-            _description = description;            
+            _description = description;
         }
 
         public Type StateType => _description.StateType;
@@ -36,7 +36,7 @@ namespace DevTeam.Patterns.IoC
 
         public override string ToString()
         {
-            return $"{ContractType.FullName}({StateType.FullName}, \"{Key}\")";
+            return $"{nameof(GenericRegistration)} [StateType: {StateType.Name}, ContractType: {ContractType.Name}, Key: {Key?.ToString() ?? "null"})";
         }
 
         public bool Equals(IRegistration other)

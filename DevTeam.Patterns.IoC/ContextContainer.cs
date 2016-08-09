@@ -89,5 +89,10 @@
         {
             _state.TargetContainer.Dispose();
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(ContextContainer<TContext>)} [TargetContainer: {_state.TargetContainer}, ContextType: {_state?.ContextType?.Name ?? "null"}, Context: {_state.Context?.ToString() ?? "null"}]";
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    public interface IContextContainer: IContainer        
+    public interface IContextContainer : IContainer
     {
     }
 }

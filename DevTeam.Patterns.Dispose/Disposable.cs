@@ -48,15 +48,15 @@
             return new CompositeDisposable(disposables);
         }
 
-        private class DisposableCreate: IDisposable
+        private class DisposableCreate : IDisposable
         {
             private readonly Action _disposeAction;
 
             public DisposableCreate(Action disposeAction)
             {
                 if (disposeAction == null) throw new ArgumentNullException(nameof(disposeAction));
-                
-                _disposeAction = disposeAction;                
+
+                _disposeAction = disposeAction;
             }
 
             public void Dispose()

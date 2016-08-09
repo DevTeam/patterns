@@ -4,7 +4,7 @@
 
     public interface IResolvingContext
     {
-        Guid ResolvingId { get;  }
+        Guid ResolvingId { get; }
 
         Guid PerThreadResolvingId { get; }
 

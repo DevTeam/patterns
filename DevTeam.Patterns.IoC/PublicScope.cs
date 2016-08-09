@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal class PublicScope: IScope
+    internal class PublicScope : IScope
     {
         public PublicScope()
         {

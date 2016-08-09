@@ -3,7 +3,7 @@
     using System;
 
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class StateAttribute: Attribute
+    public class StateAttribute : Attribute
     {
     }
 }

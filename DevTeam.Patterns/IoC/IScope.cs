@@ -1,6 +1,6 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    public interface IScope: IContext
+    public interface IScope : IContext
     {
         bool ReadyToRegister(bool isRoot, IContainer container);
 

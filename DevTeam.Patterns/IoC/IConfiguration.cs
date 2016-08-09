@@ -19,5 +19,5 @@
         /// <param name="container">The target container.</param>
         /// <returns>The created registrations.</returns>
         IEnumerable<IRegistration> CreateRegistrations(IContainer container);
-	}
+    }
 }

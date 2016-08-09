@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     internal class ControlledLifetime: ILifetime
     {
@@ -43,6 +44,11 @@
             {
                 contract.Dispose();
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(ControlledLifetime)} [Contracts: {_contracts.Count}, Instances: {_contracts.Values.SelectMany(i => i).Count()}]";
         }
     }
 }

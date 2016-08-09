@@ -8,7 +8,7 @@
     using Reactive;
 
     /// <inheritdoc/>
-    public class EventAggregatorContainerConfiguration: IConfiguration
+    public class EventAggregatorContainerConfiguration : IConfiguration
     {
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
@@ -21,7 +21,7 @@
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEventAggregator>(() => new Aggregator(container));            
-        }        
+            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register<IEventAggregator>(() => new Aggregator(container));
+        }
     }
 }

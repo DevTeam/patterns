@@ -33,5 +33,10 @@
             var parameters = ctor.GetParameters().Select((parameter, index) => Expression.Convert(Expression.ArrayIndex(args, Expression.Constant(index)), parameter.ParameterType));
             return Expression.Lambda<ObjectActivator>(Expression.New(ctor, parameters), args).Compile();
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(ExpressionFactory)} [Activators: {_activators.Count}]";
+        }
     }
 }

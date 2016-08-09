@@ -8,9 +8,14 @@
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
-            Registration = registration;            
+            Registration = registration;
         }
 
-        public IRegistration Registration { get; }        
+        public IRegistration Registration { get; }
+
+        public override string ToString()
+        {
+            return $"{nameof(ReleasingContext)} [Registration: {Registration}]";
+        }
     }
 }

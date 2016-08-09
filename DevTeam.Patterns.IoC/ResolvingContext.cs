@@ -55,5 +55,10 @@
             _resolvingId = _prevResolvingId;
             _perThreadResolvingId = _prevPerThreadResolvingId;
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(ResolvingContext)} [ResolvingId: {ResolvingId}, PerThreadResolvingId: {PerThreadResolvingId}, Registration: {Registration}, RegisterContainer: {RegisterContainer}, ResolverContainer: {ResolverContainer}, ResolvingContractType: {ResolvingContractType.Name}, State: {State ?? "null"}]";
+        }
     }
 }

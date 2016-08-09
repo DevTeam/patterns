@@ -15,5 +15,10 @@
         public IContainer ParentContainer { get; private set; }
 
         public object Key { get; private set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(ContainerDescription)} [ParentContainer: {ParentContainer}, Key: {Key?.ToString() ?? "null"}]";
+        }
     }
 }

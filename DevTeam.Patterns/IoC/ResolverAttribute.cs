@@ -3,7 +3,7 @@
     using System;
 
     [AttributeUsage(AttributeTargets.Constructor)]
-    public class ResolverAttribute: Attribute
+    public class ResolverAttribute : Attribute
     {
     }
 }

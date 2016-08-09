@@ -1,10 +1,10 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    internal class PerThreadLifetime: KeyBasedLifetime
+    internal class PerThreadLifetime : KeyBasedLifetime
     {
         public PerThreadLifetime(ILifetime baseLifetime)
-            :base(baseLifetime)
-        {            
+            : base(baseLifetime)
+        {
         }
 
         protected override object CreateKey(IResolvingContext ctx)
@@ -12,15 +12,20 @@
             return new Key(ctx);
         }
 
+        public override string ToString()
+        {
+            return $"{nameof(PerThreadLifetime)} [{base.ToString()}]";
+        }
+
         private class Key
         {
             private readonly IResolvingContext _ctx;
-            
-	        public Key(IResolvingContext ctx)
-	        {
-	            _ctx = ctx;	            
-	        }
-            
+
+            public Key(IResolvingContext ctx)
+            {
+                _ctx = ctx;
+            }
+
             public bool Equals(Key other)
             {
                 if (ReferenceEquals(null, other)) return false;

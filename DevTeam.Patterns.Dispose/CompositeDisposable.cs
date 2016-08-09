@@ -7,9 +7,9 @@
     /// <summary>
     /// Represents a group of Disposables that are disposed together.
     /// </summary>
-    public class CompositeDisposable: IDisposable
+    public class CompositeDisposable : IDisposable
     {
-		private readonly HashSet<IDisposable> _disposables = new HashSet<IDisposable>();
+        private readonly HashSet<IDisposable> _disposables = new HashSet<IDisposable>();
         private bool _disposed;
 
         /// <summary>
@@ -28,9 +28,9 @@
             if (items == null) throw new ArgumentNullException(nameof(items));
 
             foreach (var disposable in items)
-	        {
-		        _disposables.Add(disposable);
-	        }
+            {
+                _disposables.Add(disposable);
+            }
         }
 
         /// <summary>
@@ -38,8 +38,8 @@
         /// </summary>
         /// <param name="items">The disposables that will be disposed together.</param>
         public CompositeDisposable(params IDisposable[] items)
-            :this((IEnumerable<IDisposable>)items)
-        {            
+            : this((IEnumerable<IDisposable>)items)
+        {
         }
 
         internal int Count => _disposables.Count;
@@ -48,7 +48,7 @@
         /// Disposes all disposables in the group and removes them from the group.
         /// </summary>
         public void Dispose()
-        {            
+        {
             Clear();
             _disposed = true;
         }
@@ -58,15 +58,15 @@
         /// </summary>
         /// <param name="disposable">The disposable to add.</param>
 	    public void Add(IDisposable disposable)
-	    {
-		    if (_disposed)
-		    {
-				disposable.Dispose();
-				return;			    
-		    }
+        {
+            if (_disposed)
+            {
+                disposable.Dispose();
+                return;
+            }
 
-		    _disposables.Add(disposable);
-	    }
+            _disposables.Add(disposable);
+        }
 
         /// <summary>
         /// Removes and disposes the first occurrence of a disposable from the CompositeDisposable.
@@ -74,27 +74,27 @@
         /// <param name="disposable">The disposable to remove.</param>
         /// <returns><c>False</c> if has no item.</returns>
 	    public bool Remove(IDisposable disposable)
-	    {
-		    if (!_disposables.Remove(disposable))
-		    {
-			    return false;
-		    }
+        {
+            if (!_disposables.Remove(disposable))
+            {
+                return false;
+            }
 
-		    disposable.Dispose();
-		    return true;
-	    }
+            disposable.Dispose();
+            return true;
+        }
 
         /// <summary>
         /// Removes and disposes all disposables from the GroupDisposable, but does not dispose the CompositeDisposable.
         /// </summary>
-	    public void Clear()
-	    {
-		    foreach (var disposable in _disposables.Reverse())
-		    {
-				disposable.Dispose();
-		    }
+        public void Clear()
+        {
+            foreach (var disposable in _disposables.Reverse())
+            {
+                disposable.Dispose();
+            }
 
-			_disposables.Clear();		    
-	    }
+            _disposables.Clear();
+        }
     }
 }

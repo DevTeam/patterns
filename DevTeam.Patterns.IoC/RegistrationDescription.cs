@@ -41,6 +41,11 @@
             }
         }
 
+        public override string ToString()
+        {
+            return $"{nameof(RegistrationDescription)} [StateType: {StateType.Name}, ContractType: {ContractType.Name}, Key: {Key?.ToString() ?? "null"}]";
+        }
+
         private bool Equals(RegistrationDescription other)
         {
             return StateType == other.StateType && ContractType == other.ContractType && Equals(Key, other.Key);

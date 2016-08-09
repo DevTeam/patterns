@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal class GlobalScope: IScope
+    internal class GlobalScope : IScope
     {
         public GlobalScope(IContainer owner)
         {

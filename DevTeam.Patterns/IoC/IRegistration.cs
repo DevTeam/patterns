@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface IRegistration: IEquatable<IRegistration>, IDisposable
+    public interface IRegistration : IEquatable<IRegistration>, IDisposable
     {
         Type StateType { get; }
 

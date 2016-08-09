@@ -1,10 +1,10 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    internal class PerResolveLifetimeLifetime: KeyBasedLifetime
+    internal class PerResolveLifetimeLifetime : KeyBasedLifetime
     {
         public PerResolveLifetimeLifetime(ILifetime baseLifetime)
-            :base(baseLifetime)
-        {            
+            : base(baseLifetime)
+        {
         }
 
         protected override object CreateKey(IResolvingContext ctx)
@@ -12,15 +12,20 @@
             return new Key(ctx);
         }
 
+        public override string ToString()
+        {
+            return $"{nameof(PerResolveLifetimeLifetime)} [{base.ToString()}]";
+        }
+
         private class Key
         {
             private readonly IResolvingContext _ctx;
-            
-	        public Key(IResolvingContext ctx)
-	        {
-	            _ctx = ctx;	            
-	        }
-            
+
+            public Key(IResolvingContext ctx)
+            {
+                _ctx = ctx;
+            }
+
             public bool Equals(Key other)
             {
                 if (ReferenceEquals(null, other)) return false;

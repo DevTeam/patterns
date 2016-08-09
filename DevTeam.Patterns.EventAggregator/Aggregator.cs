@@ -42,9 +42,14 @@
 
             var subject = GetSubject<T>();
             return new CompositeDisposable(
-                subject.Subscribe(consumer),                
+                subject.Subscribe(consumer),
                 Disposable.Create(() => { WriteLog($"Unregister consumer for {typeof(T).Name}"); }));
-        }       
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(Aggregator)} [Subjects: {_subjects.Count}]";
+        }
 
         private ISubject<T> GetSubject<T>()
         {
@@ -52,7 +57,7 @@
             if (!_subjects.TryGetValue(typeof(T), out subject))
             {
                 WriteLog($"Create subject for {typeof(T).Name}");
-                subject = _resolver.Resolve<ISubject<T>>(WellknownSubject.Simple);                    
+                subject = _resolver.Resolve<ISubject<T>>(WellknownSubject.Simple);
                 _subjects.Add(typeof(T), subject);
             }
 

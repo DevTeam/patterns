@@ -2,6 +2,6 @@
 {
     public interface IReleasingContext
     {
-        IRegistration Registration { get; }        
+        IRegistration Registration { get; }
     }
 }

@@ -12,6 +12,11 @@
             return new Key(ctx);
         }
 
+        public override string ToString()
+        {
+            return $"{nameof(PerContainerLifetime)} [{base.ToString()}]";
+        }
+
         private class Key
         {
             private readonly IResolvingContext _ctx;

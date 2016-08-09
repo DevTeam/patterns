@@ -7,7 +7,7 @@
 
     using Dispose;
 
-    internal class Scheduler: IScheduler, IDisposable
+    internal class Scheduler : IScheduler, IDisposable
     {
         private readonly object _lockObject = new object();
         private readonly Task[] _tasks;
@@ -22,7 +22,7 @@
             _tasks = new Task[parallelism];
             for (var i = 0; i < _tasks.Length; i++)
             {
-                _tasks[i] = taskFactory.StartNew(ThreadEntry);                
+                _tasks[i] = taskFactory.StartNew(ThreadEntry);
             }
         }
 
@@ -41,7 +41,7 @@
                 {
                     lock (_lockObject)
                     {
-                        _actions.Remove(action);                        
+                        _actions.Remove(action);
                     }
                 });
         }
@@ -76,6 +76,14 @@
             }
         }
 
+        public override string ToString()
+        {
+            lock (_lockObject)
+            {
+                return $"{nameof(Scheduler)} [Parallelism: {_tasks.Length}, Actions: {_actions.Count}, Disposed: {_disposed}]";
+            }
+        }
+
         private void ThreadEntry()
         {
             do
@@ -92,7 +100,7 @@
                     _actions.RemoveLast();
                     action = last.Value;
                 }
-                
+
                 try
                 {
                     if (action != null)

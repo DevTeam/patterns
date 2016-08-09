@@ -8,6 +8,6 @@
         /// <summary>
         /// Provides the default shared contract.
         /// </summary>
-        public static readonly EmptyState Shared = new EmptyState();        
+        public static readonly EmptyState Shared = new EmptyState();
     }
 }

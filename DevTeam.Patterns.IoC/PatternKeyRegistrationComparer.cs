@@ -2,7 +2,7 @@
 {
     using System.Text.RegularExpressions;
 
-    internal class PatternKeyRegistrationComparer: IRegistrationComparer
+    internal class PatternKeyRegistrationComparer : IRegistrationComparer
     {
         public WellknownRegistrationComparer Key => WellknownRegistrationComparer.PatternKey;
 

@@ -1,6 +1,6 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    internal class AnyStateTypeAndKeyRegistrationComparer: IRegistrationComparer
+    internal class AnyStateTypeAndKeyRegistrationComparer : IRegistrationComparer
     {
         public WellknownRegistrationComparer Key => WellknownRegistrationComparer.AnyStateTypeAndKey;
 

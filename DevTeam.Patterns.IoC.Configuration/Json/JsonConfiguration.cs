@@ -36,6 +36,11 @@
             return CreateConfigurationRegistrations(container, _configurationElement, false, vars);
         }
 
+        public override string ToString()
+        {
+            return $"{nameof(JsonConfiguration)} [Configuration: {_configurationElement}]";
+        }
+
         private static IEnumerable<IConfiguration> GetDependencies(ConfigurationElement configurationElement, IDictionary<string, string> vars)
         {
             return

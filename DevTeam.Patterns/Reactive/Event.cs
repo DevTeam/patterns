@@ -13,7 +13,7 @@
         private Exception _error;
 
         private Event()
-        {            
+        {
         }
 
         /// <summary>
@@ -23,7 +23,7 @@
         /// <returns>The OnNext event.</returns>
         public static Event<TSource> CreateOnNext(TSource value)
         {
-            return new Event<TSource> {EventType = Type.OnNext, Value = value};
+            return new Event<TSource> { EventType = Type.OnNext, Value = value };
         }
 
         /// <summary>
@@ -89,6 +89,11 @@
             {
                 _error = value;
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(Event<TSource>)} [Value: {Value?.ToString() ?? "null"}, Error: {Error?.ToString() ?? "null"}]";
         }
 
         /// <summary>
