@@ -70,7 +70,6 @@
   <ItemGroup>
     <Compile Include="Host\CommandLineArgsToPropertiesConverter.cs" />
     <Compile Include="Host\IPropertyFactory.cs" />
-    <Compile Include="Host\IReportPublisher.cs" />
     <Compile Include="Host\PropertyValueDescription.cs" />
     <Compile Include="Host\PropertyValue.cs" />
     <Compile Include="Publisher\ConsoleOutput.cs" />
@@ -84,7 +83,6 @@
     <Compile Include="Host\HostContainerConfiguration.cs" />
     <Compile Include="Explorer\ExplorerTool.cs" />
     <Compile Include="Explorer\ExplorerContainerConfiguration.cs" />
-    <Compile Include="Host\ToolResolver.cs" />
     <Compile Include="Reporter\ReporterTool.cs" />
     <Compile Include="Reporter\ReporterContainerConfiguration.cs" />
     <Compile Include="Reporter\TextTestReporter.cs" />

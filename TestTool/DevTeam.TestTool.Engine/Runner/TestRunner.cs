@@ -25,7 +25,7 @@
             _reflection = reflection;
             _results = subject;
         }
-        
+
         public void OnNext(Test test)
         {
             if (test == null) throw new ArgumentNullException(nameof(test));
@@ -44,8 +44,8 @@
                 }
                 catch (Exception exception)
                 {
-                    _results.OnNext(new TestProgress(test, TestState.Finished, new TestResult(exception)));                    
-                }                
+                    _results.OnNext(new TestProgress(test, TestState.Finished, new TestResult(exception)));
+                }
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@
         }
 
         public void OnError(Exception error)
-        {         
+        {
             _results.OnError(error);
         }
 

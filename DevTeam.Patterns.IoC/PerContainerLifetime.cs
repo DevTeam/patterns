@@ -1,10 +1,10 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    internal class PerContainerLifetime: KeyBasedLifetime
+    internal class PerContainerLifetime : KeyBasedLifetime
     {
         public PerContainerLifetime(ILifetime baseLifetime)
-            :base(baseLifetime)
-        {            
+            : base(baseLifetime)
+        {
         }
 
         protected override object CreateKey(IResolvingContext ctx)
@@ -15,17 +15,17 @@
         private class Key
         {
             private readonly IResolvingContext _ctx;
-            
-	        public Key(IResolvingContext ctx)
-	        {
-	            _ctx = ctx;	            
-	        }
-            
+
+            public Key(IResolvingContext ctx)
+            {
+                _ctx = ctx;
+            }
+
             public bool Equals(Key other)
             {
                 if (ReferenceEquals(null, other)) return false;
                 if (ReferenceEquals(this, other)) return true;
-                return Equals(_ctx.Resolver, other._ctx.Resolver) && Equals(_ctx.Registration, other._ctx.Registration) && _ctx.ResolvingContractType == other._ctx.ResolvingContractType && Equals(_ctx.State, other._ctx.State);
+                return Equals(_ctx.RegisterContainer, other._ctx.RegisterContainer) && Equals(_ctx.Registration, other._ctx.Registration) && _ctx.ResolvingContractType == other._ctx.ResolvingContractType && Equals(_ctx.State, other._ctx.State);
             }
 
             public override bool Equals(object obj)
@@ -40,7 +40,7 @@
             {
                 unchecked
                 {
-                    var hashCode = _ctx.Resolver.GetHashCode();
+                    var hashCode = _ctx.RegisterContainer.GetHashCode();
                     hashCode = (hashCode * 397) ^ _ctx.Registration.GetHashCode();
                     hashCode = (hashCode * 397) ^ _ctx.ResolvingContractType.GetHashCode();
                     hashCode = (hashCode * 397) ^ (_ctx.State?.GetHashCode() ?? 0);

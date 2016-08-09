@@ -1,12 +1,11 @@
 namespace DevTeam.Patterns.IoC
 {
     using System;
-    using System.Collections.Generic;
 
-	public interface IResolver
-	{
-	    IEnumerable<IRegistration> Registrations { get; }
+    public interface IResolver
+    {
+        object Resolve(Type stateType, Type contractType, object state, object key = null);
 
-	    object Resolve(IResolver resolver, Type stateType, Type contractType, object state, object key = null);
-	}
+        object Resolve(IContainer resolverContainer, Type stateType, Type contractType, object state, object key = null);
+    }
 }

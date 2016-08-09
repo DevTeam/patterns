@@ -10,7 +10,9 @@
 
         IRegistration Registration { get; }
 
-        IResolver Resolver { get; }
+        IContainer RegisterContainer { get; }
+
+        IContainer ResolverContainer { get; }
 
         Type ResolvingContractType { get; }
 

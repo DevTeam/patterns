@@ -4,7 +4,6 @@
 
     internal class KeyElement
     {
-        [JsonProperty(Required = Required.Always)]
         public string Type { get; set; }
 
         [JsonProperty(Required = Required.Always)]

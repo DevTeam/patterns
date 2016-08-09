@@ -1,6 +1,7 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Represents an abstraction of IoC container.
@@ -11,5 +12,9 @@
         /// Gets key/name of container.
         /// </summary>
         object Key { get; }
+
+        IEnumerable<IRegistration> GetRegistrations();
+
+        IEnumerable<IRegistration> GetRegistrations(IContainer container);
     }
 }

@@ -4,23 +4,27 @@
 
     internal class InternalScope : IScope
     {
-        private readonly IResolver _resolver;
+        private readonly IContainer _owner;
 
-        public InternalScope(IResolver resolver)
+        public InternalScope(IContainer owner)
         {
-            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
+            if (owner == null) throw new ArgumentNullException(nameof(owner));
 
-            _resolver = resolver;
+            _owner = owner;
         }
 
-        public bool ReadyToRegister(bool isRoot)
+        public bool ReadyToRegister(bool isRoot, IContainer container)
         {
+            if (container == null) throw new ArgumentNullException(nameof(container));
+
             return true;
         }
 
-        public bool ReadyToResolve(bool isRoot, IResolver resolver)
+        public bool ReadyToResolve(bool isRoot, IContainer container)
         {
-            return Equals(_resolver, resolver);
+            if (container == null) throw new ArgumentNullException(nameof(container));
+
+            return Equals(_owner, container);
         }
     }
 }

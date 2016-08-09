@@ -25,7 +25,7 @@
             }
 
             return activator(parameters);
-        }        
+        }
 
         private static ObjectActivator CreateActivator(ConstructorInfo ctor)
         {

@@ -29,7 +29,6 @@
             yield return container.Register<Session>().As<IEnumerable<IPropertyValue>, ISession>();
             yield return container.Register<PropertyFactory>(WellknownLifetime.Singleton).As<IPropertyFactory>();
             yield return container.Register<CommandLineArgsToPropertiesConverter>(WellknownLifetime.Singleton).As<IConverter<string[], IEnumerable<IPropertyValue>>>();
-            yield return container.Register<ToolResolver>(WellknownLifetime.Singleton).As<IResolver<ISession, ITool>>();
             yield return container.Register<PropertyValue>().As<PropertyValueDescription, IPropertyValue>();
 
             // Tools

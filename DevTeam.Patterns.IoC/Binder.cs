@@ -43,7 +43,7 @@
                     var parameters = new object[ctorInfo.Parameters.Count];
                     for (var i = 0; i < parameters.Length; i++)
                     {
-                        parameters[i] = ResolveParameter(ctx.Resolver, ctx.State, ctorInfo.Parameters[i]);
+                        parameters[i] = ResolveParameter(ctx.RegisterContainer, ctx.State, ctorInfo.Parameters[i]);
                     }
 
                     return factory.Create(resolvingConstructor, parameters);
@@ -140,7 +140,6 @@
             if (dependencyAttr == null) throw new ArgumentNullException(nameof(dependencyAttr));
 
             return resolver.Resolve(
-                resolver,
                 dependencyAttr.StateType ?? typeof(EmptyState),
                 dependencyAttr.ContractType ?? parameter.ParameterType,
                 dependencyAttr.State ?? EmptyState.Shared,

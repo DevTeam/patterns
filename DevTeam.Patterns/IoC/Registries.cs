@@ -3,7 +3,7 @@
     using System;
 
     public static class Registries
-    {     
+    {
         public static Registration Register<TImplementation>(this IContainer container, WellknownLifetime lifetime = WellknownLifetime.Transient)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
@@ -81,7 +81,7 @@
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
             return registration.As<EmptyState, T>(key);
-        }     
+        }
 
         public static IRegistration Register(this IContainer container, Type stateType, Type contractType, Type implementationType, object key = null)
         {
@@ -96,12 +96,12 @@
             var factory = container.Resolve<IFactory>();
 
             return binder.Bind(container, stateType, contractType, implementationType, factory, key);
-        }        
+        }
 
         public static IRegistration Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, object key = null)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
-            if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));            
+            if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
             return registry.Register(typeof(TState), typeof(T), ctx => factoryMethod((TState)ctx.State), key);
         }
@@ -115,7 +115,7 @@
         }
 
         public static IContainer Using<TContext>(this IContainer container, object contextKey = null)
-            where TContext: IContext
+            where TContext : IContext
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
@@ -128,16 +128,16 @@
             if (contextType == null) throw new ArgumentNullException(nameof(contextType));
 
             var context = (IContext)container.Resolve(typeof(EmptyState), contextType, contextKey);
-            return (IContainer)container.Resolve(container, typeof(ContextContainerState), typeof(IContextContainer), new ContextContainerState(container, context, contextType));
+            return (IContainer)container.Resolve(typeof(ContextContainerState), typeof(IContextContainer), new ContextContainerState(container, context, contextType));
         }
 
-        public static IContainer Using(this IContainer container, IContext context, Type contextType)            
+        public static IContainer Using(this IContainer container, IContext context, Type contextType)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (contextType == null) throw new ArgumentNullException(nameof(contextType));
 
-            return (IContainer)container.Resolve(container, typeof(ContextContainerState), typeof(IContextContainer), new ContextContainerState(container, context, contextType));
+            return (IContainer)container.Resolve(typeof(ContextContainerState), typeof(IContextContainer), new ContextContainerState(container, context, contextType));
         }
 
         public class Registration
@@ -164,5 +164,5 @@
 
             public WellknownScope Scope { get; set; }
         }
-    }    
+    }
 }

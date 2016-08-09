@@ -74,7 +74,11 @@
             // Child container
             yield return container
                 .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyStateTypeAndKey)
-                .Using<ILifetime>(WellknownLifetime.Controlled).Register(typeof(EmptyState), typeof(IContainer), ctx => new Container(new ContainerDescription((IContainer)ctx.Resolver, ctx.Registration.Key)));
+                .Using<ILifetime>(WellknownLifetime.Controlled)
+                .Register(
+                    typeof(EmptyState),
+                    typeof(IContainer),
+                    ctx => new Container(new ContainerDescription(ctx.ResolverContainer, ctx.Registration.Key)));
 
             // Resolvers
             yield return container
@@ -85,7 +89,7 @@
                     {
                         var resolverType = typeof(Resolver<>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0]);
                         var ctor = resolverType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 2 && i.GetParameters()[0].ParameterType == typeof(IResolver) && i.GetParameters()[1].ParameterType == typeof(object));
-                        return Factory.Value.Create(ctor, ctx.Resolver, ctx.Registration.Key);
+                        return Factory.Value.Create(ctor, ctx.ResolverContainer, ctx.Registration.Key);
                     });
 
             yield return container
@@ -96,7 +100,7 @@
                     {
                         var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0], ctx.ResolvingContractType.GenericTypeArguments[1]);
                         var ctor = resolverType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 2 && i.GetParameters()[0].ParameterType == typeof(IResolver) && i.GetParameters()[1].ParameterType == typeof(object));
-                        return Factory.Value.Create(ctor, ctx.Resolver, ctx.Registration.Key);
+                        return Factory.Value.Create(ctor, ctx.ResolverContainer, ctx.Registration.Key);
                     });
 
             // Resolve All as IEnumerable
@@ -110,9 +114,9 @@
                         var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
                         var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
                         var source =
-                            from key in ctx.Resolver.Registrations
+                            from key in ctx.RegisterContainer.GetRegistrations()
                             where key.ContractType == enumItemType && key.StateType == ctx.Registration.StateType
-                            select ctx.Resolver.Resolve(ctx.Resolver, key.StateType, enumItemType, ctx.State, key.Key);
+                            select ctx.RegisterContainer.Resolve(key.StateType, enumItemType, ctx.State, key.Key);
                         var ctor = enumType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 1);
                         return Factory.Value.Create(ctor, source);
                     });
@@ -127,18 +131,18 @@
                         var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
                         var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
                         var source =
-                            from key in ctx.Resolver.Registrations
+                            from key in ctx.RegisterContainer.GetRegistrations()
                             where key.ContractType == enumItemType
                             let state = ((StateSelector)ctx.State)(ctx)
-                            select ctx.Resolver.Resolve(ctx.Resolver, key.StateType, enumItemType, state, key.Key);
+                            select ctx.RegisterContainer.Resolve(key.StateType, enumItemType, state, key.Key);
                         var ctor = enumType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 1);
                         return Factory.Value.Create(ctor, source);
                     });
 
             // Scopes
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IScope), ctx => PublicScope.Value, WellknownScope.Public);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IScope), ctx => new InternalScope(ctx.Resolver), WellknownScope.Internal);
-            yield return container.Using<ILifetime>(WellknownLifetime.Singleton).Register(typeof(EmptyState), typeof(IScope), ctx => new GlobalScope(), WellknownScope.Global);
+            yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => PublicScope.Value, WellknownScope.Public);
+            yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => new InternalScope(ctx.ResolverContainer), WellknownScope.Internal);
+            yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => new GlobalScope(ctx.ResolverContainer), WellknownScope.Global);
         }
 
         private class Enumerable<T> : IEnumerable<T>

@@ -10,14 +10,14 @@
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
-            return (T)resolver.Resolve(resolver, typeof(TState), typeof(T), state, key);
+            return (T)resolver.Resolve(typeof(TState), typeof(T), state, key);
         }
 
         public static T Resolve<T>(this IResolver resolver, object key = null)
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));            
 
-            return (T)resolver.Resolve(resolver, typeof(EmptyState), typeof(T), EmptyState.Shared, key);            
+            return (T)resolver.Resolve(typeof(EmptyState), typeof(T), EmptyState.Shared, key);            
         }
 
         public static object Resolve(this IResolver resolver, Type stateType, Type contractType, object state, object key = null)
@@ -26,7 +26,7 @@
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
 
-            return resolver.Resolve(null, stateType, contractType, state, key);
+            return resolver.Resolve(stateType, contractType, state, key);
         }
 
         public static IEnumerable<T> ResolveAll<T>(this IResolver resolver)

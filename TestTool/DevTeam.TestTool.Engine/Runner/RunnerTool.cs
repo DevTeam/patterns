@@ -10,11 +10,11 @@
     using Patterns.Dispose;
     using Patterns.IoC;
 
-    internal class RunnerTool: ITool
+    internal class RunnerTool : ITool
     {
         private readonly ISession _session;
         private readonly IEnumerable<ITestRunner> _testRunners;
-        private readonly IEventAggregator _eventAggregator;        
+        private readonly IEventAggregator _eventAggregator;
 
         public RunnerTool(
             [State] ISession session,
@@ -39,8 +39,8 @@
             .Concat(
                 from runner in _testRunners
                 select _eventAggregator.RegisterProvider(runner))
-            .ToCompositeDisposable();            
+            .ToCompositeDisposable();
         }
-       
+
     }
-}   
+}

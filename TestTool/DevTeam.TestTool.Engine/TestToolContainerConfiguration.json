@@ -30,52 +30,9 @@
             "Lifetime": "Singleton"
         },
         {
-            "Contract": "$(namespaceIoC).IResolver`2[[$(namespaceContracts).ISession, $(assemblyContracts)], [$(namespaceContracts).ITool, $(assemblyContracts)]], $(assemblyIoC)",
-            "Implementation": "$(namespaceHost).ToolResolver, $(assemblyEngine)",
-            "Lifetime": "Singleton"
-        },
-        {
             "State": "$(namespaceHost).PropertyValueDescription, $(assemblyEngine)",
             "Contract": "$(assemblyContracts).IPropertyValue, $(assemblyContracts)",
             "Implementation": "$(namespaceHost).PropertyValue, $(assemblyEngine)"
-        },
-
-        // Tools,
-        {
-            "Key": {
-                "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
-                "Value": "Explorer"
-            },
-            "Contract": "$(namespaceIoC).IConfiguration, $(assemblyIoC)",
-            "Implementation": "$(namespaceExplorer).ExplorerContainerConfiguration, $(assemblyEngine)",
-            "Lifetime": "Singleton"
-        },
-        {
-            "Key": {
-                "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
-                "Value": "Runner"
-            },
-            "Contract": "$(namespaceIoC).IConfiguration, $(assemblyIoC)",
-            "Implementation": "$(namespaceRunner).RunnerContainerConfiguration, $(assemblyEngine)",
-            "Lifetime": "Singleton"
-        },
-        {
-            "Key": {
-                "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
-                "Value": "Reporter"
-            },
-            "Contract": "$(namespaceIoC).IConfiguration, $(assemblyIoC)",
-            "Implementation": "$(namespaceReporter).ReporterContainerConfiguration, $(assemblyEngine)",
-            "Lifetime": "Singleton"
-        },
-        {
-            "Key": {
-                "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
-                "Value": "Publisher"
-            },
-            "Contract": "$(namespaceIoC).IConfiguration, $(assemblyIoC)",
-            "Implementation": "$(namespacePublisher).PublisherContainerConfiguration, $(assemblyEngine)",
-            "Lifetime": "Singleton"
         },
 
         // Properties,
@@ -96,6 +53,113 @@
             "Contract": "$(namespaceContracts).IProperty, $(assemblyContracts)",
             "Implementation": "$(namespaceHost).AssemblyProperty, $(assemblyEngine)",
             "Lifetime": "Singleton"
+        }
+    ],
+
+    "Containers": [
+        // Explorer
+        {
+            "Key": { "Value": "Explorer" },
+            "Registrations": [
+                {
+                    "Key": {
+                        "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
+                        "Value": "Explorer"
+                    },
+                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
+                    "Contract": "$(namespaceContracts).ITool, $(assemblyContracts)",
+                    "Implementation": "$(namespaceExplorer).ExplorerTool, $(assemblyEngine)",
+                    "Scope": "Global"
+                },
+                {
+                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
+                    "Contract": "$(namespaceContracts).ITestSource, $(assemblyContracts)",
+                    "Implementation": "$(namespaceExplorer).TestSource, $(assemblyEngine)",
+                    "Lifetime": "Singleton"
+                }
+            ]
+        },
+
+        // Runner
+        {
+            "Key": { "Value": "Runner" },
+            "Registrations": [
+                {
+                    "Key": {
+                        "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
+                        "Value": "Runner"
+                    },
+                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
+                    "Contract": "$(namespaceContracts).ITool, $(assemblyContracts)",
+                    "Implementation": "$(namespaceRunner).RunnerTool, $(assemblyEngine)",
+                    "Lifetime": "Singleton",
+                    "Scope": "Global"
+                },
+                {
+                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
+                    "Contract": "$(namespaceContracts).ITestRunner, $(assemblyContracts)",
+                    "Implementation": "$(namespaceRunner).TestRunner, $(assemblyEngine)",
+                    "Lifetime": "Singleton"
+                }
+            ]
+        },
+
+        // Publisher
+        {
+            "Key": { "Value": "Publisher" },
+            "Registrations": [
+                {
+                    "Key": {
+                        "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
+                        "Value": "Publisher"
+                    },
+                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
+                    "Contract": "$(namespaceContracts).ITool, $(assemblyContracts)",
+                    "Implementation": "$(namespacePublisher).PublisherTool, $(assemblyEngine)",
+                    "Lifetime": "Singleton",
+                    "Scope": "Global"
+                },
+                {
+                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
+                    "Contract": "$(namespaceContracts).IReportPublisher, $(assemblyContracts)",
+                    "Implementation": "$(namespacePublisher).ReportPublisher, $(assemblyEngine)",
+                    "Lifetime": "Singleton"
+                },
+                {
+                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
+                    "Contract": "$(namespaceContracts).IOutput, $(assemblyContracts)",
+                    "Implementation": "$(namespacePublisher).ConsoleOutput, $(assemblyEngine)",
+                    "Lifetime": "Singleton"
+                }
+            ]
+        },
+
+        // Reporter
+        {
+            "Key": { "Value": "Reporter" },
+            "Registrations": [
+                {
+                    "Key": {
+                        "Type": "$(assemblyContracts).WellknownTool, $(assemblyContracts)",
+                        "Value": "Reporter"
+                    },
+                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
+                    "Contract": "$(namespaceContracts).ITool, $(assemblyContracts)",
+                    "Implementation": "$(namespaceReporter).ReporterTool, $(assemblyEngine)",
+                    "Lifetime": "Singleton",
+                    "Scope": "Global"
+                },
+                {
+                    "Key": {
+                        "Type": "System.String",
+                        "Value": "text"
+                    },
+                    "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
+                    "Contract": "$(namespaceContracts).ITestReporter, $(assemblyContracts)",
+                    "Implementation": "$(namespaceReporter).TextTestReporter, $(assemblyEngine)",
+                    "Lifetime": "Singleton"
+                }
+            ]
         }
     ]
 }

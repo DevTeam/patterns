@@ -7,12 +7,12 @@
     using Contracts;
 
     /// <inheritdoc/>
-    internal class RunnerContainerConfiguration: IConfiguration
+    internal class RunnerContainerConfiguration : IConfiguration
     {
         /// <inheritdoc/>
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            yield break;            
+            yield break;
         }
 
         /// <inheritdoc/>

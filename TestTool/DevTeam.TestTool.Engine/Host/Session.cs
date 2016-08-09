@@ -17,7 +17,7 @@
         private readonly IDisposable _disposable;
 
         public Session(
-            IResolver<ISession, ITool> toolResolver, 
+            IResolver<ISession, ITool> toolResolver,
             [State] IEnumerable<IPropertyValue> properties,
             [Dependency(Key = WellknownProperty.Tool)] IProperty toolProperty)
         {
@@ -45,7 +45,7 @@
 
         private IEnumerable<string> GetToolNames()
         {
-            return Properties.Where(p => Equals(p.Property, _toolProperty)).Select(i => i.Value);            
+            return Properties.Where(p => Equals(p.Property, _toolProperty)).Select(i => i.Value);
         }
     }
 }

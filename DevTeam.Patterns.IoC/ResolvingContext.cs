@@ -2,21 +2,24 @@
 {
     using System;
 
-    internal struct ResolvingContext: IResolvingContext, IDisposable
+    internal struct ResolvingContext : IResolvingContext, IDisposable
     {
         private static Guid? _resolvingId;
-        [ThreadStatic] private static Guid? _perThreadResolvingId;
+        [ThreadStatic]
+        private static Guid? _perThreadResolvingId;
         private readonly Guid? _prevResolvingId;
         private readonly Guid? _prevPerThreadResolvingId;
 
-        public ResolvingContext(IResolver resolver, IRegistration registration, Type resolvingContractType, object state)
+        public ResolvingContext(IContainer registerContainer, IContainer resolverContainer, IRegistration registration, Type resolvingContractType, object state)
         {
-            if (resolver == null) throw new ArgumentNullException(nameof(resolver));
-            if (registration == null) throw new ArgumentNullException(nameof(registration));            
+            if (registerContainer == null) throw new ArgumentNullException(nameof(registerContainer));
+            if (resolverContainer == null) throw new ArgumentNullException(nameof(resolverContainer));
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (resolvingContractType == null) throw new ArgumentNullException(nameof(resolvingContractType));
 
-            Resolver = resolver;
-            Registration = registration;            
+            RegisterContainer = registerContainer;
+            ResolverContainer = resolverContainer;
+            Registration = registration;
             ResolvingContractType = resolvingContractType;
             State = state;
 
@@ -39,7 +42,9 @@
 
         public IRegistration Registration { get; }
 
-        public IResolver Resolver { get; }
+        public IContainer RegisterContainer { get; }
+
+        public IContainer ResolverContainer { get; }
 
         public Type ResolvingContractType { get; }
 
