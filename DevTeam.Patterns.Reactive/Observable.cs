@@ -113,7 +113,18 @@
                 {
                     var disposable = new CompositeDisposable();
                     scheduler.Schedule(
-                    () => { disposable.Add(observable.Subscribe(observer)); });
+                        () =>
+                            {
+                                try
+                                {
+                                    disposable.Add(observable.Subscribe(observer));
+                                }
+                                catch (Exception error)
+                                {
+                                    observer.OnError(error);
+                                }
+                            });
+
                     return disposable;
                 });
         }
@@ -306,9 +317,17 @@
 
             var lockObject = new object();
             var isCompleted = false;
+            Exception error = null;
             var subscription = observable.Subscribe(
                 i => { },
-                e => { },
+                e => {
+                    lock (lockObject)
+                    {
+                        isCompleted = true;
+                        error = e;
+                        Monitor.Pulse(lockObject);
+                    }
+                },
                 () =>
                     {
                         lock (lockObject)
@@ -326,6 +345,11 @@
                 }
 
                 subscription.Dispose();
+            }
+
+            if (error != null)
+            {
+                throw error;
             }
         }
 

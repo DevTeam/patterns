@@ -18,7 +18,7 @@
         private readonly IObservable<Test> _testSource;
 
         public TestSource(
-            [State] ISession session, 
+            [State] ISession session,
             IReflection reflection,
             [Dependency(Key = WellknownProperty.Assembly)] IProperty assemblyProperty)
         {
@@ -26,7 +26,7 @@
             if (reflection == null) throw new ArgumentNullException(nameof(reflection));
             if (assemblyProperty == null) throw new ArgumentNullException(nameof(assemblyProperty));
 
-            _reflection = reflection;            
+            _reflection = reflection;
 
             _testSource = (
                 from assemblyFileName in
