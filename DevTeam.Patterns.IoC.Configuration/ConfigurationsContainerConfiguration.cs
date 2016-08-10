@@ -13,7 +13,7 @@
 
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
-            yield return container.Register<string, IConfiguration>(jsonData => new JsonConfiguration(jsonData), WellknownConfigurations.Json);
+            yield return container.Register<JsonConfiguration>().As<string, IConfiguration>(WellknownConfigurations.Json);
         }
     }
 }

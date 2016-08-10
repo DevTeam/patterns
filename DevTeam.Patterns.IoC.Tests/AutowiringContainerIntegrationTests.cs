@@ -6,23 +6,23 @@
 
     using NUnit.Framework;
 
-	using Shouldly;
+    using Shouldly;
 
-	[TestFixture]
-	public class AutowiringRegisterTests
-	{
-		[Test]
-		public void ShouldMakeRegistration()
-		{
-			// Given
-			var target = CreateTarget();
+    [TestFixture]
+    public class AutowiringContainerIntegrationTests
+    {
+        [Test]
+        public void ShouldMakeRegistration()
+        {
+            // Given
+            var target = CreateTarget();
 
-			// When
-			target.Register<Service1WithState>().As<string, IService>("myService1");
+            // When
+            target.Register<Service1WithState>().As<string, IService>("myService1");
 
-			// Then
-			target.GetRegistrations().ShouldContain(i => i.StateType == typeof(string) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
-		}
+            // Then
+            target.GetRegistrations().ShouldContain(i => i.StateType == typeof(string) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+        }
 
         [Test]
         public void ShouldResolveWhenCtorHasNoParams()
@@ -35,7 +35,7 @@
 
             // Then
             var contract = target.Resolve<IService>("myService1");
-            contract.ShouldBeOfType<Service1>();            
+            contract.ShouldBeOfType<Service1>();
         }
 
         [Test]
@@ -129,7 +129,7 @@
         {
             // Given
             var target = CreateTarget();
-            
+
             // When
             target.Register<Service1WithStateAndEnumerableDependency>(WellknownLifetime.Singleton).As<int, Service1WithStateAndEnumerableDependency>("myService1");
             target.Register<Service1>().As<IService>("dep");
@@ -219,8 +219,8 @@
         }
 
         private static Container CreateTarget(object key = null)
-		{
-			return new Container(key);
-		}          
+        {
+            return new Container(key);
+        }
     }
 }

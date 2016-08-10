@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace DevTeam.Patterns.IoC.Tests
+﻿namespace DevTeam.Patterns.IoC.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Moq;
 
@@ -11,7 +10,7 @@ namespace DevTeam.Patterns.IoC.Tests
     using Shouldly;
 
     [TestFixture]
-    public class ContainerTests
+    public class ContainerIntegrationTests
     {
         private Mock<IService> _service1;
         private Mock<IService> _service2;

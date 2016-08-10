@@ -12,17 +12,18 @@
         private readonly ConfigurationElement _configurationElement;
 
         public JsonConfiguration(
-            string configuration)
-        {            
+            [State] string configuration)
+        {
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
-            
+
             _configurationElement = JsonConvert.DeserializeObject<ConfigurationElement>(configuration);
         }
 
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            var vars = new Dictionary<string, string>(_configurationElement.Vars);
-            return GetDependencies(_configurationElement, vars);
+            var vars = new Dictionary<string, string>();
+            var newVars = CreateVars(_configurationElement, vars);
+            return GetDependencies(_configurationElement, newVars);
         }
 
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
@@ -39,7 +40,7 @@
             return $"{nameof(JsonConfiguration)} [Configuration: {_configurationElement}]";
         }
 
-        private static IEnumerable<IConfiguration> GetDependencies(ConfigurationElement configurationElement, IDictionary<string, string> vars)
+        private IEnumerable<IConfiguration> GetDependencies(ConfigurationElement configurationElement, IDictionary<string, string> vars)
         {
             return
                 from dependency in configurationElement.Dependencies ?? Enumerable.Empty<DependencyElement>()
@@ -47,7 +48,7 @@
                 select (IConfiguration)Activator.CreateInstance(dependencyType);
         }
 
-        private static IEnumerable<IRegistration> CreateConfigurationRegistrations(IContainer container, ConfigurationElement configurationElement, bool includeDependencies, IDictionary<string, string> vars)
+        private IEnumerable<IRegistration> CreateConfigurationRegistrations(IContainer container, ConfigurationElement configurationElement, bool includeDependencies, IDictionary<string, string> vars)
         {
             var newVars = CreateVars(configurationElement, vars);
 
@@ -66,7 +67,7 @@
             return dependeciesRegistrations.Concat(registrations).Concat(childrenRegistrations);
         }
 
-        private static Dictionary<string, string> CreateVars(ConfigurationElement configurationElement, IDictionary<string, string> vars)
+        private Dictionary<string, string> CreateVars(ConfigurationElement configurationElement, IDictionary<string, string> vars)
         {
             var newVars = new Dictionary<string, string>(vars);
             if (configurationElement.Vars != null)
@@ -80,7 +81,7 @@
             return newVars;
         }
 
-        private static IEnumerable<IRegistration> CreateRegistrations(IContainer container, ConfigurationElement configurationElement, IDictionary<string, string> vars)
+        private IEnumerable<IRegistration> CreateRegistrations(IContainer container, ConfigurationElement configurationElement, IDictionary<string, string> vars)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
@@ -93,14 +94,14 @@
                 select ApplyUsingContainer(container, registrationElement).Register(stateType, contractType, implementationType, key);
         }
 
-        private static Type GetType(string typeName, IDictionary<string, string> vars)
+        private Type GetType(string typeName, IDictionary<string, string> vars)
         {
             if (typeName == null) throw new ArgumentNullException(nameof(typeName));
             if (vars == null) throw new ArgumentNullException(nameof(vars));
             return Type.GetType(ResolverString(typeName, vars), true);
         }
 
-        private static string ResolverString(string stringTorResolve, IDictionary<string, string> vars)
+        private string ResolverString(string stringTorResolve, IDictionary<string, string> vars)
         {
             if (stringTorResolve == null)
             {
@@ -115,7 +116,7 @@
             return stringTorResolve;
         }
 
-        private static IContainer ApplyUsingContainer(IContainer container, RegistrationElement registrationElement)
+        private IContainer ApplyUsingContainer(IContainer container, RegistrationElement registrationElement)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (registrationElement == null) throw new ArgumentNullException(nameof(registrationElement));
@@ -138,7 +139,7 @@
             return container;
         }
 
-        private static object GetKey(KeyElement keyElement, IDictionary<string, string> vars)
+        private object GetKey(KeyElement keyElement, IDictionary<string, string> vars)
         {
             if (keyElement == null)
             {
