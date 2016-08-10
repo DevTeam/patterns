@@ -77,7 +77,7 @@
                     "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
                     "Contract": "$(namespaceContracts).ITestSource, $(assemblyContracts)",
                     "Implementation": "$(namespaceExplorer).TestSource, $(assemblyEngine)",
-                    "Lifetime": "Singleton"
+                    "Lifetime": "PerResolveLifetime"
                 }
             ]
         },
@@ -94,13 +94,12 @@
                     "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
                     "Contract": "$(namespaceContracts).ITool, $(assemblyContracts)",
                     "Implementation": "$(namespaceRunner).RunnerTool, $(assemblyEngine)",
-                    "Lifetime": "Singleton",
                     "Scope": "Global"
                 },
                 {
                     "Contract": "$(namespaceContracts).ITestRunner, $(assemblyContracts)",
                     "Implementation": "$(namespaceRunner).TestRunner, $(assemblyEngine)",
-                    "Lifetime": "Singleton"
+                    "Lifetime": "PerResolveLifetime"
                 }
             ]
         },
@@ -117,7 +116,6 @@
                     "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
                     "Contract": "$(namespaceContracts).ITool, $(assemblyContracts)",
                     "Implementation": "$(namespaceReporter).ReporterTool, $(assemblyEngine)",
-                    "Lifetime": "Singleton",
                     "Scope": "Global"
                 },
                 {
@@ -127,7 +125,7 @@
                     },
                     "Contract": "$(namespaceContracts).ITestReporter, $(assemblyContracts)",
                     "Implementation": "$(namespaceReporter).TextTestReporter, $(assemblyEngine)",
-                    "Lifetime": "Singleton"
+                    "Lifetime": "PerResolveLifetime"
                 },
                 {
                     "Key": {
@@ -136,7 +134,7 @@
                     },
                     "Contract": "$(namespaceContracts).ITestReporter, $(assemblyContracts)",
                     "Implementation": "$(namespaceReporter).SummariseTestReporter, $(assemblyEngine)",
-                    "Lifetime": "Singleton"
+                    "Lifetime": "PerResolveLifetime"
                 }
             ]
         },
@@ -154,18 +152,17 @@
                     "State": "$(namespaceContracts).ISession, $(assemblyContracts)",
                     "Contract": "$(namespaceContracts).ITool, $(assemblyContracts)",
                     "Implementation": "$(namespacePublisher).PublisherTool, $(assemblyEngine)",
-                    "Lifetime": "Singleton",
                     "Scope": "Global"
                 },
                 {
                     "Contract": "$(namespaceContracts).IReportPublisher, $(assemblyContracts)",
                     "Implementation": "$(namespacePublisher).ReportPublisher, $(assemblyEngine)",
-                    "Lifetime": "Singleton"
+                    "Lifetime": "PerResolveLifetime"
                 },
                 {
                     "Contract": "$(namespaceContracts).IOutput, $(assemblyContracts)",
                     "Implementation": "$(namespacePublisher).ConsoleOutput, $(assemblyEngine)",
-                    "Lifetime": "Singleton"
+                    "Lifetime": "PerResolveLifetime"
                 }
             ]
         }
