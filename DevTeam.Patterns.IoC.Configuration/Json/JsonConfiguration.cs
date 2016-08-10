@@ -4,13 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Text.RegularExpressions;
 
     using Newtonsoft.Json;
 
     internal class JsonConfiguration: IConfiguration
     {
-        private static readonly Regex VarRegex = new Regex(@"^\s*(?<name>.+)\s*=\s*(?<value>.+)\s*$", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant);
         private readonly ConfigurationElement _configurationElement;
 
         public JsonConfiguration(
@@ -23,9 +21,8 @@
 
         public IEnumerable<IConfiguration> GetDependencies()
         {
-            var vars = new Dictionary<string, string>();
-            var newVars = CreateVars(_configurationElement, vars);
-            return GetDependencies(_configurationElement, newVars);
+            var vars = new Dictionary<string, string>(_configurationElement.Vars);
+            return GetDependencies(_configurationElement, vars);
         }
 
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
@@ -33,7 +30,8 @@
             if (container == null) throw new ArgumentNullException(nameof(container));
 
             var vars = new Dictionary<string, string>();
-            return CreateConfigurationRegistrations(container, _configurationElement, false, vars);
+            var newVars = CreateVars(_configurationElement, vars);
+            return CreateConfigurationRegistrations(container, _configurationElement, false, newVars);
         }
 
         public override string ToString()
@@ -66,25 +64,17 @@
                 select CreateConfigurationRegistrations(childCoontainer, contrainerElement, true, newVars)).SelectMany(i => i);
 
             return dependeciesRegistrations.Concat(registrations).Concat(childrenRegistrations);
-
         }
 
         private static Dictionary<string, string> CreateVars(ConfigurationElement configurationElement, IDictionary<string, string> vars)
         {
             var newVars = new Dictionary<string, string>(vars);
-
-            var overridedVarsMatches = (
-                from varElement in configurationElement.Vars ?? Enumerable.Empty<string>()
-                select VarRegex.Match(varElement)).ToList();
-
-            var overridedVars = 
-                from match in overridedVarsMatches
-                where match.Success && match.Groups.Count == 3
-                select new { name = match.Groups[1].Value, value = match.Groups[2].Value };
-
-            foreach (var overridedVar in overridedVars)
+            if (configurationElement.Vars != null)
             {
-                newVars[overridedVar.name] = overridedVar.value;
+                foreach (var item in configurationElement.Vars)
+                {
+                    newVars[item.Key] = item.Value;
+                }
             }
 
             return newVars;

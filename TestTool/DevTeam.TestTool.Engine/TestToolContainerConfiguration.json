@@ -1,18 +1,18 @@
 ﻿{
-    "Vars": [
-        "assemblyIoC=DevTeam.Patterns",
-        "namespaceIoC=DevTeam.Patterns.IoC",
+    "Vars": {
+        "assemblyIoC": "DevTeam.Patterns",
+        "namespaceIoC": "DevTeam.Patterns.IoC",
 
-        "assemblyContracts=DevTeam.TestTool.Engine.Contracts",
-        "namespaceContracts=DevTeam.TestTool.Engine.Contracts",
+        "assemblyContracts": "DevTeam.TestTool.Engine.Contracts",
+        "namespaceContracts": "DevTeam.TestTool.Engine.Contracts",
 
-        "assemblyEngine=DevTeam.TestTool.Engine",
-        "namespaceHost=DevTeam.TestTool.Engine.Host",
-        "namespaceExplorer=DevTeam.TestTool.Engine.Explorer",
-        "namespaceRunner=DevTeam.TestTool.Engine.Runner",
-        "namespaceReporter=DevTeam.TestTool.Engine.Reporter",
-        "namespacePublisher=DevTeam.TestTool.Engine.Publisher"
-    ],
+        "assemblyEngine": "DevTeam.TestTool.Engine",
+        "namespaceHost": "DevTeam.TestTool.Engine.Host",
+        "namespaceExplorer": "DevTeam.TestTool.Engine.Explorer",
+        "namespaceRunner": "DevTeam.TestTool.Engine.Runner",
+        "namespaceReporter": "DevTeam.TestTool.Engine.Reporter",
+        "namespacePublisher": "DevTeam.TestTool.Engine.Publisher"
+    },
 
     "Registrations": [
         {
