@@ -16,68 +16,67 @@
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
 
-            var resolvingConstructor = GetConstructor(implementationType);
-            if (implementationType.GetTypeInfo().IsGenericType && !contractType.IsConstructedGenericType)
-            {
-                if (!contractType.GetTypeInfo().IsGenericType || contractType.IsConstructedGenericType)
-                {
-                    throw new InvalidOperationException("A generic implementation should relay on a generic contract.");
-                }
+            CheckConstraints(contractType, implementationType);
+            return registry.Register(stateType, contractType, ctx => CreateInstance(stateType, implementationType, factory, ctx), key);
+        }
 
-                if (contractType.GetTypeInfo().GenericTypeParameters.Length != implementationType.GetTypeInfo().GenericTypeParameters.Length)
-                {
-                    throw new InvalidOperationException("A generic type parameters of implementation should correspond to generic type parameters of contract.");
-                }
+        private static void CheckConstraints(Type contractType, Type implementationType)
+        {
+            var implementationTypeInfo = implementationType.GetTypeInfo();
+            if (!implementationTypeInfo.IsGenericType || contractType.IsConstructedGenericType)
+            {
+                return;
             }
 
-            return registry.Register(stateType, contractType,
-                ctx =>
-                {
-                    if (implementationType.GetTypeInfo().IsGenericType && !implementationType.IsConstructedGenericType)
-                    {
-                        implementationType = implementationType.MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments);
-                        resolvingConstructor = GetConstructor(implementationType);
-                    }
+            var contractTypeInfo = contractType.GetTypeInfo();
+            if (!contractTypeInfo.IsGenericType || contractType.IsConstructedGenericType)
+            {
+                throw new InvalidOperationException("A generic implementation should relay on a generic contract.");
+            }
 
-                    var ctorInfo = GetCtorInfo(stateType, resolvingConstructor);
-                    var parameters = new object[ctorInfo.Parameters.Count];
-                    for (var i = 0; i < parameters.Length; i++)
-                    {
-                        parameters[i] = ResolveParameter(ctx.RegisterContainer, ctx.State, ctorInfo.Parameters[i]);
-                    }
+            if (contractTypeInfo.GenericTypeParameters.Length != implementationTypeInfo.GenericTypeParameters.Length)
+            {
+                throw new InvalidOperationException("A generic type parameters of implementation should correspond to generic type parameters of contract.");
+            }
+        }
 
-                    return factory.Create(resolvingConstructor, parameters);
-                },
-                key);
+        private object CreateInstance(Type stateType, Type implementationType, IFactory factory, IResolvingContext resolvingContext)
+        {
+            ConstructorInfo resolvingConstructor;
+            if (implementationType.GetTypeInfo().IsGenericType && !implementationType.IsConstructedGenericType)
+            {
+                implementationType = implementationType.MakeGenericType(resolvingContext.ResolvingContractType.GenericTypeArguments);
+                resolvingConstructor = GetConstructor(implementationType);
+            }
+            else
+            {
+                resolvingConstructor = GetConstructor(implementationType);
+            }
+
+            var ctorInfo = GetCtorInfo(stateType, resolvingConstructor);
+            var resolvedParameters =
+                from parameter in ctorInfo.Parameters
+                select ResolveParameter(resolvingContext.RegisterContainer, resolvingContext.State, parameter);
+
+            return factory.Create(resolvingConstructor, resolvedParameters.ToArray());
         }
 
         private static ConstructorInfo GetConstructor(Type implementationType)
         {
-            ConstructorInfo resolvingConstructor;
-            var ctors = implementationType.GetTypeInfo().DeclaredConstructors.ToList();
-            if (ctors.Count == 1)
+            var implementationTypeInfo = implementationType.GetTypeInfo();
+            var resolvingConstructor = implementationTypeInfo.DeclaredConstructors.SingleOrDefault();
+            if (resolvingConstructor == null)
             {
-                resolvingConstructor = ctors[0];
-            }
-            else
-            {
-                var resolvingConstructors = (
-                    from ctor in ctors
+                resolvingConstructor = (
+                    from ctor in implementationTypeInfo.DeclaredConstructors
                     let resolverAttribute = ctor.GetCustomAttribute<ResolverAttribute>()
                     where resolverAttribute != null
-                    select ctor).ToList();
+                    select ctor).SingleOrDefault();
 
-                if (resolvingConstructors.Count == 0)
+                if (resolvingConstructor == null)
                 {
-                    throw new InvalidOperationException("Resolving constructor was not found.");
+                    throw new InvalidOperationException("Resolving constructor was not found or there are many resolving constructors.");
                 }
-
-                if (resolvingConstructors.Count > 1)
-                {
-                    throw new InvalidOperationException("Should be only one resolving constructord.");
-                }
-
-                resolvingConstructor = resolvingConstructors[0];
             }
 
             return resolvingConstructor;
