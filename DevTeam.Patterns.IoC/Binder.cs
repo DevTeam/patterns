@@ -64,22 +64,32 @@
         private static ConstructorInfo GetConstructor(Type implementationType)
         {
             var implementationTypeInfo = implementationType.GetTypeInfo();
-            var resolvingConstructor = implementationTypeInfo.DeclaredConstructors.SingleOrDefault();
-            if (resolvingConstructor == null)
+            var ctorCount = implementationTypeInfo.DeclaredConstructors.Count();
+            if (ctorCount == 1)
             {
-                resolvingConstructor = (
+                return implementationTypeInfo.DeclaredConstructors.First();
+            }
+
+            try
+            {
+                var resolvingConstructor = (
                     from ctor in implementationTypeInfo.DeclaredConstructors
                     let resolverAttribute = ctor.GetCustomAttribute<ResolverAttribute>()
                     where resolverAttribute != null
                     select ctor).SingleOrDefault();
 
-                if (resolvingConstructor == null)
+                if (resolvingConstructor != null)
                 {
-                    throw new InvalidOperationException("Resolving constructor was not found or there are many resolving constructors.");
+                    return resolvingConstructor;
                 }
             }
+            catch (InvalidOperationException)
+            {
+                throw new InvalidOperationException("Too many resolving constructors.");
+            }
+           
 
-            return resolvingConstructor;
+            throw new InvalidOperationException("Resolving constructor was not found.");
         }
 
         private CtorInfo GetCtorInfo(Type stateType, ConstructorInfo resolvingConstructor)
