@@ -89,6 +89,7 @@
             if (!_ctorDictionary.TryGetValue(resolvingConstructor, out ctorInfo))
             {
                 ctorInfo = new CtorInfo(resolvingConstructor, stateType);
+                _ctorDictionary.Add(resolvingConstructor, ctorInfo);
             }
 
             if (ctorInfo.Error != null)

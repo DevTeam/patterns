@@ -4,11 +4,12 @@
 
     internal struct ResolvingContext : IResolvingContext, IDisposable
     {
-        private static Guid? _resolvingId;
+        private static object _lockObject = new object();
+        private static long _resolvingId;
         [ThreadStatic]
-        private static Guid? _perThreadResolvingId;
-        private readonly Guid? _prevResolvingId;
-        private readonly Guid? _prevPerThreadResolvingId;
+        private static long _perThreadResolvingId;
+        private readonly long _prevResolvingId;
+        private readonly long _prevPerThreadResolvingId;
 
         public ResolvingContext(IContainer registerContainer, IContainer resolverContainer, IRegistration registration, Type resolvingContractType, object state)
         {
@@ -23,22 +24,25 @@
             ResolvingContractType = resolvingContractType;
             State = state;
 
-            _prevResolvingId = _resolvingId;
-            if (_resolvingId == null)
+            lock (_lockObject)
             {
-                _resolvingId = Guid.NewGuid();
+                _prevResolvingId = _resolvingId;
+                if (_resolvingId == 0)
+                {
+                    _resolvingId++;
+                }
             }
 
             _prevPerThreadResolvingId = _perThreadResolvingId;
-            if (_perThreadResolvingId == null)
+            if (_perThreadResolvingId == 0)
             {
-                _perThreadResolvingId = Guid.NewGuid();
+                _perThreadResolvingId++;
             }
         }
 
-        public Guid ResolvingId => _resolvingId ?? Guid.Empty;
+        public long ResolvingId => _resolvingId;
 
-        public Guid PerThreadResolvingId => _perThreadResolvingId ?? Guid.Empty;
+        public long PerThreadResolvingId => _perThreadResolvingId;
 
         public IRegistration Registration { get; }
 

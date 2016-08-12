@@ -431,8 +431,8 @@
                     ctx.Registration.Key.ShouldBe("abc");
                     ctx.Registration.ContractType.ShouldBe(typeof(IService2<>));
                     ctx.Registration.StateType.ShouldBe(typeof(int));
-                    ctx.PerThreadResolvingId.ShouldNotBe(Guid.Empty);
-                    ctx.ResolvingId.ShouldNotBe(Guid.Empty);
+                    ctx.PerThreadResolvingId.ShouldNotBe(0);
+                    ctx.ResolvingId.ShouldNotBe(0);
                     ctx.ResolvingContractType.ShouldBe(typeof(IService2<int>));
                     ctx.State.ShouldBe(1);
                     ctx.RegisterContainer.ShouldBe(target);
@@ -463,8 +463,8 @@
                     ctx.Registration.Key.ShouldBe("dep");
                     ctx.Registration.ContractType.ShouldBe(typeof(IService));
                     ctx.Registration.StateType.ShouldBe(typeof(EmptyState));
-                    ctx.PerThreadResolvingId.ShouldNotBe(Guid.Empty);
-                    ctx.ResolvingId.ShouldNotBe(Guid.Empty);
+                    ctx.PerThreadResolvingId.ShouldNotBe(0);
+                    ctx.ResolvingId.ShouldNotBe(0);
                     ctx.ResolvingContractType.ShouldBe(typeof(IService));
                     ctx.State.ShouldBe(EmptyState.Shared);
                     ctx.RegisterContainer.ShouldBe(target);

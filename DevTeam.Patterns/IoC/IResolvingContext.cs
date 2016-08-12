@@ -4,9 +4,9 @@
 
     public interface IResolvingContext
     {
-        Guid ResolvingId { get; }
+        long ResolvingId { get; }
 
-        Guid PerThreadResolvingId { get; }
+        long PerThreadResolvingId { get; }
 
         IRegistration Registration { get; }
 
