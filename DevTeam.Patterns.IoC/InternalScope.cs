@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal class InternalScope : IScope
+    internal struct InternalScope : IScope
     {
         private readonly IContainer _owner;
 

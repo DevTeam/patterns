@@ -2,12 +2,8 @@
 {
     using System;
 
-    internal class PublicScope : IScope
+    internal struct PublicScope : IScope
     {
-        public PublicScope()
-        {
-        }
-
         public PublicScope(IContainer owner)
         {
             if (owner == null) throw new ArgumentNullException(nameof(owner));

@@ -173,6 +173,8 @@
                     where dictionary.Value.TryGetValue(registration, out curRegistrationInfo)
                     where curRegistrationInfo.Scope.ReadyToResolve(IsRoot, this)
                     select new RegistrationInfo(curRegistrationInfo.RegisterContainer, curRegistrationInfo.Factory, registration, curRegistrationInfo.Scope)).FirstOrDefault() ?? new RegistrationInfo();
+
+                _chache.Add(registrationDescription, info);
             }
 
             Exception innerException = null;
