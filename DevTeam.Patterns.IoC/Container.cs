@@ -11,11 +11,11 @@
     {
         private static readonly Dictionary<Type, object> DefaultInstances = new Dictionary<Type, object>
         {
-            { typeof(ILifetime), RootContainerConfiguration.TransientLifetime.Value },
-            { typeof(IRegistrationComparer), RootContainerConfiguration.FullComplianceRegistrationComparer.Value },
-            { typeof(IBinder), RootContainerConfiguration.Binder.Value },
-            { typeof(IFactory), RootContainerConfiguration.Factory.Value },
-            { typeof(IScope), RootContainerConfiguration.PublicScope.Value }
+            { typeof(ILifetime), RootContainerConfiguration.TransientLifetime },
+            { typeof(IRegistrationComparer), RootContainerConfiguration.FullComplianceRegistrationComparer },
+            { typeof(IBinder), RootContainerConfiguration.Binder },
+            { typeof(IFactory), RootContainerConfiguration.Factory },
+            { typeof(IScope), RootContainerConfiguration.PublicScope }
         };
 
         private static readonly ComparerForRegistrationComparer ComparerForRegistrationComparer = new ComparerForRegistrationComparer();
@@ -242,6 +242,7 @@
             return removed;
         }
 
+        // ReSharper disable once UnusedMethodReturnValue.Local
         private bool Unregister(IReleasingContext ctx, ILifetime factory)
         {
             if (Unregister(ctx.Registration))

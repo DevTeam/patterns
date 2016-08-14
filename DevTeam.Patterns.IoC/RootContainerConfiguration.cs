@@ -9,9 +9,9 @@
     internal class RootContainerConfiguration : IConfiguration
     {
         internal static readonly IConfiguration Shared = new RootContainerConfiguration();
-        internal static readonly Lazy<ILifetime> TransientLifetime = new Lazy<ILifetime>(() => new TransientLifetime());
+        internal static readonly ILifetime TransientLifetime = new TransientLifetime();
         private static readonly Lazy<ILifetime> ControlledLifetime = new Lazy<ILifetime>(() => new ControlledLifetime());
-        private static readonly Lazy<ILifetime> SingletonLifetime = new Lazy<ILifetime>(() => new SingletonLifetime(new TransientLifetime()));
+        private static readonly ILifetime SingletonLifetime = new SingletonLifetime(new TransientLifetime());
         private static readonly Lazy<ILifetime> ControlledSingletonLifetime = new Lazy<ILifetime>(() => new SingletonLifetime(new ControlledLifetime()));
         private static readonly Lazy<ILifetime> PerContainerLifetime = new Lazy<ILifetime>(() => new PerContainerLifetime(new TransientLifetime()));
         private static readonly Lazy<ILifetime> ControlledPerContainerLifetime = new Lazy<ILifetime>(() => new PerContainerLifetime(new ControlledLifetime()));
@@ -20,15 +20,15 @@
         private static readonly Lazy<ILifetime> PerThreadLifetime = new Lazy<ILifetime>(() => new PerThreadLifetime(new TransientLifetime()));
         private static readonly Lazy<ILifetime> ControlledPerThreadLifetime = new Lazy<ILifetime>(() => new PerThreadLifetime(new ControlledLifetime()));
 
-        internal static readonly Lazy<IRegistrationComparer> FullComplianceRegistrationComparer = new Lazy<IRegistrationComparer>(() => new DefaultContainerRegistrationComparer());
-        private static readonly Lazy<IRegistrationComparer> PatternRegistrationComparer = new Lazy<IRegistrationComparer>(() => new PatternKeyRegistrationComparer());
-        private static readonly Lazy<IRegistrationComparer> AnyStateTypeAndKey = new Lazy<IRegistrationComparer>(() => new AnyStateTypeAndKeyRegistrationComparer());
-        private static readonly Lazy<IRegistrationComparer> AnyRegistrationComparer = new Lazy<IRegistrationComparer>(() => new AnyKeyRegistrationComparer());
+        internal static readonly IRegistrationComparer FullComplianceRegistrationComparer = new DefaultContainerRegistrationComparer();
+        private static readonly IRegistrationComparer PatternRegistrationComparer = new PatternKeyRegistrationComparer();
+        private static readonly IRegistrationComparer AnyStateTypeAndKey = new AnyStateTypeAndKeyRegistrationComparer();
+        private static readonly IRegistrationComparer AnyRegistrationComparer = new AnyKeyRegistrationComparer();
 
-        internal static readonly Lazy<IBinder> Binder = new Lazy<IBinder>(() => new Binder());
-        internal static readonly Lazy<IFactory> Factory = new Lazy<IFactory>(() => new ExpressionFactory());
+        internal static readonly IBinder Binder = new Binder();
+        internal static readonly IFactory Factory = new ExpressionFactory();
 
-        internal static readonly Lazy<IScope> PublicScope = new Lazy<IScope>(() => new PublicScope());
+        internal static readonly IScope PublicScope = new PublicScope();
 
         private RootContainerConfiguration()
         {
@@ -44,9 +44,9 @@
             if (container == null) throw new ArgumentNullException(nameof(container));
 
             // Wellknown lifetimes
-            yield return container.Register(() => TransientLifetime.Value, WellknownLifetime.Transient);
+            yield return container.Register(() => TransientLifetime, WellknownLifetime.Transient);
             yield return container.Register(() => ControlledLifetime.Value, WellknownLifetime.Controlled);
-            yield return container.Register(() => SingletonLifetime.Value, WellknownLifetime.Singleton);
+            yield return container.Register(() => SingletonLifetime, WellknownLifetime.Singleton);
             yield return container.Register(() => ControlledSingletonLifetime.Value, WellknownLifetime.ControlledSingleton);
             yield return container.Register(() => PerContainerLifetime.Value, WellknownLifetime.PerContainer);
             yield return container.Register(() => ControlledPerContainerLifetime.Value, WellknownLifetime.ControlledPerContainer);
@@ -56,10 +56,10 @@
             yield return container.Register(() => ControlledPerThreadLifetime.Value, WellknownLifetime.ControlledPerThreadLifetime);
 
             // Wellknown registration comparers
-            yield return container.Register(() => FullComplianceRegistrationComparer.Value, WellknownRegistrationComparer.FullCompliance);
-            yield return container.Register(() => PatternRegistrationComparer.Value, WellknownRegistrationComparer.PatternKey);
-            yield return container.Register(() => AnyStateTypeAndKey.Value, WellknownRegistrationComparer.AnyStateTypeAndKey);
-            yield return container.Register(() => AnyRegistrationComparer.Value, WellknownRegistrationComparer.AnyKey);
+            yield return container.Register(() => FullComplianceRegistrationComparer, WellknownRegistrationComparer.FullCompliance);
+            yield return container.Register(() => PatternRegistrationComparer, WellknownRegistrationComparer.PatternKey);
+            yield return container.Register(() => AnyStateTypeAndKey, WellknownRegistrationComparer.AnyStateTypeAndKey);
+            yield return container.Register(() => AnyRegistrationComparer, WellknownRegistrationComparer.AnyKey);
 
             // Context container
             yield return container.Register(typeof(ContextContainerState), typeof(IContextContainer),
@@ -68,7 +68,7 @@
                     var state = (ContextContainerState)ctx.State;
                     var resolverType = typeof(ContextContainer<>).MakeGenericType(state.ContextType);
                     var ctor = resolverType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 1 && i.GetParameters()[0].ParameterType == typeof(ContextContainerState));
-                    return Factory.Value.Create(ctor, ctx.State);
+                    return Factory.Create(ctor, ctx.State);
                 });
 
             // Child container
@@ -89,7 +89,7 @@
                     {
                         var resolverType = typeof(Resolver<>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0]);
                         var ctor = resolverType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 2 && i.GetParameters()[0].ParameterType == typeof(IResolver) && i.GetParameters()[1].ParameterType == typeof(object));
-                        return Factory.Value.Create(ctor, ctx.ResolverContainer, ctx.Registration.Key);
+                        return Factory.Create(ctor, ctx.ResolverContainer, ctx.Registration.Key);
                     });
 
             yield return container
@@ -100,7 +100,7 @@
                     {
                         var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0], ctx.ResolvingContractType.GenericTypeArguments[1]);
                         var ctor = resolverType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 2 && i.GetParameters()[0].ParameterType == typeof(IResolver) && i.GetParameters()[1].ParameterType == typeof(object));
-                        return Factory.Value.Create(ctor, ctx.ResolverContainer, ctx.Registration.Key);
+                        return Factory.Create(ctor, ctx.ResolverContainer, ctx.Registration.Key);
                     });
 
             // Resolve All as IEnumerable
@@ -118,7 +118,7 @@
                             where key.ContractType == enumItemType && key.StateType == ctx.Registration.StateType
                             select ctx.ResolverContainer.Resolve(key.StateType, enumItemType, ctx.State, key.Key);
                         var ctor = enumType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 1);
-                        return Factory.Value.Create(ctor, source);
+                        return Factory.Create(ctor, source);
                     });
 
             yield return container
@@ -136,11 +136,11 @@
                             let state = ((StateSelector)ctx.State)(ctx)
                             select ctx.ResolverContainer.Resolve(key.StateType, enumItemType, state, key.Key);
                         var ctor = enumType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 1);
-                        return Factory.Value.Create(ctor, source);
+                        return Factory.Create(ctor, source);
                     });
 
             // Scopes
-            yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => PublicScope.Value, WellknownScope.Public);
+            yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => PublicScope, WellknownScope.Public);
             yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => new InternalScope(ctx.ResolverContainer), WellknownScope.Internal);
             yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => new GlobalScope(ctx.ResolverContainer), WellknownScope.Global);
         }
