@@ -7,7 +7,7 @@
 
     public class Binder : IBinder
     {
-        private readonly Dictionary<ConstructorInfo, CtorInfo> _ctorDictionary = new Dictionary<ConstructorInfo, CtorInfo>();
+        private readonly Dictionary<Type, CtorInfo> _ctorDictionary = new Dictionary<Type, CtorInfo>();
 
         public IRegistration Bind(IRegistry registry, Type stateType, Type contractType, Type implementationType, IFactory factory, object key = null)
         {
@@ -17,88 +17,63 @@
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
 
             CheckConstraints(contractType, implementationType);
-            return registry.Register(stateType, contractType, ctx => CreateInstance(stateType, implementationType, factory, ctx), key);
+            var isGeneric = IsGeneric(implementationType);
+            CtorInfo ctorInfo = null;
+            if (!isGeneric)
+            {
+                ctorInfo = GetCtorInfo(stateType, implementationType);
+            }
+
+            return registry.Register(stateType, contractType, ctx => CreateInstance(ctorInfo, isGeneric, stateType, implementationType, factory, ctx), key);
         }
 
         private static void CheckConstraints(Type contractType, Type implementationType)
         {
-            var implementationTypeInfo = implementationType.GetTypeInfo();
-            if (!implementationTypeInfo.IsGenericType || contractType.IsConstructedGenericType)
+            if (!IsGeneric(implementationType))
             {
                 return;
             }
 
-            var contractTypeInfo = contractType.GetTypeInfo();
-            if (!contractTypeInfo.IsGenericType || contractType.IsConstructedGenericType)
+            if (IsGeneric(contractType))
             {
                 throw new InvalidOperationException("A generic implementation should relay on a generic contract.");
             }
 
+            var contractTypeInfo = contractType.GetTypeInfo();
+            var implementationTypeInfo = implementationType.GetTypeInfo();
             if (contractTypeInfo.GenericTypeParameters.Length != implementationTypeInfo.GenericTypeParameters.Length)
             {
                 throw new InvalidOperationException("A generic type parameters of implementation should correspond to generic type parameters of contract.");
             }
         }
 
-        private object CreateInstance(Type stateType, Type implementationType, IFactory factory, IResolvingContext resolvingContext)
+        private object CreateInstance(CtorInfo ctorInfo, bool isGeneric, Type stateType, Type implementationType, IFactory factory, IResolvingContext resolvingContext)
         {
-            ConstructorInfo resolvingConstructor;
-            if (implementationType.GetTypeInfo().IsGenericType && !implementationType.IsConstructedGenericType)
+            if (isGeneric)
             {
                 implementationType = implementationType.MakeGenericType(resolvingContext.ResolvingContractType.GenericTypeArguments);
-                resolvingConstructor = GetConstructor(implementationType);
-            }
-            else
-            {
-                resolvingConstructor = GetConstructor(implementationType);
+                ctorInfo = GetCtorInfo(stateType, implementationType);
             }
 
-            var ctorInfo = GetCtorInfo(stateType, resolvingConstructor);
             var resolvedParameters =
                 from parameter in ctorInfo.Parameters
                 select ResolveParameter(resolvingContext.RegisterContainer, resolvingContext.State, parameter);
 
-            return factory.Create(resolvingConstructor, resolvedParameters.ToArray());
+            return factory.Create(ctorInfo.Constructor, resolvedParameters.ToArray());
         }
 
-        private static ConstructorInfo GetConstructor(Type implementationType)
+        private static bool IsGeneric(Type type)
         {
-            var implementationTypeInfo = implementationType.GetTypeInfo();
-            var ctorCount = implementationTypeInfo.DeclaredConstructors.Count();
-            if (ctorCount == 1)
-            {
-                return implementationTypeInfo.DeclaredConstructors.First();
-            }
-
-            try
-            {
-                var resolvingConstructor = (
-                    from ctor in implementationTypeInfo.DeclaredConstructors
-                    let resolverAttribute = ctor.GetCustomAttribute<ResolverAttribute>()
-                    where resolverAttribute != null
-                    select ctor).SingleOrDefault();
-
-                if (resolvingConstructor != null)
-                {
-                    return resolvingConstructor;
-                }
-            }
-            catch (InvalidOperationException)
-            {
-                throw new InvalidOperationException("Too many resolving constructors.");
-            }
-           
-
-            throw new InvalidOperationException("Resolving constructor was not found.");
+            return type.GetTypeInfo().IsGenericType && !type.IsConstructedGenericType;
         }
 
-        private CtorInfo GetCtorInfo(Type stateType, ConstructorInfo resolvingConstructor)
+        private CtorInfo GetCtorInfo(Type stateType, Type implementationType)
         {
             CtorInfo ctorInfo;
-            if (!_ctorDictionary.TryGetValue(resolvingConstructor, out ctorInfo))
+            if (!_ctorDictionary.TryGetValue(implementationType, out ctorInfo))
             {
-                ctorInfo = new CtorInfo(resolvingConstructor, stateType);
-                _ctorDictionary.Add(resolvingConstructor, ctorInfo);
+                ctorInfo = new CtorInfo(stateType, implementationType);
+                _ctorDictionary.Add(implementationType, ctorInfo);
             }
 
             if (ctorInfo.Error != null)
@@ -158,9 +133,15 @@
 
         private class CtorInfo
         {
-            public CtorInfo(MethodBase resolvingConstructor, Type stateType)
+            public CtorInfo(Type stateType, Type implementationType)
             {
-                Parameters = resolvingConstructor.GetParameters().Select(parameter => new CtorParameter(parameter)).ToList();
+                Constructor = GetConstructor(implementationType);
+                if (Constructor == null)
+                {
+                    return;
+                }
+
+                Parameters = Constructor.GetParameters().Select(parameter => new CtorParameter(parameter)).ToList();
                 if (stateType != typeof(EmptyState))
                 {
                     var stateParamaters = (
@@ -182,9 +163,43 @@
                 }
             }
 
+            public ConstructorInfo Constructor { get; }
+
             public List<CtorParameter> Parameters { get; }
 
-            public InvalidOperationException Error { get; }
+            public InvalidOperationException Error { get; private set; }
+
+            private ConstructorInfo GetConstructor(Type implementationType)
+            {
+                var implementationTypeInfo = implementationType.GetTypeInfo();
+                var ctorCount = implementationTypeInfo.DeclaredConstructors.Count();
+                if (ctorCount == 1)
+                {
+                    return implementationTypeInfo.DeclaredConstructors.First();
+                }
+
+                try
+                {
+                    var resolvingConstructor = (
+                        from ctor in implementationTypeInfo.DeclaredConstructors
+                        let resolverAttribute = ctor.GetCustomAttribute<ResolverAttribute>()
+                        where resolverAttribute != null
+                        select ctor).SingleOrDefault();
+
+                    if (resolvingConstructor != null)
+                    {
+                        return resolvingConstructor;
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    Error = new InvalidOperationException("Too many resolving constructors.");
+                }
+
+
+                Error = new InvalidOperationException("Resolving constructor was not found.");
+                return null;
+            }
         }
 
         private class CtorParameter
