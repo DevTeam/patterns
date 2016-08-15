@@ -11,22 +11,25 @@
     {
         private IDisposable _resources;
         private readonly int _hashCode;
+        private readonly Type _stateType;
+        private readonly Type _contractType;
+        private readonly object _key;
 
         public Registration(Type stateType, Type contractType, object key)
         {
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
 
-            StateType = stateType;
-            ContractType = contractType;
-            Key = key;
+            _stateType = stateType;
+            _contractType = contractType;
+            _key = key;
             _resources = Disposable.Empty();
 
             unchecked
             {
-                _hashCode = StateType.GetHashCode();
-                _hashCode = (_hashCode * 397) ^ ContractType.GetHashCode();
-                _hashCode = (_hashCode * 397) ^ (Key?.GetHashCode() ?? 0);
+                _hashCode = stateType.GetHashCode();
+                _hashCode = (_hashCode * 397) ^ contractType.GetHashCode();
+                _hashCode = (_hashCode * 397) ^ (key?.GetHashCode() ?? 0);
             }
         }
 
@@ -44,11 +47,11 @@
             }
         }
 
-        public Type StateType { get; }
+        public Type StateType => _stateType;
 
-        public Type ContractType { get; }
+        public Type ContractType => _contractType;
 
-        public object Key { get; }
+        public object Key => _key;
 
         public bool Equals(Registration other)
         {
@@ -68,12 +71,12 @@
 
         public bool Equals(IRegistration other)
         {
-            return ContractType == other.ContractType && Equals(Key, other.Key) && StateType == other.StateType;
+            return _contractType == other.ContractType && Equals(_key, other.Key) && _stateType == other.StateType;
         }
 
         public void Dispose()
         {
-            _resources.Dispose();
+            _resources?.Dispose();
         }
 
         public override string ToString()
