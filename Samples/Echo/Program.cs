@@ -10,9 +10,9 @@
         public static void Main()
         {
             // Create root IoC container
-            using (var container = new Container())
+            using (var container = Containers.Create())
             // Apply configuration
-            using (new EchoConfiguration().Apply(container).ToCompositeDisposable())
+            using (container.Apply(new EchoConfiguration()).ToCompositeDisposable())
             {
                 var console = container.Resolve<IConsole>();
                 console.WriteLine("Input some message for echo or press enter to exit");
@@ -26,8 +26,8 @@
                 // Register Console EchoRequest source in EventAggregator as a provider
                 using (container.Resolve<IEventAggregator>().RegisterProvider(container.Resolve<IEchoRequestSource>()))
                 {
-                }                
+                }
             }
-        }       
+        }
     }
 }

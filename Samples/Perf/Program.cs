@@ -11,7 +11,7 @@
             var max = 1000000;
             var mod = 200;
 
-            IContainer rootContainer = new Container();
+            IContainer rootContainer = Containers.Create();
             var container = rootContainer;
             Console.WriteLine("Creates containers");
             for (var i = 0; i < 3; i++)

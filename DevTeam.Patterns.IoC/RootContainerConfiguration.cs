@@ -9,6 +9,7 @@
     internal class RootContainerConfiguration : IConfiguration
     {
         internal static readonly IConfiguration Shared = new RootContainerConfiguration();
+
         internal static readonly ILifetime TransientLifetime = new TransientLifetime();
         private static readonly Lazy<ILifetime> ControlledLifetime = new Lazy<ILifetime>(() => new ControlledLifetime());
         private static readonly ILifetime SingletonLifetime = new SingletonLifetime(new TransientLifetime());

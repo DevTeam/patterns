@@ -4,26 +4,25 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
-    using Dispose;
-
     [SuppressMessage("ReSharper", "ConvertToAutoProperty")]
     internal struct Registration: IRegistration
     {
-        private IDisposable _resources;
+        private readonly IDisposable _resources;
         private readonly int _hashCode;
         private readonly Type _stateType;
         private readonly Type _contractType;
         private readonly object _key;
 
-        public Registration(Type stateType, Type contractType, object key)
+        public Registration(Type stateType, Type contractType, object key, IDisposable resources = null)
         {
-            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
+            // Optimize perfomance
+            // if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+            // if (contractType == null) throw new ArgumentNullException(nameof(contractType));
 
             _stateType = stateType;
             _contractType = contractType;
             _key = key;
-            _resources = Disposable.Empty();
+            _resources = resources;
 
             unchecked
             {
@@ -33,9 +32,9 @@
             }
         }
 
-        public static IRegistration CreateFromRegistration(IRegistration registration, IDisposable resources)
+        public Registration(IRegistration registration, IDisposable resources)
+            : this(registration.StateType, registration.ContractType, registration.Key, resources)
         {
-            return new Registration(registration.StateType, registration.ContractType, registration.Key) { _resources = resources };
         }
 
         public static IEnumerable<IRegistration> CreateRegistrationVariants(IRegistration registration)

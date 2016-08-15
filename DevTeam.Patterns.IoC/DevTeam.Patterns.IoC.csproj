@@ -52,8 +52,8 @@
     <Compile Include="AnyKeyRegistrationComparer.cs" />
     <Compile Include="ComparerForRegistrationComparer.cs" />
     <Compile Include="Binder.cs" />
-    <Compile Include="Configurations.cs" />
     <Compile Include="ContainerDescription.cs" />
+    <Compile Include="Containers.cs" />
     <Compile Include="ContextContainer.cs" />
     <Compile Include="ExpressionFactory.cs" />
     <Compile Include="InternalScope.cs" />

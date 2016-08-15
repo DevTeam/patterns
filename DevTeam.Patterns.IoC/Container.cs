@@ -8,7 +8,7 @@
     using Dispose;
     using Dictionary = System.Collections.Generic.Dictionary<IRegistration, Container.RegistrationInfo>;
 
-    public class Container : IContainer
+    internal class Container : IContainer
     {
         private static readonly Dictionary<Type, object> DefaultInstances = new Dictionary<Type, object>
         {
@@ -135,7 +135,7 @@
                 throw new InvalidOperationException($"The entry {registration} registration failed. Registered entries:{Environment.NewLine}{GetRegisteredInfo()}", ex);
             }
 
-            return Registration.CreateFromRegistration(registration, resources);
+            return new Registration(registration, resources);
         }
 
         public object Resolve(Type stateType, Type contractType, object state, object key = null)

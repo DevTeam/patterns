@@ -4,14 +4,19 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public static class Configurations
+    public static class Containers
     {
         private static readonly IEqualityComparer<IConfiguration> Comparer = new ConfigurationEqualityComparer();
 
-        public static IEnumerable<IRegistration> Apply(this IConfiguration configuration, IContainer container)
+        public static IContainer Create(object key = null)
         {
-            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            return new Container(key);
+        }
+
+        public static IEnumerable<IRegistration> Apply(this IContainer container, IConfiguration configuration)
+        {
             if (container == null) throw new ArgumentNullException(nameof(container));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
 
             return
                  GetDependencies(configuration)

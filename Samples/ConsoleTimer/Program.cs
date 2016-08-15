@@ -13,10 +13,10 @@
         public static void Main()
         {
             // Create root IoC container
-            using (var container = new Container())
-            using (new ConfigurationsContainerConfiguration().Apply(container).ToCompositeDisposable())
+            using (var container = Containers.Create())
+            using (container.Apply(new ConfigurationsContainerConfiguration()).ToCompositeDisposable())
             // Apply configuration
-            using (container.Resolve<string, IConfiguration>(File.ReadAllText("ConsoleTimerContainerConfiguration.json"), WellknownConfigurations.Json).Apply(container).ToCompositeDisposable())
+            using (container.Apply(container.Resolve<string, IConfiguration>(File.ReadAllText("ConsoleTimerContainerConfiguration.json"), WellknownConfigurations.Json)).ToCompositeDisposable())
             {
                 // Create console
                 var console = container.Resolve<IConsole>();

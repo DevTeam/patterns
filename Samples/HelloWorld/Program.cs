@@ -9,7 +9,7 @@
         static void Main(string[] args)
         {
             // Step 1
-            var container = new Container();
+            var container = Containers.Create();
             // Step 2
             container.Register<ConsoleService>().As<ConsoleService>();
             container.Register<HelloWorldWriter>().As<HelloWorldWriter>();

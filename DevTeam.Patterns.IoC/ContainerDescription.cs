@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class ContainerDescription
+    internal class ContainerDescription
     {
         public ContainerDescription(IContainer parentContainer, object key)
         {

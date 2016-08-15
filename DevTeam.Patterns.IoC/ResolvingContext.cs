@@ -4,7 +4,7 @@
 
     internal struct ResolvingContext : IResolvingContext, IDisposable
     {
-        private static object _lockObject = new object();
+        private static readonly object LockObject = new object();
         private static long _resolvingId;
         [ThreadStatic]
         private static long _perThreadResolvingId;
@@ -13,10 +13,11 @@
 
         public ResolvingContext(IContainer registerContainer, IContainer resolverContainer, IRegistration registration, Type resolvingContractType, object state)
         {
-            if (registerContainer == null) throw new ArgumentNullException(nameof(registerContainer));
-            if (resolverContainer == null) throw new ArgumentNullException(nameof(resolverContainer));
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (resolvingContractType == null) throw new ArgumentNullException(nameof(resolvingContractType));
+            // Optimize perfomance
+            // if (registerContainer == null) throw new ArgumentNullException(nameof(registerContainer));
+            // if (resolverContainer == null) throw new ArgumentNullException(nameof(resolverContainer));
+            // if (registration == null) throw new ArgumentNullException(nameof(registration));
+            // if (resolvingContractType == null) throw new ArgumentNullException(nameof(resolvingContractType));
 
             RegisterContainer = registerContainer;
             ResolverContainer = resolverContainer;
@@ -24,7 +25,7 @@
             ResolvingContractType = resolvingContractType;
             State = state;
 
-            lock (_lockObject)
+            lock (LockObject)
             {
                 _prevResolvingId = _resolvingId;
                 if (_resolvingId == 0)
