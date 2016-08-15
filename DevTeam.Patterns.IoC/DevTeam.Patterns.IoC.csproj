@@ -62,16 +62,14 @@
     <Compile Include="ControlledLifetime.cs" />
     <Compile Include="GlobalScope.cs" />
     <Compile Include="PublicScope.cs" />
+    <Compile Include="Registration.cs" />
     <Compile Include="RootContainerConfiguration.cs" />
-    <Compile Include="RegistrationDescription.cs" />
     <Compile Include="PatternKeyRegistrationComparer.cs" />
-    <Compile Include="GenericRegistration.cs" />
     <Compile Include="ReleasingContext.cs" />
     <Compile Include="ResolvingContext.cs" />
     <Compile Include="DefaultContainerRegistrationComparer.cs" />
     <Compile Include="KeyBasedLifetime.cs" />
     <Compile Include="PerContainerLifetime.cs" />
-    <Compile Include="StrictRegistration.cs" />
     <Compile Include="Resolver%271.cs" />
     <Compile Include="Resolver%272.cs" />
     <Compile Include="Container.cs" />

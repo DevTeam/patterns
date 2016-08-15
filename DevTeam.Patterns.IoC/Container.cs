@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     using Dispose;
     using Dictionary = System.Collections.Generic.Dictionary<IRegistration, Container.RegistrationInfo>;
@@ -18,9 +19,10 @@
             { typeof(IScope), RootContainerConfiguration.PublicScope }
         };
 
+        private static readonly TypeInfo ContextTypeInfo = typeof(IContext).GetTypeInfo();
         private static readonly ComparerForRegistrationComparer ComparerForRegistrationComparer = new ComparerForRegistrationComparer();
         private readonly SortedDictionary<IRegistrationComparer, Dictionary> _factories = new SortedDictionary<IRegistrationComparer, Dictionary>(ComparerForRegistrationComparer);
-        private readonly Dictionary<RegistrationDescription, RegistrationInfo> _chache = new Dictionary<RegistrationDescription, RegistrationInfo>();
+        private readonly Dictionary<IRegistration, RegistrationInfo> _cache = new Dictionary<IRegistration, RegistrationInfo>();
         private readonly IContainer _parentContainer;
         private readonly IDisposable _disposable = Disposable.Empty();
 
@@ -75,22 +77,19 @@
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
-            return Register(this, stateType, contractType, factoryMethod, key);
+            return Register(this, new Registration(stateType, contractType, key), factoryMethod);
         }
 
         public IRegistration Register(
             IContainer registerContainer,
-            Type stateType,
-            Type contractType,
-            Func<IResolvingContext, object> factoryMethod,
-            object key = null)
+            IRegistration registration,
+            Func<IResolvingContext, object> factoryMethod)
         {
             if (registerContainer == null) throw new ArgumentNullException(nameof(registerContainer));
-            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
-            var comparer = GetComparer();
+            var comparer = GetComparer(registration);
             Dictionary dictionary;
             if (!_factories.TryGetValue(comparer, out dictionary))
             {
@@ -100,12 +99,10 @@
 
             var resources = new CompositeDisposable();
             var scope = (IScope)Resolve(typeof(EmptyState), typeof(IScope), EmptyState.Shared);
-            var registrationDescription = new RegistrationDescription(stateType, contractType, key, resources);
-            _chache.Remove(registrationDescription);
-            var registration = new StrictRegistration(registrationDescription);
+            _cache.Remove(registration);
             try
             {
-                if (contractType != typeof(ILifetime))
+                if (registration.ContractType != typeof(ILifetime))
                 {
                     if (scope.ReadyToRegister(IsRoot, this))
                     {
@@ -117,7 +114,7 @@
                     {
                         if (!IsRoot)
                         {
-                            return _parentContainer.Register(registerContainer, stateType, contractType, factoryMethod, key);
+                            return _parentContainer.Register(registerContainer, registration, factoryMethod);
                         }
 
                         throw new InvalidOperationException();
@@ -138,7 +135,7 @@
                 throw new InvalidOperationException($"The entry {registration} registration failed. Registered entries:{Environment.NewLine}{GetRegisteredInfo()}", ex);
             }
 
-            return registration;
+            return Registration.CreateFromRegistration(registration, resources);
         }
 
         public object Resolve(Type stateType, Type contractType, object state, object key = null)
@@ -146,41 +143,36 @@
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
 
-            return Resolve(this, stateType, contractType, state, key);
+            return Resolve(this, new Registration(stateType, contractType, key), state);
         }
 
         public object Resolve(
             IContainer resolverContainer,
-            Type stateType,
-            Type contractType,
-            object state,
-            object key = null)
+            IRegistration registration,
+            object state)
         {
             if (resolverContainer == null) throw new ArgumentNullException(nameof(resolverContainer));
-            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
-
-            var registrationDescription = new RegistrationDescription(stateType, contractType, key, Disposable.Empty());
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
 
             RegistrationInfo info;
-            if (!_chache.TryGetValue(registrationDescription, out info))
+            if (!_cache.TryGetValue(registration, out info))
             {
                 RegistrationInfo curRegistrationInfo = null;
 
                 info = (
-                    from registration in GetResolverRegistrations(registrationDescription)
+                    from registrationVariant in Registration.CreateRegistrationVariants(registration)
                     from dictionary in _factories
-                    where dictionary.Value.TryGetValue(registration, out curRegistrationInfo)
+                    where dictionary.Value.TryGetValue(registrationVariant, out curRegistrationInfo)
                     where curRegistrationInfo.Scope.ReadyToResolve(IsRoot, this)
-                    select new RegistrationInfo(curRegistrationInfo.RegisterContainer, curRegistrationInfo.Factory, registration, curRegistrationInfo.Scope)).FirstOrDefault() ?? new RegistrationInfo();
+                    select new RegistrationInfo(curRegistrationInfo.RegisterContainer, curRegistrationInfo.Factory, registrationVariant, curRegistrationInfo.Scope)).FirstOrDefault() ?? new RegistrationInfo();
 
-                _chache.Add(registrationDescription, info);
+                _cache.Add(registration, info);
             }
 
             Exception innerException = null;
             if (!info.IsEmpty && info.Scope.ReadyToResolve(IsRoot, resolverContainer))
             {
-                using (var ctx = new ResolvingContext(info.RegisterContainer, resolverContainer, info.Registration, contractType, state))
+                using (var ctx = new ResolvingContext(info.RegisterContainer, resolverContainer, info.Registration, registration.ContractType, state))
                 {
                     return info.Factory(ctx);
                 }
@@ -190,12 +182,12 @@
             {
                 if (!IsRoot)
                 {
-                    return _parentContainer.Resolve(resolverContainer, stateType, contractType, state, key);
+                    return _parentContainer.Resolve(resolverContainer, registration, state);
                 }
 
                 // Defaults
                 object defaultInstance;
-                if (stateType == typeof(EmptyState) && key == null && DefaultInstances.TryGetValue(contractType, out defaultInstance))
+                if (registration.StateType == typeof(EmptyState) && registration.Key == null && DefaultInstances.TryGetValue(registration.ContractType, out defaultInstance))
                 {
                     return defaultInstance;
                 }
@@ -205,8 +197,7 @@
                 innerException = ex;
             }
 
-            var keys = string.Join(" or ", GetResolverRegistrations(registrationDescription).Select(i => i.ToString()));
-            throw new InvalidOperationException($"The entries {keys} was not registered. {GetRegisteredInfo()}", innerException);
+            throw new InvalidOperationException($"The entries {registration} was not registered. {GetRegisteredInfo()}", innerException);
         }
 
         /// <summary>
@@ -214,7 +205,7 @@
         /// </summary>
         public void Dispose()
         {
-            _chache.Clear();
+            _cache.Clear();
             _factories.SelectMany(i => i.Value.Keys).Distinct().ToCompositeDisposable().Dispose();
             _disposable.Dispose();
         }
@@ -226,12 +217,7 @@
 
         private bool Unregister(IRegistration registration)
         {
-            _chache.Remove(
-                new RegistrationDescription(
-                    registration.StateType,
-                    registration.ContractType,
-                    registration.Key,
-                    Disposable.Empty()));
+            _cache.Remove(registration);
 
             var removed = false;
             foreach (var dictionary in _factories)
@@ -257,22 +243,16 @@
         private string GetRegisteredInfo()
         {
             var details = _factories.Count == 0 ? "no entries" : string.Join(Environment.NewLine, _factories.SelectMany(i => i.Value.Keys).Distinct().Select(k => k.ToString()));
-            return $"Container \"{Key}\". Registered entries:{Environment.NewLine}{details}";
+            return $"Container [Key: {Key?.ToString() ?? "null"}, Registered entries: {Environment.NewLine}{details}]";
         }
 
-        private static IEnumerable<IRegistration> GetResolverRegistrations(RegistrationDescription registrationDescription)
+        private IRegistrationComparer GetComparer(IRegistration registration)
         {
-            yield return new StrictRegistration(registrationDescription);
-
-            IRegistration genericRegistration;
-            if (GenericRegistration.TryCreate(registrationDescription, out genericRegistration))
+            if (ContextTypeInfo.IsAssignableFrom(registration.ContractType.GetTypeInfo()))
             {
-                yield return genericRegistration;
+                return RootContainerConfiguration.FullComplianceRegistrationComparer;
             }
-        }
 
-        private IRegistrationComparer GetComparer()
-        {
             return (IRegistrationComparer)Resolve(typeof(EmptyState), typeof(IRegistrationComparer), EmptyState.Shared);
         }
 

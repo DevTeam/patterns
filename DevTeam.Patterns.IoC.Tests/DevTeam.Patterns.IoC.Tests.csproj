@@ -53,7 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutowiringContainerIntegrationTests.cs" />
-    <Compile Include="StrictRegistrationTests.cs" />
     <Compile Include="ContainerIntegrationTests.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

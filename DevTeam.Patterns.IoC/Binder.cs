@@ -34,7 +34,7 @@
                 return;
             }
 
-            if (IsGeneric(contractType))
+            if (!IsGeneric(contractType))
             {
                 throw new InvalidOperationException("A generic implementation should relay on a generic contract.");
             }
