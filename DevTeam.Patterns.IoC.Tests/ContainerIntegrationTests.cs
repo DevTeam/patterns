@@ -28,18 +28,8 @@
             _service1State = new Service1State();
         }
 
-        [Test]
-        public void ShouldRegister()
-        {
-            // Given
-            var target = CreateTarget();
+        
 
-            // When
-            target.Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
-
-            // Then
-            target.GetRegistrations().ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
-        }
 
         [Test]
         public void ShouldRemoveRegistrationWhenRegistrationTokenIsDisposed()

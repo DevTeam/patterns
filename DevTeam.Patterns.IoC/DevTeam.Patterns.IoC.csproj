@@ -67,7 +67,7 @@
     <Compile Include="PatternKeyRegistrationComparer.cs" />
     <Compile Include="ReleasingContext.cs" />
     <Compile Include="ResolvingContext.cs" />
-    <Compile Include="DefaultContainerRegistrationComparer.cs" />
+    <Compile Include="FullComplianceRegistrationComparer.cs" />
     <Compile Include="KeyBasedLifetime.cs" />
     <Compile Include="PerContainerLifetime.cs" />
     <Compile Include="Resolver%271.cs" />

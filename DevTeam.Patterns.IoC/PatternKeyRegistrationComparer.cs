@@ -1,5 +1,6 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
+    using System;
     using System.Text.RegularExpressions;
 
     internal class PatternKeyRegistrationComparer : IRegistrationComparer
@@ -10,9 +11,25 @@
         {
             var xKey = x.Key?.ToString() ?? string.Empty;
             var yKey = y.Key?.ToString() ?? string.Empty;
-            var regexX = new Regex(xKey);
-            var regexY = new Regex(yKey);
-            if (x.ContractType == y.ContractType && x.StateType == y.StateType && (regexX.IsMatch(yKey) || regexY.IsMatch(xKey)))
+            Regex regexX = null;
+            Regex regexY = null;
+            try
+            {
+                regexX = new Regex(xKey);
+            }
+            catch (ArgumentException)
+            {
+            }
+
+            try
+            {
+                regexY = new Regex(yKey);
+            }
+            catch (ArgumentException)
+            {
+            }
+
+            if (x.ContractType == y.ContractType && x.StateType == y.StateType && ((regexX?.IsMatch(yKey) ?? false) || (regexY?.IsMatch(xKey) ?? false)))
             {
                 return true;
             }

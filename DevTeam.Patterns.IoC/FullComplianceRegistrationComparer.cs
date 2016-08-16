@@ -1,6 +1,6 @@
 namespace DevTeam.Patterns.IoC
 {
-    internal class DefaultContainerRegistrationComparer : IRegistrationComparer
+    internal class FullComplianceRegistrationComparer : IRegistrationComparer
     {
         public WellknownRegistrationComparer Key => WellknownRegistrationComparer.FullCompliance;
 

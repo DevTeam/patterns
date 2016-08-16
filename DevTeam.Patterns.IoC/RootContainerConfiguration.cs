@@ -21,7 +21,7 @@
         private static readonly Lazy<ILifetime> PerThreadLifetime = new Lazy<ILifetime>(() => new PerThreadLifetime(new TransientLifetime()));
         private static readonly Lazy<ILifetime> ControlledPerThreadLifetime = new Lazy<ILifetime>(() => new PerThreadLifetime(new ControlledLifetime()));
 
-        internal static readonly IRegistrationComparer FullComplianceRegistrationComparer = new DefaultContainerRegistrationComparer();
+        internal static readonly IRegistrationComparer FullComplianceRegistrationComparer = new FullComplianceRegistrationComparer();
         private static readonly IRegistrationComparer PatternRegistrationComparer = new PatternKeyRegistrationComparer();
         private static readonly IRegistrationComparer AnyStateTypeAndKey = new AnyStateTypeAndKeyRegistrationComparer();
         private static readonly IRegistrationComparer AnyRegistrationComparer = new AnyKeyRegistrationComparer();
