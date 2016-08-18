@@ -1,8 +1,8 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    internal class PerResolveLifetimeLifetime : KeyBasedLifetime
+    internal class PerResolveLifetime : KeyBasedLifetime
     {
-        public PerResolveLifetimeLifetime(ILifetime baseLifetime)
+        public PerResolveLifetime(ILifetime baseLifetime)
             : base(baseLifetime)
         {
         }
@@ -14,7 +14,7 @@
 
         public override string ToString()
         {
-            return $"{nameof(PerResolveLifetimeLifetime)} [{base.ToString()}]";
+            return $"{nameof(PerResolveLifetime)} [{base.ToString()}]";
         }
 
         private class Key

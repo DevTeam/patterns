@@ -53,14 +53,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnyStateTypeAndKeyRegistrationComparerTests.cs" />
+    <Compile Include="LifetimeTestsBase.cs" />
     <Compile Include="PatternKeyRegistrationComparerTests.cs" />
     <Compile Include="FullComplianceRegistrationComparerTests.cs" />
     <Compile Include="AnyKeyRegistrationComparerTests.cs" />
     <Compile Include="AutowiringContainerIntegrationTests.cs" />
     <Compile Include="ContainerIntegrationTests.cs" />
+    <Compile Include="ControlledPerResolveLifetimeTests.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service1State.cs" />
+    <Compile Include="ControlledSingletonLifetimeTests.cs" />
+    <Compile Include="SingletonLifetimeTests.cs" />
+    <Compile Include="ControlledLifetimeTests.cs" />
+    <Compile Include="PerResolveLifetimeTests.cs" />
+    <Compile Include="TransientLifetimeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

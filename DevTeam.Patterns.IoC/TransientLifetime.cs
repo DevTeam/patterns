@@ -3,7 +3,7 @@
     using System;
 
     internal class TransientLifetime : ILifetime
-    {    
+    {
         public object Create(IResolvingContext ctx, Func<IResolvingContext, object> factory)
         {
             if (ctx == null) throw new ArgumentNullException(nameof(ctx));
