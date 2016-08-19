@@ -225,6 +225,21 @@
             var target = CreateTarget();
             
             // When
+            target.Register<Service1>().InRange(WellknownContractRange.Implementation).As<IService3>().As("myService1");
+
+            // Then
+            target.Resolve<IService>("myService1");
+            target.Resolve<IService3>("myService1");
+            target.Resolve<Service1>("myService1");
+        }
+
+        [Test]
+        public void ShouldResolveAllInheritanceWhenUseImplementig()
+        {
+            // Given
+            var target = CreateTarget();
+
+            // When
             target.Register<Service1>().As<IService>().As<IService3>().As("myService1");
 
             // Then
