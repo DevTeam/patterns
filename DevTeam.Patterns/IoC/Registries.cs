@@ -4,22 +4,21 @@
 
     public static class Registries
     {
-        public static Registration Register<TImplementation>(this IContainer container, WellknownLifetime lifetime = WellknownLifetime.Transient)
+        public static IRegistrationDescription<TImplementation> Register<TImplementation>(this IContainer container, WellknownLifetime lifetime = WellknownLifetime.Transient)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            return container.Register(typeof(TImplementation), lifetime);
+            return new RegistrationDescription<TImplementation>(container, lifetime);
         }
 
-        public static Registration Register(this IContainer container, Type implementationType, WellknownLifetime lifetime = WellknownLifetime.Transient)
+        public static IRegistrationDescription<object> Register(this IContainer container, Type implementationType, WellknownLifetime lifetime = WellknownLifetime.Transient)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
-            if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
 
-            return new Registration(implementationType, container, lifetime);
+            return new RegistrationDescription<object>(container, implementationType, lifetime);
         }
 
-        public static Registration FindingBy(this Registration registration, WellknownComparer comparer)
+        public static IRegistrationDescription<TImplementation> FindingBy<TImplementation>(this IRegistrationDescription<TImplementation> registration, WellknownComparer comparer)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
@@ -27,7 +26,7 @@
             return registration;
         }
 
-        public static Registration InScope(this Registration registration, WellknownScope scope)
+        public static IRegistrationDescription<TImplementation> InScope<TImplementation>(this IRegistrationDescription<TImplementation> registration, WellknownScope scope)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
@@ -35,18 +34,37 @@
             return registration;
         }
 
-        public static IRegistration As<TState, T>(this Registration registration, object key = null)
+        public static IRegistrationDescription<TImplementation> InRange<TImplementation>(this IRegistrationDescription<TImplementation> registration, WellknownContractRange contgractRange)
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
+            registration.ContractRange = contgractRange;
+            return registration;
+        }
+
+        public static IRegistration As<TState, T>(this IRegistrationDescription<T> registration, object key = null)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
             return registration.As(typeof(TState), typeof(T), key);
         }
 
-        public static IRegistration As(this Registration registration, Type stateType, Type contractType, object key = null)
+        public static IRegistration As<T>(this IRegistrationDescription<T> registration, object key = null)
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
+            return registration.As<EmptyState, T>(key);
+        }
+
+        public static IRegistration As<T>(this IRegistrationDescription<T> registration, Type contractType, object key = null)
+        {
+            return registration.As(typeof(EmptyState), contractType, key);
+        }
+
+        public static IRegistration As<T>(this IRegistrationDescription<T> registration, Type stateType, Type contractType, object key = null)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
 
             var container = registration.Container;
 
@@ -65,22 +83,12 @@
                 container = container.Using<IScope>(registration.Scope);
             }
 
+            if (registration.ContractRange != WellknownContractRange.Contract)
+            {
+                container = container.Using<IContractRange>(registration.ContractRange);
+            }
+
             return container.Register(stateType, contractType, registration.ImplementationType, key);
-        }
-
-        public static IRegistration As(this Registration registration, Type contractType, object key = null)
-        {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
-
-            return registration.As(typeof(EmptyState), contractType, key);
-        }
-
-        public static IRegistration As<T>(this Registration registration, object key = null)
-        {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-
-            return registration.As<EmptyState, T>(key);
         }
 
         public static IRegistration Register(this IContainer container, Type stateType, Type contractType, Type implementationType, object key = null)
@@ -140,11 +148,25 @@
             return (IContainer)container.Resolve(typeof(ContextContainerState), typeof(IContextContainer), new ContextContainerState(container, context, contextType));
         }
 
-        public class Registration
+        public interface IRegistrationDescription<out T>
         {
-            public Registration(Type implementationType, IContainer container, WellknownLifetime lifetime)
+            Type ImplementationType { get; }
+
+            IContainer Container { get; }
+
+            WellknownLifetime Lifetime { get; set; }
+
+            WellknownComparer Comparer { get; set; }
+
+            WellknownScope Scope { get; set; }
+
+            WellknownContractRange ContractRange { get; set; }
+        }
+
+        private class RegistrationDescription<TImplementation>: IRegistrationDescription<TImplementation>
+        {
+            public RegistrationDescription(IContainer container, Type implementationType, WellknownLifetime lifetime)
             {
-                if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
                 if (container == null) throw new ArgumentNullException(nameof(container));
 
                 ImplementationType = implementationType;
@@ -154,15 +176,22 @@
                 Scope = WellknownScope.Public;
             }
 
-            internal Type ImplementationType { get; }
+            public RegistrationDescription(IContainer container, WellknownLifetime lifetime)
+                :this(container, typeof(TImplementation), lifetime)
+            {
+            }
 
-            internal IContainer Container { get; }
+            public Type ImplementationType { get; }
 
-            internal WellknownLifetime Lifetime { get; }
+            public IContainer Container { get; }
 
-            internal WellknownComparer Comparer { get; set; }
+            public WellknownLifetime Lifetime { get; set; }
+
+            public WellknownComparer Comparer { get; set; }
 
             public WellknownScope Scope { get; set; }
+
+            public WellknownContractRange ContractRange { get; set; }
         }
     }
 }

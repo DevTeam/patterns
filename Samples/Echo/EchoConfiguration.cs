@@ -20,7 +20,7 @@
         public IEnumerable<IRegistration> CreateRegistrations(IContainer container)
         {
             // Register Echo Request
-            yield return container.Register<EchoRequest>().As<string, IEchoRequest>();            
+            yield return container.Register<EchoRequest>().As<string, IEchoRequest>();
 
             // Register Echo
             yield return container.Register<Echo>().As<string, IEcho>();
