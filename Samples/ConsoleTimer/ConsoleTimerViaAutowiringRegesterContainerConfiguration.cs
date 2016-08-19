@@ -22,7 +22,7 @@
             yield return container.Register<Timer>().As<TimeSpan, ITimer>();
 
             // Register Time Publisher
-            yield return container.Register<TimePublisher>().As<ITimePublisher>();
+            yield return Registries.As<ITimePublisher>(container.Register<TimePublisher>());
         }
     }
 }

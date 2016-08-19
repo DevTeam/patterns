@@ -225,7 +225,7 @@
             var target = CreateTarget();
             
             // When
-            target.Register<Service1>().Implementing<IService>().Implementing<IService3>().As("myService1");
+            target.Register<Service1>().As<IService>().As<IService3>().As("myService1");
 
             // Then
             target.Resolve<IService>("myService1");

@@ -29,10 +29,10 @@
             yield return container.Register<EchoService>().As<string, IEchoService>();
 
             // Register Console Echo Publisher as Singleton
-            yield return container.Register<ConsoleEchoPublisher>(WellknownLifetime.Singleton).As<IEchoPublisher>();
+            yield return Registries.As<IEchoPublisher>(container.Register<ConsoleEchoPublisher>(WellknownLifetime.Singleton));
 
             // Register Console Echo Request bbSource as Singleton
-            yield return container.Register<ConsoleEchoRequestSource>(WellknownLifetime.Singleton).As<IEchoRequestSource>();
+            yield return Registries.As<IEchoRequestSource>(container.Register<ConsoleEchoRequestSource>(WellknownLifetime.Singleton));
         }
     }
 }

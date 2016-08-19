@@ -11,8 +11,8 @@
             // Step 1
             var container = Containers.Create();
             // Step 2
-            container.Register<ConsoleService>().As<ConsoleService>();
-            container.Register<HelloWorldWriter>().As<HelloWorldWriter>();
+            Registries.As<ConsoleService>(container.Register<ConsoleService>());
+            Registries.As<HelloWorldWriter>(container.Register<HelloWorldWriter>());
             // Step 3
             var hellowWorldWriter = container.Resolve<HelloWorldWriter>();
             hellowWorldWriter.Write();            

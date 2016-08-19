@@ -110,9 +110,9 @@
 
             IRegistrationDescription<TImplementation> InRange(WellknownContractRange contractRange);
 
-            IRegistrationDescription<TImplementation> Implementing(Type contractType);
+            IRegistrationDescription<TImplementation> As(Type contractType);
 
-            IRegistrationDescription<TImplementation> Implementing<T>();
+            IRegistrationDescription<TImplementation> As<T>();
         }
 
         private class RegistrationDescription<TImplementation>: IRegistrationDescription<TImplementation>
@@ -167,13 +167,13 @@
                 return this;
             }
 
-            public IRegistrationDescription<TImplementation> Implementing(Type contractType)
+            public IRegistrationDescription<TImplementation> As(Type contractType)
             {
                 _additionalContracts.Add(contractType);
                 return this;
             }
 
-            public IRegistrationDescription<TImplementation> Implementing<T>()
+            public IRegistrationDescription<TImplementation> As<T>()
             {
                 _additionalContracts.Add(typeof(T));
                 return this;
