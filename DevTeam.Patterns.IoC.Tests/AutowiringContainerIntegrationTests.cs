@@ -218,6 +218,21 @@
             contract.ShouldBeOfType<Service2WithState<DateTime>>();
         }
 
+        [Test]
+        public void ShouldResolveAllInheritanceWhenUseImplementigWithWellknownContractRange()
+        {
+            // Given
+            var target = CreateTarget();
+            
+            // When
+            target.Register<Service1>().Implementing<IService>().Implementing<IService3>().As("myService1");
+
+            // Then
+            target.Resolve<IService>("myService1");
+            target.Resolve<IService3>("myService1");
+            target.Resolve<Service1>("myService1");
+        }
+
         private static Container CreateTarget(object key = null)
         {
             return new Container(key);

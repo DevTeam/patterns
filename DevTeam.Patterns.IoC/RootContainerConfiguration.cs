@@ -154,6 +154,10 @@
             yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => PublicScope, WellknownScope.Public);
             yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => new InternalScope(ctx.ResolveContainer), WellknownScope.Internal);
             yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => new GlobalScope(ctx.ResolveContainer), WellknownScope.Global);
+
+            yield return container
+                .Using<ILifetime>(WellknownLifetime.Singleton)
+                .Register(typeof(EmptyState), typeof(IRegistrationFactory), ctx => new RegistrationFactory());
         }
 
         private class Enumerable<T> : IEnumerable<T>

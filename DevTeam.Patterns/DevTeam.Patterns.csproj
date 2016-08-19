@@ -53,6 +53,8 @@
     <Compile Include="IoC\IRegistration.cs" />
     <Compile Include="IoC\IContractRange.cs" />
     <Compile Include="IoC\IComparer.cs" />
+    <Compile Include="IoC\IRegistrationDescription.cs" />
+    <Compile Include="IoC\IRegistrationFactory.cs" />
     <Compile Include="IoC\IRegistry.cs" />
     <Compile Include="IoC\IReleasingContext.cs" />
     <Compile Include="IoC\IResolver.cs" />

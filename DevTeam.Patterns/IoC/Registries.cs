@@ -1,6 +1,7 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
     using System;
+    using System.Collections.Generic;
 
     public static class Registries
     {
@@ -18,77 +19,29 @@
             return new RegistrationDescription<object>(container, implementationType, lifetime);
         }
 
-        public static IRegistrationDescription<TImplementation> FindingBy<TImplementation>(this IRegistrationDescription<TImplementation> registration, WellknownComparer comparer)
+        public static IRegistration As<TState, T>(this IRegistrationDescription<T> description, object key = null)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (description == null) throw new ArgumentNullException(nameof(description));
 
-            registration.Comparer = comparer;
-            return registration;
+            return description.As(typeof(TState), typeof(T), key);
         }
 
-        public static IRegistrationDescription<TImplementation> InScope<TImplementation>(this IRegistrationDescription<TImplementation> registration, WellknownScope scope)
+        public static IRegistration As<T>(this IRegistrationDescription<T> description, object key = null)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (description == null) throw new ArgumentNullException(nameof(description));
 
-            registration.Scope = scope;
-            return registration;
+            return description.As<EmptyState, T>(key);
         }
 
-        public static IRegistrationDescription<TImplementation> InRange<TImplementation>(this IRegistrationDescription<TImplementation> registration, WellknownContractRange contgractRange)
+        public static IRegistration As<T>(this IRegistrationDescription<T> description, Type contractType, object key = null)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-
-            registration.ContractRange = contgractRange;
-            return registration;
+            return description.As(typeof(EmptyState), contractType, key);
         }
 
-        public static IRegistration As<TState, T>(this IRegistrationDescription<T> registration, object key = null)
+        public static IRegistration As<T>(this IRegistrationDescription<T> description, Type stateType, Type contractType, object key = null)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-
-            return registration.As(typeof(TState), typeof(T), key);
-        }
-
-        public static IRegistration As<T>(this IRegistrationDescription<T> registration, object key = null)
-        {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-
-            return registration.As<EmptyState, T>(key);
-        }
-
-        public static IRegistration As<T>(this IRegistrationDescription<T> registration, Type contractType, object key = null)
-        {
-            return registration.As(typeof(EmptyState), contractType, key);
-        }
-
-        public static IRegistration As<T>(this IRegistrationDescription<T> registration, Type stateType, Type contractType, object key = null)
-        {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-
-            var container = registration.Container;
-
-            if (registration.Lifetime != WellknownLifetime.Transient)
-            {
-                container = container.Using<ILifetime>(registration.Lifetime);
-            }
-
-            if (registration.Comparer != WellknownComparer.FullCompliance)
-            {
-                container = container.Using<IComparer>(registration.Comparer);
-            }
-
-            if (registration.Scope != WellknownScope.Public)
-            {
-                container = container.Using<IScope>(registration.Scope);
-            }
-
-            if (registration.ContractRange != WellknownContractRange.Contract)
-            {
-                container = container.Using<IContractRange>(registration.ContractRange);
-            }
-
-            return container.Register(stateType, contractType, registration.ImplementationType, key);
+            var registrationFactory = description.Container.Resolve<IRegistrationFactory>();
+            return registrationFactory.Create(description, stateType, contractType, key);
         }
 
         public static IRegistration Register(this IContainer container, Type stateType, Type contractType, Type implementationType, object key = null)
@@ -100,6 +53,7 @@
 
             // Resolve default binder
             var binder = container.Resolve<IBinder>();
+
             // Resolve default factory
             var factory = container.Resolve<IFactory>();
 
@@ -148,23 +102,23 @@
             return (IContainer)container.Resolve(typeof(ContextContainerState), typeof(IContextContainer), new ContextContainerState(container, context, contextType));
         }
 
-        public interface IRegistrationDescription<out T>
+        public interface IRegistrationDescription<out TImplementation>: IRegistrationDescription
         {
-            Type ImplementationType { get; }
+            IRegistrationDescription<TImplementation> FindingBy(WellknownComparer comparer);
 
-            IContainer Container { get; }
+            IRegistrationDescription<TImplementation> InScope(WellknownScope scope);
 
-            WellknownLifetime Lifetime { get; set; }
+            IRegistrationDescription<TImplementation> InRange(WellknownContractRange contractRange);
 
-            WellknownComparer Comparer { get; set; }
+            IRegistrationDescription<TImplementation> Implementing(Type contractType);
 
-            WellknownScope Scope { get; set; }
-
-            WellknownContractRange ContractRange { get; set; }
+            IRegistrationDescription<TImplementation> Implementing<T>();
         }
 
         private class RegistrationDescription<TImplementation>: IRegistrationDescription<TImplementation>
         {
+            private readonly List<Type> _additionalContracts = new List<Type>();
+
             public RegistrationDescription(IContainer container, Type implementationType, WellknownLifetime lifetime)
             {
                 if (container == null) throw new ArgumentNullException(nameof(container));
@@ -185,13 +139,45 @@
 
             public IContainer Container { get; }
 
-            public WellknownLifetime Lifetime { get; set; }
+            public WellknownLifetime Lifetime { get; }
 
-            public WellknownComparer Comparer { get; set; }
+            public WellknownComparer Comparer { get; private set; }
 
-            public WellknownScope Scope { get; set; }
+            public WellknownScope Scope { get; private set; }
 
-            public WellknownContractRange ContractRange { get; set; }
+            public WellknownContractRange ContractRange { get; private set; }
+
+            public IEnumerable<Type> AdditionalContracts => _additionalContracts;
+
+            public IRegistrationDescription<TImplementation> FindingBy(WellknownComparer comparer = WellknownComparer.FullCompliance)
+            {
+                Comparer = comparer;
+                return this;
+            }
+
+            public IRegistrationDescription<TImplementation> InScope(WellknownScope scope)
+            {
+                Scope = scope;
+                return this;
+            }
+
+            public IRegistrationDescription<TImplementation> InRange(WellknownContractRange contractRange)
+            {
+                ContractRange = contractRange;
+                return this;
+            }
+
+            public IRegistrationDescription<TImplementation> Implementing(Type contractType)
+            {
+                _additionalContracts.Add(contractType);
+                return this;
+            }
+
+            public IRegistrationDescription<TImplementation> Implementing<T>()
+            {
+                _additionalContracts.Add(typeof(T));
+                return this;
+            }
         }
     }
 }
