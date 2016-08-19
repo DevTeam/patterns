@@ -19,11 +19,11 @@
             return new Registration(implementationType, container, lifetime);
         }
 
-        public static Registration FindingBy(this Registration registration, WellknownRegistrationComparer registrationComparer)
+        public static Registration FindingBy(this Registration registration, WellknownComparer comparer)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
-            registration.RegistrationComparer = registrationComparer;
+            registration.Comparer = comparer;
             return registration;
         }
 
@@ -55,9 +55,9 @@
                 container = container.Using<ILifetime>(registration.Lifetime);
             }
 
-            if (registration.RegistrationComparer != WellknownRegistrationComparer.FullCompliance)
+            if (registration.Comparer != WellknownComparer.FullCompliance)
             {
-                container = container.Using<IRegistrationComparer>(registration.RegistrationComparer);
+                container = container.Using<IComparer>(registration.Comparer);
             }
 
             if (registration.Scope != WellknownScope.Public)
@@ -150,7 +150,7 @@
                 ImplementationType = implementationType;
                 Container = container;
                 Lifetime = lifetime;
-                RegistrationComparer = WellknownRegistrationComparer.FullCompliance;
+                Comparer = WellknownComparer.FullCompliance;
                 Scope = WellknownScope.Public;
             }
 
@@ -160,7 +160,7 @@
 
             internal WellknownLifetime Lifetime { get; }
 
-            internal WellknownRegistrationComparer RegistrationComparer { get; set; }
+            internal WellknownComparer Comparer { get; set; }
 
             public WellknownScope Scope { get; set; }
         }

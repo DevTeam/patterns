@@ -10,10 +10,14 @@
     {
         internal static readonly ILifetime TransientLifetime = new TransientLifetime();
 
-        internal static readonly IRegistrationComparer FullComplianceRegistrationComparer = new FullComplianceRegistrationComparer();
-        private static readonly IRegistrationComparer PatternRegistrationComparer = new PatternKeyRegistrationComparer();
-        private static readonly IRegistrationComparer AnyStateTypeAndKey = new AnyStateTypeAndKeyRegistrationComparer();
-        private static readonly IRegistrationComparer AnyRegistrationComparer = new AnyKeyRegistrationComparer();
+        internal static readonly IComparer FullComplianceComparer = new FullComplianceComparer();
+        private static readonly IComparer PatternComparer = new PatternKeyComparer();
+        private static readonly IComparer AnyStateTypeAndKey = new AnyStateTypeAndKeyComparer();
+        private static readonly IComparer AnyComparer = new AnyKeyComparer();
+
+        internal static readonly IContractRange ContractRange = new ContractRange();
+        private static readonly IContractRange ImplementationContractRange = new ImplementationContractRange(ContractRange);
+        private static readonly IContractRange InheritanceContractRange = new InheritanceContractRange(ImplementationContractRange);
 
         internal static readonly IBinder Binder = new Binder();
         internal static readonly IFactory Factory = new ExpressionFactory();
@@ -57,11 +61,16 @@
             yield return container.Register(() => _perThreadLifetime.Value, WellknownLifetime.PerThreadLifetime);
             yield return container.Register(() => _controlledPerThreadLifetime.Value, WellknownLifetime.ControlledPerThreadLifetime);
 
-            // Wellknown registration comparers
-            yield return container.Register(() => FullComplianceRegistrationComparer, WellknownRegistrationComparer.FullCompliance);
-            yield return container.Register(() => PatternRegistrationComparer, WellknownRegistrationComparer.PatternKey);
-            yield return container.Register(() => AnyStateTypeAndKey, WellknownRegistrationComparer.AnyStateTypeAndKey);
-            yield return container.Register(() => AnyRegistrationComparer, WellknownRegistrationComparer.AnyKey);
+            // Wellknown comparers
+            yield return container.Register(() => FullComplianceComparer, WellknownComparer.FullCompliance);
+            yield return container.Register(() => PatternComparer, WellknownComparer.PatternKey);
+            yield return container.Register(() => AnyStateTypeAndKey, WellknownComparer.AnyStateTypeAndKey);
+            yield return container.Register(() => AnyComparer, WellknownComparer.AnyKey);
+
+            // Wellknown contract ranges
+            yield return container.Register(() => ContractRange, WellknownContractRange.Contract);
+            yield return container.Register(() => ImplementationContractRange, WellknownContractRange.Implementation);
+            yield return container.Register(() => InheritanceContractRange, WellknownContractRange.Inheritance);
 
             // Context container
             yield return container.Register(typeof(ContextContainerState), typeof(IContextContainer),
@@ -75,39 +84,39 @@
 
             // Child container
             yield return container
-                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyStateTypeAndKey)
+                .Using<IComparer>(WellknownComparer.AnyStateTypeAndKey)
                 .Using<ILifetime>(WellknownLifetime.Controlled)
                 .Register(
                     typeof(EmptyState),
                     typeof(IContainer),
-                    ctx => new Container(new ContainerDescription(ctx.ResolverContainer, ctx.Registration.Key)));
+                    ctx => new Container(new ContainerDescription(ctx.ResolveContainer, ctx.Registration.Key)));
 
             // Resolvers
             yield return container
                 .Using<ILifetime>(WellknownLifetime.Singleton)
-                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
+                .Using<IComparer>(WellknownComparer.AnyKey)
                 .Register(typeof(EmptyState), typeof(IResolver<>),
                     ctx =>
                     {
                         var resolverType = typeof(Resolver<>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0]);
                         var ctor = resolverType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 2 && i.GetParameters()[0].ParameterType == typeof(IResolver) && i.GetParameters()[1].ParameterType == typeof(object));
-                        return Factory.Create(ctor, ctx.ResolverContainer, ctx.Registration.Key);
+                        return Factory.Create(ctor, ctx.ResolveContainer, ctx.Registration.Key);
                     });
 
             yield return container
                 .Using<ILifetime>(WellknownLifetime.Singleton)
-                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
+                .Using<IComparer>(WellknownComparer.AnyKey)
                 .Register(typeof(EmptyState), typeof(IResolver<,>),
                     ctx =>
                     {
                         var resolverType = typeof(Resolver<,>).MakeGenericType(ctx.ResolvingContractType.GenericTypeArguments[0], ctx.ResolvingContractType.GenericTypeArguments[1]);
                         var ctor = resolverType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 2 && i.GetParameters()[0].ParameterType == typeof(IResolver) && i.GetParameters()[1].ParameterType == typeof(object));
-                        return Factory.Create(ctor, ctx.ResolverContainer, ctx.Registration.Key);
+                        return Factory.Create(ctor, ctx.ResolveContainer, ctx.Registration.Key);
                     });
 
             // Resolve All as IEnumerable
             yield return container
-                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyStateTypeAndKey)
+                .Using<IComparer>(WellknownComparer.AnyStateTypeAndKey)
                 .Register(
                     typeof(EmptyState),
                     typeof(IEnumerable<>),
@@ -116,15 +125,15 @@
                         var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
                         var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
                         var source =
-                            from key in ctx.ResolverContainer.GetRegistrations()
+                            from key in ctx.ResolveContainer.GetRegistrations()
                             where key.ContractType == enumItemType && key.StateType == ctx.Registration.StateType
-                            select ctx.ResolverContainer.Resolve(key.StateType, enumItemType, ctx.State, key.Key);
+                            select ctx.ResolveContainer.Resolve(key.StateType, enumItemType, ctx.State, key.Key);
                         var ctor = enumType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 1);
                         return Factory.Create(ctor, source);
                     });
 
             yield return container
-                .Using<IRegistrationComparer>(WellknownRegistrationComparer.AnyKey)
+                .Using<IComparer>(WellknownComparer.AnyKey)
                 .Register(
                     typeof(StateSelector),
                     typeof(IEnumerable<>),
@@ -133,18 +142,18 @@
                         var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
                         var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
                         var source =
-                            from key in ctx.ResolverContainer.GetRegistrations()
+                            from key in ctx.ResolveContainer.GetRegistrations()
                             where key.ContractType == enumItemType
                             let state = ((StateSelector)ctx.State)(ctx)
-                            select ctx.ResolverContainer.Resolve(key.StateType, enumItemType, state, key.Key);
+                            select ctx.ResolveContainer.Resolve(key.StateType, enumItemType, state, key.Key);
                         var ctor = enumType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 1);
                         return Factory.Create(ctor, source);
                     });
 
             // Scopes
             yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => PublicScope, WellknownScope.Public);
-            yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => new InternalScope(ctx.ResolverContainer), WellknownScope.Internal);
-            yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => new GlobalScope(ctx.ResolverContainer), WellknownScope.Global);
+            yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => new InternalScope(ctx.ResolveContainer), WellknownScope.Internal);
+            yield return container.Register(typeof(EmptyState), typeof(IScope), ctx => new GlobalScope(ctx.ResolveContainer), WellknownScope.Global);
         }
 
         private class Enumerable<T> : IEnumerable<T>

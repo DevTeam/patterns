@@ -16,13 +16,15 @@
 
         public WellknownLifetime? Lifetime { get; set; }
 
-        public WellknownRegistrationComparer? RegistrationComparer { get; set; }
+        public WellknownComparer? Comparer { get; set; }
 
         public WellknownScope? Scope { get; set; }
 
+        public WellknownContractRange? ContractRange { get; set; }
+
         public override string ToString()
         {
-            return $"{nameof(RegistrationElement)} [State: {State ?? "null"}, Contract: {Contract ?? "null"}, Implementation: {Implementation ?? "null"}, Key: {Key?.ToString() ?? "null"}, Lifetime: {Lifetime?.ToString() ?? nameof(WellknownLifetime.Transient)}, RegistrationComparer: {RegistrationComparer?.ToString() ?? nameof(WellknownRegistrationComparer.FullCompliance)}, Scope: {Scope?.ToString() ?? nameof(WellknownScope.Public)}]";
+            return $"{nameof(RegistrationElement)} [State: {State ?? "null"}, Contract: {Contract ?? "null"}, Implementation: {Implementation ?? "null"}, Key: {Key?.ToString() ?? "null"}, Lifetime: {Lifetime?.ToString() ?? nameof(WellknownLifetime.Transient)}, RegistrationComparer: {Comparer?.ToString() ?? nameof(WellknownComparer.FullCompliance)}, Scope: {Scope?.ToString() ?? nameof(WellknownScope.Public)}, ContractRange: {ContractRange?.ToString() ?? nameof(WellknownContractRange.Contract)}]";
         }
     }
 }

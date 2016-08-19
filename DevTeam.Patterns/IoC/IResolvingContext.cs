@@ -12,7 +12,7 @@
 
         IContainer RegisterContainer { get; }
 
-        IContainer ResolverContainer { get; }
+        IContainer ResolveContainer { get; }
 
         Type ResolvingContractType { get; }
 

@@ -73,13 +73,13 @@
             return _state.TargetContainer.Resolve(stateType, contractType, state, key);
         }
 
-        public object Resolve(IContainer resolverContainer, IRegistration registration, object state)
+        public object Resolve(IContainer resolveContainer, IRegistration registration, object state)
         {
-            if (resolverContainer == null) throw new ArgumentNullException(nameof(resolverContainer));
+            if (resolveContainer == null) throw new ArgumentNullException(nameof(resolveContainer));
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (state == null) throw new ArgumentNullException(nameof(state));
 
-            return _state.TargetContainer.Resolve(resolverContainer, registration, state);
+            return _state.TargetContainer.Resolve(resolveContainer, registration, state);
         }
 
         public void Dispose()

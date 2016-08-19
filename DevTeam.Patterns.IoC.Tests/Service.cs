@@ -10,11 +10,15 @@
         object Dependency { get; }
     }
 
+    public interface IService3
+    {
+    }
+
     public interface IService2<T>
     {
     }
 
-    class Service1 : IService
+    class Service1 : IService, IService3
     {
         public object State { get; }
 

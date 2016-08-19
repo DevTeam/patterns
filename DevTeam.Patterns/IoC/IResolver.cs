@@ -6,6 +6,6 @@ namespace DevTeam.Patterns.IoC
     {
         object Resolve(Type stateType, Type contractType, object state, object key = null);
 
-        object Resolve(IContainer resolverContainer, IRegistration registration, object state);
+        object Resolve(IContainer resolveContainer, IRegistration registration, object state);
     }
 }

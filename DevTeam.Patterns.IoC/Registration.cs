@@ -12,6 +12,8 @@
         private readonly Type _stateType;
         private readonly Type _contractType;
         private readonly object _key;
+        private readonly bool _isGenericType;
+        private readonly Type _genericType;
 
         public Registration(Type stateType, Type contractType, object key, IDisposable resources = null)
         {
@@ -23,6 +25,8 @@
             _contractType = contractType;
             _key = key;
             _resources = resources;
+            _isGenericType = contractType.GenericTypeArguments.Length > 0;
+            _genericType = _isGenericType ? contractType.GetGenericTypeDefinition() : null;
 
             unchecked
             {
@@ -37,12 +41,15 @@
         {
         }
 
-        public static IEnumerable<IRegistration> CreateRegistrationVariants(IRegistration registration)
+        public IEnumerable<IRegistration> GetResolveVariants()
         {
-            yield return registration;
-            if (registration.ContractType.GenericTypeArguments.Length > 0)
+            // Strict
+            yield return this;
+
+            // For generic type
+            if(_isGenericType)
             {
-                yield return new Registration(registration.StateType, registration.ContractType.GetGenericTypeDefinition(), registration.Key);
+                yield return new Registration(StateType, _genericType, Key);
             }
         }
 

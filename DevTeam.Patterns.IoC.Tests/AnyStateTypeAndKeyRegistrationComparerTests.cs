@@ -19,7 +19,7 @@
             // When
 
             // Then
-            target.Key.ShouldBe(WellknownRegistrationComparer.AnyStateTypeAndKey);
+            target.Key.ShouldBe(WellknownComparer.AnyStateTypeAndKey);
         }
 
         [Test]
@@ -57,9 +57,9 @@
             return registration.Object;
         }
 
-        private static IRegistrationComparer CreateTarget()
+        private static IComparer CreateTarget()
         {
-            return new AnyStateTypeAndKeyRegistrationComparer();
+            return new AnyStateTypeAndKeyComparer();
         }
     }
 }

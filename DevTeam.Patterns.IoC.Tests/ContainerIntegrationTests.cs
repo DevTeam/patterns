@@ -28,9 +28,6 @@
             _service1State = new Service1State();
         }
 
-        
-
-
         [Test]
         public void ShouldRemoveRegistrationWhenRegistrationTokenIsDisposed()
         {
@@ -357,11 +354,11 @@
         {
             // Given
             var target = CreateTarget();
-            var comparer = new Mock<IRegistrationComparer>();
+            var comparer = new Mock<IComparer>();
             comparer.Setup(i => i.GetHashCode(It.IsAny<IRegistration>())).Returns<IRegistration>(key => key.GetHashCode());
             comparer.Setup(i => i.Equals(It.IsAny<IRegistration>(), It.IsAny<IRegistration>())).Returns<IRegistration, IRegistration>((key1, key2) => key1.Equals(key2));
-            comparer.SetupGet(i => i.Key).Returns(WellknownRegistrationComparer.PatternKey);
-            target.Using(comparer.Object, typeof(IRegistrationComparer)).Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
+            comparer.SetupGet(i => i.Key).Returns(WellknownComparer.PatternKey);
+            target.Using(comparer.Object, typeof(IComparer)).Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "myService1");
 
             // When
             var contract = target.Resolve(typeof(Service1State), typeof(IService), new Service1State(), "myService1");
@@ -377,7 +374,7 @@
         {
             // Given
             var target = CreateTarget();
-            target.Using<IRegistrationComparer>(WellknownRegistrationComparer.PatternKey).Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "a+.");
+            target.Using<IComparer>(WellknownComparer.PatternKey).Register(typeof(Service1State), typeof(IService), ctx => _service1.Object, "a+.");
 
             // When
             var contract = target.Resolve(typeof(Service1State), typeof(IService), new Service1State(), "abc");
@@ -426,7 +423,7 @@
                     ctx.ResolvingContractType.ShouldBe(typeof(IService2<int>));
                     ctx.State.ShouldBe(1);
                     ctx.RegisterContainer.ShouldBe(target);
-                    ctx.ResolverContainer.ShouldBe(child);
+                    ctx.ResolveContainer.ShouldBe(child);
                     return service;
                 },
                 "abc");
@@ -458,7 +455,7 @@
                     ctx.ResolvingContractType.ShouldBe(typeof(IService));
                     ctx.State.ShouldBe(EmptyState.Shared);
                     ctx.RegisterContainer.ShouldBe(target);
-                    ctx.ResolverContainer.ShouldBe(child1);
+                    ctx.ResolveContainer.ShouldBe(child1);
                     return service;
                 },
                 "dep");
@@ -600,12 +597,50 @@
                 ctx =>
                 {
                     ctx.RegisterContainer.ShouldBe(child1);
-                    ctx.ResolverContainer.ShouldBe(target);
+                    ctx.ResolveContainer.ShouldBe(target);
                     return _service1.Object;
                 }, "myService1");
 
             target.GetRegistrations().ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
             target.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
+        }
+
+        [Test]
+        public void ShouldResolveAllImplementsWhenImplementationContractRange()
+        {
+            // Given
+            var target = CreateTarget();
+            var service = new Service1();
+
+            target.Using<IContractRange>(WellknownContractRange.Implementation).Register(() => service, "myService1");
+
+            // When
+            var actualService1 = target.Resolve<IService>("myService1");
+            var actualService3 = target.Resolve<IService3>("myService1");
+
+            // Then
+            actualService1.ShouldBe(service);
+            actualService3.ShouldBe(service);
+        }
+
+        [Test]
+        public void ShouldResolveAllInheritanceWhenInheritanceContractRange()
+        {
+            // Given
+            var target = CreateTarget();
+            var service = new Service1();
+
+            target.Using<IContractRange>(WellknownContractRange.Inheritance).Register(() => service, "myService1");
+
+            // When
+            var actualService1 = target.Resolve<IService>("myService1");
+            var actualService3 = target.Resolve<IService3>("myService1");
+            var actualService = target.Resolve<Service1>("myService1");
+
+            // Then
+            actualService1.ShouldBe(service);
+            actualService3.ShouldBe(service);
+            actualService.ShouldBe(service);
         }
 
         private static Container CreateTarget(object name = null)

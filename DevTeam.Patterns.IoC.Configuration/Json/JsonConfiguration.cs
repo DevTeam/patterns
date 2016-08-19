@@ -126,14 +126,19 @@
                 container = container.Using<ILifetime>(registrationElement.Lifetime.Value);
             }
 
-            if (registrationElement.RegistrationComparer != null && registrationElement.RegistrationComparer == WellknownRegistrationComparer.FullCompliance)
+            if (registrationElement.Comparer != null && registrationElement.Comparer == WellknownComparer.FullCompliance)
             {
-                container = container.Using<IRegistrationComparer>(registrationElement.RegistrationComparer.Value);
+                container = container.Using<IComparer>(registrationElement.Comparer.Value);
             }
 
             if (registrationElement.Scope != null && registrationElement.Scope != WellknownScope.Public)
             {
-                container = container.Using<IScope>(registrationElement.Scope);
+                container = container.Using<IScope>(registrationElement.Scope.Value);
+            }
+
+            if (registrationElement.ContractRange != null && registrationElement.ContractRange != WellknownContractRange.Contract)
+            {
+                container = container.Using<IContractRange>(registrationElement.ContractRange.Value);
             }
 
             return container;

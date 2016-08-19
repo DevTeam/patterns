@@ -3,9 +3,9 @@
     using System;
     using System.Text.RegularExpressions;
 
-    internal class PatternKeyRegistrationComparer : IRegistrationComparer
+    internal class PatternKeyComparer : IComparer
     {
-        public WellknownRegistrationComparer Key => WellknownRegistrationComparer.PatternKey;
+        public WellknownComparer Key => WellknownComparer.PatternKey;
 
         public bool Equals(IRegistration x, IRegistration y)
         {

@@ -10,18 +10,19 @@
 
     internal class Container : IContainer
     {
-        private static readonly Dictionary<Type, object> DefaultInstances = new Dictionary<Type, object>
+        private static readonly Dictionary<IRegistration, Func<IResolvingContext, object>> Defaults = new Dictionary<IRegistration, Func<IResolvingContext, object>>
         {
-            { typeof(ILifetime), RootContainerConfiguration.TransientLifetime },
-            { typeof(IRegistrationComparer), RootContainerConfiguration.FullComplianceRegistrationComparer },
-            { typeof(IBinder), RootContainerConfiguration.Binder },
-            { typeof(IFactory), RootContainerConfiguration.Factory },
-            { typeof(IScope), RootContainerConfiguration.PublicScope }
+            { new Registration(typeof(EmptyState), typeof(ILifetime), null), ctx => RootContainerConfiguration.TransientLifetime },
+            { new Registration(typeof(EmptyState), typeof(IComparer), null), ctx => RootContainerConfiguration.FullComplianceComparer },
+            { new Registration(typeof(EmptyState), typeof(IBinder), null), ctx => RootContainerConfiguration.Binder },
+            { new Registration(typeof(EmptyState), typeof(IFactory), null), ctx => RootContainerConfiguration.Factory },
+            { new Registration(typeof(EmptyState), typeof(IScope), null), ctx => RootContainerConfiguration.PublicScope },
+            { new Registration(typeof(EmptyState), typeof(IContractRange), null), ctx => RootContainerConfiguration.ContractRange }
         };
 
         private static readonly TypeInfo ContextTypeInfo = typeof(IContext).GetTypeInfo();
         private static readonly ComparerForRegistrationComparer ComparerForRegistrationComparer = new ComparerForRegistrationComparer();
-        private readonly SortedDictionary<IRegistrationComparer, Dictionary> _factories = new SortedDictionary<IRegistrationComparer, Dictionary>(ComparerForRegistrationComparer);
+        private readonly SortedDictionary<IComparer, Dictionary> _factories = new SortedDictionary<IComparer, Dictionary>(ComparerForRegistrationComparer);
         private readonly Dictionary<IRegistration, RegistrationInfo> _cache = new Dictionary<IRegistration, RegistrationInfo>();
         private readonly IContainer _parentContainer;
         private readonly IDisposable _disposable = Disposable.Empty();
@@ -98,17 +99,22 @@
             }
 
             var resources = new CompositeDisposable();
-            var scope = (IScope)Resolve(typeof(EmptyState), typeof(IScope), EmptyState.Shared);
-            _cache.Remove(registration);
+
             try
             {
                 if (registration.ContractType != typeof(ILifetime))
                 {
+                    var scope = (IScope)Resolve(typeof(EmptyState), typeof(IScope), EmptyState.Shared);
                     if (scope.ReadyToRegister(IsRoot, this))
                     {
                         var lifetime = (ILifetime)Resolve(typeof(EmptyState), typeof(ILifetime), EmptyState.Shared);
-                        dictionary.Add(registration, new RegistrationInfo(registerContainer, ctx => lifetime.Create(ctx, factoryMethod), registration, scope));
-                        resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(registration), lifetime)));
+                        var contractRange = (IContractRange)Resolve(typeof(EmptyState), typeof(IContractRange), EmptyState.Shared);
+                        foreach (var registrationVariant in contractRange.GetRegisterVariants(registration))
+                        {
+                            _cache.Remove(registrationVariant);
+                            dictionary.Add(registrationVariant, new RegistrationInfo(registerContainer, ctx => lifetime.Create(ctx, factoryMethod), registrationVariant, scope));
+                            resources.Add(Disposable.Create(() => Unregister(new ReleasingContext(registrationVariant), lifetime)));
+                        }
                     }
                     else
                     {
@@ -122,7 +128,8 @@
                 }
                 else
                 {
-                    dictionary.Add(registration, new RegistrationInfo(registerContainer, factoryMethod, registration, scope));
+                    _cache.Remove(registration);
+                    dictionary.Add(registration, new RegistrationInfo(registerContainer, factoryMethod, registration, RootContainerConfiguration.PublicScope));
                     resources.Add(Disposable.Create(() => Unregister(registration)));
                 }
             }
@@ -147,11 +154,11 @@
         }
 
         public object Resolve(
-            IContainer resolverContainer,
+            IContainer resolveContainer,
             IRegistration registration,
             object state)
         {
-            if (resolverContainer == null) throw new ArgumentNullException(nameof(resolverContainer));
+            if (resolveContainer == null) throw new ArgumentNullException(nameof(resolveContainer));
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
             RegistrationInfo info;
@@ -160,7 +167,7 @@
                 RegistrationInfo curRegistrationInfo = null;
 
                 info = (
-                    from registrationVariant in Registration.CreateRegistrationVariants(registration)
+                    from registrationVariant in registration.GetResolveVariants()
                     from dictionary in _factories
                     where dictionary.Value.TryGetValue(registrationVariant, out curRegistrationInfo)
                     where curRegistrationInfo.Scope.ReadyToResolve(IsRoot, this)
@@ -170,9 +177,9 @@
             }
 
             Exception innerException = null;
-            if (!info.IsEmpty && info.Scope.ReadyToResolve(IsRoot, resolverContainer))
+            if (!info.IsEmpty && info.Scope.ReadyToResolve(IsRoot, resolveContainer))
             {
-                using (var ctx = new ResolvingContext(info.RegisterContainer, resolverContainer, info.Registration, registration.ContractType, state))
+                using (var ctx = new ResolvingContext(info.RegisterContainer, resolveContainer, info.Registration, registration.ContractType, state))
                 {
                     return info.Factory(ctx);
                 }
@@ -182,14 +189,14 @@
             {
                 if (!IsRoot)
                 {
-                    return _parentContainer.Resolve(resolverContainer, registration, state);
+                    return _parentContainer.Resolve(resolveContainer, registration, state);
                 }
 
                 // Defaults
-                object defaultInstance;
-                if (registration.StateType == typeof(EmptyState) && registration.Key == null && DefaultInstances.TryGetValue(registration.ContractType, out defaultInstance))
+                Func<IResolvingContext, object> factory;
+                if (Defaults.TryGetValue(registration, out factory))
                 {
-                    return defaultInstance;
+                    return factory(new ResolvingContext(info.RegisterContainer, resolveContainer, info.Registration, registration.ContractType, state));
                 }
             }
             catch (InvalidOperationException ex)
@@ -246,14 +253,14 @@
             return $"Container [Key: {Key?.ToString() ?? "null"}, Registered entries: {Environment.NewLine}{details}]";
         }
 
-        private IRegistrationComparer GetComparer(IRegistration registration)
+        private IComparer GetComparer(IRegistration registration)
         {
             if (ContextTypeInfo.IsAssignableFrom(registration.ContractType.GetTypeInfo()))
             {
-                return RootContainerConfiguration.FullComplianceRegistrationComparer;
+                return RootContainerConfiguration.FullComplianceComparer;
             }
 
-            return (IRegistrationComparer)Resolve(typeof(EmptyState), typeof(IRegistrationComparer), EmptyState.Shared);
+            return (IComparer)Resolve(typeof(EmptyState), typeof(IComparer), EmptyState.Shared);
         }
 
         internal class RegistrationInfo

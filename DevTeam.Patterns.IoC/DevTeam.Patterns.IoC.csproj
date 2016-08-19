@@ -48,14 +48,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnyStateTypeAndKeyRegistrationComparer.cs" />
-    <Compile Include="AnyKeyRegistrationComparer.cs" />
+    <Compile Include="AnyStateTypeAndKeyComparer.cs" />
+    <Compile Include="AnyKeyComparer.cs" />
     <Compile Include="ComparerForRegistrationComparer.cs" />
     <Compile Include="Binder.cs" />
     <Compile Include="ContainerDescription.cs" />
     <Compile Include="Containers.cs" />
     <Compile Include="ContextContainer.cs" />
+    <Compile Include="ContractRange.cs" />
     <Compile Include="ExpressionFactory.cs" />
+    <Compile Include="InheritanceContractRange.cs" />
+    <Compile Include="ImplementationContractRange.cs" />
     <Compile Include="InternalScope.cs" />
     <Compile Include="PerThreadLifetime.cs" />
     <Compile Include="PerResolveLifetime.cs" />
@@ -64,10 +67,10 @@
     <Compile Include="PublicScope.cs" />
     <Compile Include="Registration.cs" />
     <Compile Include="RootContainerConfiguration.cs" />
-    <Compile Include="PatternKeyRegistrationComparer.cs" />
+    <Compile Include="PatternKeyComparer.cs" />
     <Compile Include="ReleasingContext.cs" />
     <Compile Include="ResolvingContext.cs" />
-    <Compile Include="FullComplianceRegistrationComparer.cs" />
+    <Compile Include="FullComplianceComparer.cs" />
     <Compile Include="KeyBasedLifetime.cs" />
     <Compile Include="PerContainerLifetime.cs" />
     <Compile Include="Resolver%271.cs" />

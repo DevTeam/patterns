@@ -51,7 +51,8 @@
     <Compile Include="IoC\ILifetime.cs" />
     <Compile Include="IoC\IBinder.cs" />
     <Compile Include="IoC\IRegistration.cs" />
-    <Compile Include="IoC\IRegistrationComparer.cs" />
+    <Compile Include="IoC\IContractRange.cs" />
+    <Compile Include="IoC\IComparer.cs" />
     <Compile Include="IoC\IRegistry.cs" />
     <Compile Include="IoC\IReleasingContext.cs" />
     <Compile Include="IoC\IResolver.cs" />
@@ -66,7 +67,8 @@
     <Compile Include="IoC\StateSelector.cs" />
     <Compile Include="IoC\WellknownConfigurations.cs" />
     <Compile Include="IoC\WellknownLifetime.cs" />
-    <Compile Include="IoC\WellknownRegistrationComparer.cs" />
+    <Compile Include="IoC\WellknownContractRange.cs" />
+    <Compile Include="IoC\WellknownComparer.cs" />
     <Compile Include="IoC\WellknownScope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reactive\Event.cs" />

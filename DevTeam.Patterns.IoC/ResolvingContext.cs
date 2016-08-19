@@ -11,16 +11,16 @@
         private readonly long _prevResolvingId;
         private readonly long _prevPerThreadResolvingId;
 
-        public ResolvingContext(IContainer registerContainer, IContainer resolverContainer, IRegistration registration, Type resolvingContractType, object state)
+        public ResolvingContext(IContainer registerContainer, IContainer resolveContainer, IRegistration registration, Type resolvingContractType, object state)
         {
             // Optimize perfomance
             // if (registerContainer == null) throw new ArgumentNullException(nameof(registerContainer));
-            // if (resolverContainer == null) throw new ArgumentNullException(nameof(resolverContainer));
+            // if (ResolveContainer == null) throw new ArgumentNullException(nameof(ResolveContainer));
             // if (registration == null) throw new ArgumentNullException(nameof(registration));
             // if (resolvingContractType == null) throw new ArgumentNullException(nameof(resolvingContractType));
 
             RegisterContainer = registerContainer;
-            ResolverContainer = resolverContainer;
+            ResolveContainer = resolveContainer;
             Registration = registration;
             ResolvingContractType = resolvingContractType;
             State = state;
@@ -49,7 +49,7 @@
 
         public IContainer RegisterContainer { get; }
 
-        public IContainer ResolverContainer { get; }
+        public IContainer ResolveContainer { get; }
 
         public Type ResolvingContractType { get; }
 
@@ -63,7 +63,7 @@
 
         public override string ToString()
         {
-            return $"{nameof(ResolvingContext)} [ResolvingId: {ResolvingId}, PerThreadResolvingId: {PerThreadResolvingId}, Registration: {Registration}, RegisterContainer: {RegisterContainer}, ResolverContainer: {ResolverContainer}, ResolvingContractType: {ResolvingContractType.Name}, State: {State ?? "null"}]";
+            return $"{nameof(ResolvingContext)} [ResolvingId: {ResolvingId}, PerThreadResolvingId: {PerThreadResolvingId}, Registration: {Registration}, RegisterContainer: {RegisterContainer}, ResolveContainer: {ResolveContainer}, ResolvingContractType: {ResolvingContractType.Name}, State: {State ?? "null"}]";
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace DevTeam.Patterns.IoC
 {
-    public enum WellknownRegistrationComparer
+    public enum WellknownComparer
     {
         /// <summary>
         /// Checks identity by state type, contract type and key.

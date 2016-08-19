@@ -2,11 +2,11 @@ namespace DevTeam.Patterns.IoC
 {
     using System.Collections.Generic;
 
-    internal class ComparerForRegistrationComparer : IComparer<IRegistrationComparer>
+    internal class ComparerForRegistrationComparer : IComparer<IComparer>
     {
-        public int Compare(IRegistrationComparer x, IRegistrationComparer y)
+        public int Compare(IComparer x, IComparer y)
         {
-            return Comparer<WellknownRegistrationComparer>.Default.Compare(x.Key, y.Key);
+            return Comparer<WellknownComparer>.Default.Compare(x.Key, y.Key);
         }
     }
 }

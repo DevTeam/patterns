@@ -19,7 +19,7 @@
             // When
 
             // Then
-            target.Key.ShouldBe(WellknownRegistrationComparer.PatternKey);
+            target.Key.ShouldBe(WellknownComparer.PatternKey);
         }
 
         [Test]
@@ -66,9 +66,9 @@
             return registration.Object;
         }
 
-        private static IRegistrationComparer CreateTarget()
+        private static IComparer CreateTarget()
         {
-            return new PatternKeyRegistrationComparer();
+            return new PatternKeyComparer();
         }
     }
 }
