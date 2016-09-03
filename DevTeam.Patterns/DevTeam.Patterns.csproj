@@ -40,6 +40,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventAggregator\IEventAggregator.cs" />
+    <Compile Include="IoC\v2\IContainer.cs" />
+    <Compile Include="IoC\v2\IContractKey.cs" />
+    <Compile Include="IoC\v2\IExtension.cs" />
+    <Compile Include="IoC\v2\IFactory.cs" />
+    <Compile Include="IoC\v2\IKey.cs" />
+    <Compile Include="IoC\v2\IRegistration.cs" />
+    <Compile Include="IoC\v2\IRegistry.cs" />
+    <Compile Include="IoC\v2\IResolver.cs" />
+    <Compile Include="IoC\v2\IResolving.cs" />
+    <Compile Include="IoC\v2\IRegistrationKey.cs" />
+    <Compile Include="IoC\v2\IResolvingKey.cs" />
     <Compile Include="IoC\ContextContainerState.cs" />
     <Compile Include="IoC\DependencyAttribute.cs" />
     <Compile Include="IoC\EmptyState.cs" />
@@ -67,6 +78,7 @@
     <Compile Include="IoC\Resolvers.cs" />
     <Compile Include="IoC\StateAttribute.cs" />
     <Compile Include="IoC\StateSelector.cs" />
+    <Compile Include="IoC\v2\IStateKey.cs" />
     <Compile Include="IoC\WellknownConfigurations.cs" />
     <Compile Include="IoC\WellknownLifetime.cs" />
     <Compile Include="IoC\WellknownContractRange.cs" />
