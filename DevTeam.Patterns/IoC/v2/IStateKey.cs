@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface IStateKey
+    public interface IStateKey : IKey
     {
         Type StateType { get; }
     }

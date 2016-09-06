@@ -43,7 +43,7 @@
     <Compile Include="IoC\v2\IContainer.cs" />
     <Compile Include="IoC\v2\IContractKey.cs" />
     <Compile Include="IoC\v2\IExtension.cs" />
-    <Compile Include="IoC\v2\IFactory.cs" />
+    <Compile Include="IoC\v2\IInstaceFactory.cs" />
     <Compile Include="IoC\v2\IKey.cs" />
     <Compile Include="IoC\v2\IRegistration.cs" />
     <Compile Include="IoC\v2\IRegistry.cs" />
@@ -78,6 +78,7 @@
     <Compile Include="IoC\Resolvers.cs" />
     <Compile Include="IoC\StateAttribute.cs" />
     <Compile Include="IoC\StateSelector.cs" />
+    <Compile Include="IoC\v2\IStateFactory.cs" />
     <Compile Include="IoC\v2\IStateKey.cs" />
     <Compile Include="IoC\WellknownConfigurations.cs" />
     <Compile Include="IoC\WellknownLifetime.cs" />

@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface IContractKey
+    public interface IContractKey: IKey
     {
         Type ContractType { get; }
     }

@@ -5,11 +5,16 @@
 
     public class Container: IContainer
     {
+        public Container(object key = null)
+        {
+            Key = key;
+        }
+
         public object Key { get; }
 
         public IEnumerable<IRegistration> Registrations { get; }
 
-        public IRegistration Register(IRegistrationKey key, IFactory factory, IEquatable<IExtension> extensions)
+        public IRegistration Register(IRegistrationKey key, IInstaceFactory instaceFactory, IEquatable<IExtension> extensions)
         {
             throw new NotImplementedException();
         }

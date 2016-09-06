@@ -7,6 +7,6 @@
     {
         IEnumerable<IRegistration> Registrations { get; }
 
-        IRegistration Register(IRegistrationKey key, IFactory factory, IEquatable<IExtension> extensions);
+        IRegistration Register(IRegistrationKey key, IInstaceFactory instaceFactory, IEquatable<IExtension> extensions);
     }
 }
