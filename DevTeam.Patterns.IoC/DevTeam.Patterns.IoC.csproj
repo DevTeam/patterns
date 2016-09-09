@@ -82,7 +82,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingletonLifetime.cs" />
     <Compile Include="TransientLifetime.cs" />
-    <Compile Include="v2\Container.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />

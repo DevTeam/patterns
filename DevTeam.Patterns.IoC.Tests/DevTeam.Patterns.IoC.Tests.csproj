@@ -68,7 +68,6 @@
     <Compile Include="ControlledLifetimeTests.cs" />
     <Compile Include="PerResolveLifetimeTests.cs" />
     <Compile Include="TransientLifetimeTests.cs" />
-    <Compile Include="v2\ContainerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
