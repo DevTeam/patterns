@@ -17,16 +17,9 @@
 
         public object Key => _state.TargetContainer.Key;
 
-        public IEnumerable<IRegistration> GetRegistrations()
+        public IEnumerable<IRegistration> GetRegistrations(IContainerContext containerContext)
         {
-            return _state.TargetContainer.GetRegistrations();
-        }
-
-        public IEnumerable<IRegistration> GetRegistrations(IContainer container)
-        {
-            if (container == null) throw new ArgumentNullException(nameof(container));
-
-            return _state.TargetContainer.GetRegistrations(container);
+            return _state.TargetContainer.GetRegistrations(containerContext);
         }
 
         public IRegistration Register(

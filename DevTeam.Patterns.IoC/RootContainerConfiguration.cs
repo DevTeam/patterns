@@ -125,7 +125,7 @@
                         var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
                         var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
                         var source =
-                            from key in ctx.ResolveContainer.GetRegistrations()
+                            from key in ctx.ResolveContainer.GetRegistrations(new ContainerContext(ctx.ResolveContainer))
                             where key.ContractType == enumItemType && key.StateType == ctx.Registration.StateType
                             select ctx.ResolveContainer.Resolve(key.StateType, enumItemType, ctx.State, key.Key);
                         var ctor = enumType.GetTypeInfo().DeclaredConstructors.Single(i => i.GetParameters().Length == 1);
@@ -142,7 +142,7 @@
                         var enumItemType = ctx.ResolvingContractType.GenericTypeArguments[0];
                         var enumType = typeof(Enumerable<>).MakeGenericType(enumItemType);
                         var source =
-                            from key in ctx.ResolveContainer.GetRegistrations()
+                            from key in ctx.ResolveContainer.GetRegistrations(new ContainerContext(ctx.ResolveContainer))
                             where key.ContractType == enumItemType
                             let state = ((StateSelector)ctx.State)(ctx)
                             select ctx.ResolveContainer.Resolve(key.StateType, enumItemType, state, key.Key);

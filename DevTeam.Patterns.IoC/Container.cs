@@ -51,21 +51,16 @@
 
         private bool IsRoot => _parentContainer == null;
 
-        public IEnumerable<IRegistration> GetRegistrations()
+        public IEnumerable<IRegistration> GetRegistrations(IContainerContext containerContext)
         {
-            return GetRegistrations(this);
-        }
-
-        public IEnumerable<IRegistration> GetRegistrations(IContainer container)
-        {
-            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (containerContext == null) throw new ArgumentNullException(nameof(containerContext));
 
             return 
                 _factories.SelectMany(i => i.Value)
-                .Where(i => i.Value.Scope.ReadyToResolve(IsRoot, container))
+                .Where(i => i.Value.Scope.ReadyToResolve(IsRoot, containerContext.TargetContainer))
                 .Select(i => i.Key)
                 .Distinct()
-                .Union(!IsRoot ? _parentContainer.GetRegistrations(this) : Enumerable.Empty<IRegistration>());
+                .Union(!IsRoot ? _parentContainer.GetRegistrations(containerContext) : Enumerable.Empty<IRegistration>());
         }
 
         public IRegistration Register(

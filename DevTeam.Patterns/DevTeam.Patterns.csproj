@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventAggregator\IEventAggregator.cs" />
+    <Compile Include="IoC\IContainerContext.cs" />
     <Compile Include="IoC\v2\IContainer.cs" />
     <Compile Include="IoC\v2\IContractKey.cs" />
     <Compile Include="IoC\v2\IExtension.cs" />

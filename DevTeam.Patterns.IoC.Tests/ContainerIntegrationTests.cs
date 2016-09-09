@@ -39,7 +39,7 @@
             registrationToken.Dispose();
 
             // Then
-            target.GetRegistrations().ShouldNotContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            target.GetRegistrations(new ContainerContext(target)).ShouldNotContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
         }
 
         [Test]
@@ -477,7 +477,7 @@
             child1.Using<IScope>(WellknownScope.Public).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
 
             // Then
-            child1.GetRegistrations().ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child1.GetRegistrations(new ContainerContext(target)).ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
             child1.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
         }
 
@@ -493,7 +493,7 @@
             child1.Using<IScope>(WellknownScope.Public).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
 
             // Then
-            child2.GetRegistrations().ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child2.GetRegistrations(new ContainerContext(target)).ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
             child2.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
         }
 
@@ -508,7 +508,7 @@
             child1.Using<IScope>(WellknownScope.Internal).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
 
             // Then
-            child1.GetRegistrations().ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child1.GetRegistrations(new ContainerContext(child1)).ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
             child1.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
         }
 
@@ -524,7 +524,7 @@
             child1.Using<IScope>(WellknownScope.Internal).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
 
             // Then
-            child2.GetRegistrations().ShouldNotContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child2.GetRegistrations(new ContainerContext(target)).ShouldNotContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
             try
             {
                 child2.Resolve<Service1State, IService>(new Service1State(), "myService1");
@@ -546,7 +546,7 @@
             child1.Using<IScope>(WellknownScope.Global).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
 
             // Then
-            target.GetRegistrations().ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            target.GetRegistrations(new ContainerContext(target)).ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
             target.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
         }
 
@@ -561,7 +561,7 @@
             child1.Using<IScope>(WellknownScope.Global).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
 
             // Then
-            child1.GetRegistrations().ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child1.GetRegistrations(new ContainerContext(target)).ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
             child1.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
         }
 
@@ -577,7 +577,7 @@
             child1.Using<IScope>(WellknownScope.Global).Register<Service1State, IService>(ctx => _service1.Object, "myService1");
 
             // Then
-            child2.GetRegistrations().ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            child2.GetRegistrations(new ContainerContext(target)).ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
             child2.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
         }
 
@@ -601,7 +601,7 @@
                     return _service1.Object;
                 }, "myService1");
 
-            target.GetRegistrations().ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            target.GetRegistrations(new ContainerContext(target)).ShouldContain(i => i.StateType == typeof(Service1State) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
             target.Resolve<Service1State, IService>(new Service1State(), "myService1").ShouldBe(_service1.Object);
         }
 

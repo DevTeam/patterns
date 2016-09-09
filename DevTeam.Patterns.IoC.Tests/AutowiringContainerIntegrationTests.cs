@@ -21,7 +21,7 @@
             target.Register<Service1WithState>().As<string, IService>("myService1");
 
             // Then
-            target.GetRegistrations().ShouldContain(i => i.StateType == typeof(string) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
+            target.GetRegistrations(new ContainerContext(target)).ShouldContain(i => i.StateType == typeof(string) && i.ContractType == typeof(IService) && "myService1".Equals(i.Key));
         }
 
         [Test]

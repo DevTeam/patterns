@@ -52,6 +52,7 @@
     <Compile Include="AnyKeyComparer.cs" />
     <Compile Include="ComparerForRegistrationComparer.cs" />
     <Compile Include="Binder.cs" />
+    <Compile Include="ContainerContext.cs" />
     <Compile Include="ContainerDescription.cs" />
     <Compile Include="Containers.cs" />
     <Compile Include="ContextContainer.cs" />

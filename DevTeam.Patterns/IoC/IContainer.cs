@@ -13,8 +13,6 @@
         /// </summary>
         object Key { get; }
 
-        IEnumerable<IRegistration> GetRegistrations();
-
-        IEnumerable<IRegistration> GetRegistrations(IContainer container);
+        IEnumerable<IRegistration> GetRegistrations(IContainerContext containerContext);
     }
 }
