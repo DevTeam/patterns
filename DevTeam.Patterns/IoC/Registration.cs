@@ -5,7 +5,7 @@
     using System.Diagnostics.CodeAnalysis;
 
     [SuppressMessage("ReSharper", "ConvertToAutoProperty")]
-    internal struct Registration: IRegistration
+    public struct Registration: IRegistration
     {
         private readonly IDisposable _resources;
         private readonly int _hashCode;

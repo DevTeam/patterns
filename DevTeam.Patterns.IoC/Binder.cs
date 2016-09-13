@@ -9,9 +9,9 @@
     {
         private readonly Dictionary<Type, CtorInfo> _ctorDictionary = new Dictionary<Type, CtorInfo>();
 
-        public IRegistration Bind(IRegistry registry, Type stateType, Type contractType, Type implementationType, IFactory factory, object key = null)
+        public IRegistration Bind(IContainer container, Type stateType, Type contractType, Type implementationType, IFactory factory, object key = null)
         {
-            if (registry == null) throw new ArgumentNullException(nameof(registry));
+            if (container == null) throw new ArgumentNullException(nameof(container));
             if (stateType == null) throw new ArgumentNullException(nameof(stateType));
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
@@ -24,7 +24,7 @@
                 ctorInfo = GetCtorInfo(stateType, implementationType);
             }
 
-            return registry.Register(stateType, contractType, ctx => CreateInstance(ctorInfo, isGeneric, stateType, implementationType, factory, ctx), key);
+            return container.Register(container, new Registration(stateType, contractType, key), ctx => CreateInstance(ctorInfo, isGeneric, stateType, implementationType, factory, ctx));
         }
 
         private static void CheckConstraints(Type contractType, Type implementationType)

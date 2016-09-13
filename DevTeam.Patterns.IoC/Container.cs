@@ -64,19 +64,6 @@
         }
 
         public IRegistration Register(
-            Type stateType,
-            Type contractType,
-            Func<IResolvingContext, object> factoryMethod,
-            object key = null)
-        {
-            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
-            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
-            if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
-
-            return Register(this, new Registration(stateType, contractType, key), factoryMethod);
-        }
-
-        public IRegistration Register(
             IContainer registerContainer,
             IRegistration registration,
             Func<IResolvingContext, object> factoryMethod)

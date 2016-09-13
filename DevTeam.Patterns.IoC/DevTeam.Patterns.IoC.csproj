@@ -67,7 +67,6 @@
     <Compile Include="ControlledLifetime.cs" />
     <Compile Include="GlobalScope.cs" />
     <Compile Include="PublicScope.cs" />
-    <Compile Include="Registration.cs" />
     <Compile Include="RegistrationFactory.cs" />
     <Compile Include="RootContainerConfiguration.cs" />
     <Compile Include="PatternKeyComparer.cs" />

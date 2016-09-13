@@ -60,20 +60,30 @@
             return binder.Bind(container, stateType, contractType, implementationType, factory, key);
         }
 
-        public static IRegistration Register<TState, T>(this IRegistry registry, Func<TState, T> factoryMethod, object key = null)
+        public static IRegistration Register(this IContainer container, Type stateType, Type contractType, Func<IResolvingContext, object> factoryMethod, object key = null)
         {
-            if (registry == null) throw new ArgumentNullException(nameof(registry));
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (stateType == null) throw new ArgumentNullException(nameof(stateType));
+            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
-            return registry.Register(typeof(TState), typeof(T), ctx => factoryMethod((TState)ctx.State), key);
+            return container.Register(container, new Registration(stateType, contractType, key), factoryMethod);
         }
 
-        public static IRegistration Register<T>(this IRegistry registry, Func<T> factoryMethod, object key = null)
+        public static IRegistration Register<TState, T>(this IContainer container, Func<TState, T> factoryMethod, object key = null)
         {
-            if (registry == null) throw new ArgumentNullException(nameof(registry));
+            if (container == null) throw new ArgumentNullException(nameof(container));
             if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
 
-            return registry.Register(new Func<EmptyState, T>(ignoredArg => factoryMethod()), key);
+            return container.Register(container, new Registration(typeof(TState), typeof(T), key), ctx => factoryMethod((TState)ctx.State));
+        }
+
+        public static IRegistration Register<T>(this IContainer container, Func<T> factoryMethod, object key = null)
+        {
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            if (factoryMethod == null) throw new ArgumentNullException(nameof(factoryMethod));
+
+            return container.Register(new Func<EmptyState, T>(ignoredArg => factoryMethod()), key);
         }
 
         public static IContainer Using<TContext>(this IContainer container, object contextKey = null)
